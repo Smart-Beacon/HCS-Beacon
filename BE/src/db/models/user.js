@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class user extends Sequelize.Model {
+    validPassword(pw) {
+        return bcrypt.compareSync(pw, this.userLoginPw);
+    }
 
     static init(sequelize) {
         return super.init({
@@ -33,6 +38,9 @@ class user extends Sequelize.Model {
                 userLoginPw: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
+                    set(value) {
+                        this.setDataValue('userLoginPw', bcrypt.hashSync(value, saltRounds));
+                    }
                 },
                 userFlag: {
                     type: Sequelize.TINYINT,
