@@ -1,16 +1,17 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
- 
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
+const authRouter = require('./api/auth/auth');
+
 const app = express();
- 
 app.set('port', process.env.PORT || 3000);
- 
-// PUG 설정
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
  
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영
@@ -23,11 +24,17 @@ sequelize
     }).catch((err) => {
         console.error(err);
     });
- 
+
 app.use(morgan('dev')); // 로그
-app.use(express.static(path.join(__dirname, 'public'))); // 요청시 기본 경로 설정
+// 굳이 필요한가? public 폴더에 이미지, css, js 파일을 제공받을 때 설정
+//app.use(express.static(path.join(__dirname, 'public'))); // 요청시 기본 경로 설정 
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+
+app.use('/auth',authRouter);
+
  
 // 일부러 에러 발생시키기 TEST용
 app.use((req, res, next) => {
