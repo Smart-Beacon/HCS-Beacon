@@ -16,10 +16,11 @@ router.post('/login', async(req,res,next) =>{
         if(exAdmin){
             const checkPassword = await bcrypt.compare(password,exAdmin.adminLoginPw);
             if(checkPassword){
-                res.cookie('access-token',exAdmin.adminId,{
+                res.cookie('accessToken',exAdmin.adminId,{
                     expires: new Date(Date.now() + 900000),
                     httpOnly: true,
                     secure:false,
+                    signed:true,
                 })
                 return res.status(200).end();
             }else{
@@ -38,7 +39,7 @@ router.post('/login', async(req,res,next) =>{
 router.get('/logout', (req,res)=>{
     try{
         console.log('로그아웃');
-        res.clearCookie('beacon');
+        res.clearCookie('accessToken');
         res.end();
     }catch(err){
         console.error(err);

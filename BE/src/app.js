@@ -9,6 +9,7 @@ dotenv.config();
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
 const authRouter = require('./api/auth/auth');
+const AdminRouter = require('./api/page/page');
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -34,6 +35,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 
 app.use('/auth',authRouter);
+app.use('/',AdminRouter);
 
  
 // 일부러 에러 발생시키기 TEST용
