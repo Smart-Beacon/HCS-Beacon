@@ -1,6 +1,18 @@
 const Sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+const saltRounds = 10;
 
 class admin extends Sequelize.Model {
+    // generateToken() {
+    //     const token = jwt.sign({
+    //         adminId: this.adminId,
+    //         adminLoginId: this.adminLoginId,
+    //     },process.env.JWT_SECRET,{
+    //         expiresIn: '7d',
+    //     },);
+    //     return token;
+    // }
 
     static init(sequelize) {
         return super.init({
@@ -10,6 +22,10 @@ class admin extends Sequelize.Model {
                     primaryKey: true,
                 },
                 adminName: {
+                    type: Sequelize.STRING(45),
+                    allowNull: false,
+                },
+                company: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
                 },
@@ -25,10 +41,21 @@ class admin extends Sequelize.Model {
                 adminLoginPw: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
+                    set(value) {
+                        this.setDataValue('adminLoginPw', bcrypt.hashSync(value, saltRounds));
+                    },
                 },
                 phoneNum: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
+                },
+                isLogin: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: true,
+                },
+                sms: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: true,
                 },
             },{
                 sequelize,
@@ -43,7 +70,13 @@ class admin extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.admin.hasMany(db.adminControl, {
+        db.admin.hasMany(db.adminStatement, {
+            foreignKey: 'adminId',
+            sourceKey: 'adminId',
+            onDelete: 'cascade',
+            onUpdate: 'cascade',
+        });
+        db.admin.hasMany(db.adminDoor, {
             foreignKey: 'adminId',
             sourceKey: 'adminId',
             onDelete: 'cascade',
