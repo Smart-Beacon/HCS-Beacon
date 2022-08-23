@@ -1,16 +1,17 @@
 const Sequelize = require('sequelize');
 
 // 클래스를 불러온다.
-const facility     = require('./facility');
 const statement    = require('./statement');
 const door         = require('./door');
 const user         = require('./user');
-const accessRecord = require('./accessRecord');
 const superAdmin   = require('./superAdmin');
-const superControl = require('./superControl');
 const admin        = require('./admin');
-const adminControl = require('./adminControl');
+const adminStatement = require('./adminStatement');
+const adminDoor = require('./adminDoor');
 const userAllow    = require('./userAllow');
+const accessRecord = require('./accessRecord');
+const alertRecord = require('./alertRecord');
+const smsRecord = require('./smsRecord');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -28,40 +29,42 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize; 
 
 // 모델 클래스를 넣음.
-db.facility     = facility;
 db.statement    = statement;
 db.door         = door;
 db.user         = user;
-db.accessRecord = accessRecord;
 db.superAdmin   = superAdmin;
-db.superControl = superControl;
 db.admin        = admin;
-db.adminControl = adminControl;
+db.adminStatement = adminStatement;
+db.adminDoor = adminDoor;
 db.userAllow    = userAllow;
+db.accessRecord = accessRecord;
+db.alertRecord = alertRecord;
+db.smsRecord = smsRecord;
 
 // 모델과 테이블 종합적인 연결이 설정된다.
-facility.init(sequelize);
 statement.init(sequelize);
 door.init(sequelize);
 user.init(sequelize);
-accessRecord.init(sequelize);
 superAdmin.init(sequelize);
-superControl.init(sequelize);
 admin.init(sequelize);
-adminControl.init(sequelize);
+adminStatement.init(sequelize);
+adminDoor.init(sequelize);
 userAllow.init(sequelize);
+accessRecord.init(sequelize);
+alertRecord.init(sequelize);
+smsRecord.init(sequelize);
 
 // db객체 안에 있는 모델들 간의 관계가 설정된다.
-facility.associate(db);
 statement.associate(db);
 door.associate(db);
 user.associate(db);
-accessRecord.associate(db);
-superAdmin.associate(db);
-superControl.associate(db);
 admin.associate(db);
-adminControl.associate(db);
+adminStatement.associate(db);
+adminDoor.associate(db);
 userAllow.associate(db);
+accessRecord.associate(db);
+alertRecord.associate(db);
+smsRecord.associate(db);
 
 // 모듈로 꺼낸다.
 module.exports = db;

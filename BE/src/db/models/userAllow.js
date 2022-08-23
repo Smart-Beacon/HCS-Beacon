@@ -9,6 +9,10 @@ class userAllow extends Sequelize.Model {
                     allowNull: false,
                     primaryKey: true,
                 },
+                isAllowed: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: false,
+                },
             },{
                 sequelize,
                 timestamps: false,

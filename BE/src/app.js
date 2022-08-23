@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
@@ -58,4 +59,3 @@ app.use((err, req, res, next) => {
 // 서버 실행
 app.listen(app.get('port'), () => {
    console.log(app.get('port'), '번 포트에서 대기 중');
-});

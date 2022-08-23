@@ -5,7 +5,7 @@ class door extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
                 doorId: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(45),
                     allowNull: false,
                     primaryKey: true,
                 },
@@ -13,12 +13,17 @@ class door extends Sequelize.Model {
                     type: Sequelize.STRING(45),
                     allowNull: false,
                 },
-                isOpen: {
+                isOpen: { // 개방 유무
                     type: Sequelize.BOOLEAN,
                     allowNull: false,
                     defaultValue: false,
                 },
-                isWatch: {
+                isMonitoring: { // 감시 여부(출입 관리)
+                    type: Sequelize.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
+                },
+                warning: { // 경보 상태 (이상 유무) (센서 이상 및 강제 개방 여부)
                     type: Sequelize.BOOLEAN,
                     allowNull: false,
                     defaultValue: false,
@@ -29,6 +34,10 @@ class door extends Sequelize.Model {
                 },
                 closeTime: {
                     type: Sequelize.DATE,
+                    allowNull: true,
+                },
+                latestDate: {
+                    type: Sequelize.DATEONLY,
                     allowNull: true,
                 },
             },{
@@ -50,25 +59,31 @@ class door extends Sequelize.Model {
             onDelete: 'cascade',
             onUpdate: 'cascade',
         });
+        db.door.hasMany(db.adminDoor, {
+            foreignKey: 'doorId',
+            sourceKey: 'doorId',
+            onDelete: 'cascade',
+            onUpdate: 'cascade',
+        });
         db.door.hasMany(db.accessRecord, {
             foreignKey: 'doorId',
             sourceKey: 'doorId',
             onDelete: 'cascade',
             onUpdate: 'cascade',
         });
-        db.door.hasMany(db.superControl, {
-            foreignKey: 'doorId',
-            sourceKey: 'doorId',
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-        });
-        db.door.hasMany(db.adminControl, {
-            foreignKey: 'doorId',
-            sourceKey: 'doorId',
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-        });
         db.door.hasMany(db.userAllow, {
+            foreignKey: 'doorId',
+            sourceKey: 'doorId',
+            onDelete: 'cascade',
+            onUpdate: 'cascade',
+        });
+        db.door.hasMany(db.alertRecord, {
+            foreignKey: 'doorId',
+            sourceKey: 'doorId',
+            onDelete: 'cascade',
+            onUpdate: 'cascade',
+        });
+        db.door.hasMany(db.smsRecord, {
             foreignKey: 'doorId',
             sourceKey: 'doorId',
             onDelete: 'cascade',
