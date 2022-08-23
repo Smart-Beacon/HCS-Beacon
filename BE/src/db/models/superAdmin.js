@@ -56,15 +56,6 @@ class superAdmin extends Sequelize.Model {
                 collate: 'utf8_general_ci',
             });
     }
-
-    static associate(db) {
-        db.superAdmin.hasMany(db.superControl, {
-            foreignKey: 'superId',
-            sourceKey: 'superId',
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-        });
-    }
 };
 
 module.exports = superAdmin;

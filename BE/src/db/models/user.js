@@ -15,7 +15,7 @@ class user extends Sequelize.Model {
                     primaryKey: true,
                 },
                 company: {
-                    type: Sequelize.STRING,
+                    type: Sequelize.STRING(45),
                     allowNull: true,
                 },
                 userName: {
@@ -50,11 +50,11 @@ class user extends Sequelize.Model {
                     type: Sequelize.STRING,
                     allowNull: true,
                 },
-                isAllowed: {
-                    type: Sequelize.BOOLEAN,
-                    allowNull: false,
+                enterTime: {
+                    type: Sequelize.DATE,
+                    allowNull: true,
                 },
-                workingTime: {
+                exitTime: {
                     type: Sequelize.DATE,
                     allowNull: true,
                 },

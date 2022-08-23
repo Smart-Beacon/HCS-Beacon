@@ -25,6 +25,10 @@ class admin extends Sequelize.Model {
                     type: Sequelize.STRING(45),
                     allowNull: false,
                 },
+                company: {
+                    type: Sequelize.STRING(45),
+                    allowNull: false,
+                },
                 position: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
@@ -45,6 +49,14 @@ class admin extends Sequelize.Model {
                     type: Sequelize.STRING(45),
                     allowNull: false,
                 },
+                isLogin: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: true,
+                },
+                sms: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: true,
+                },
             },{
                 sequelize,
                 timestamps: false,
@@ -58,7 +70,13 @@ class admin extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.admin.hasMany(db.adminControl, {
+        db.admin.hasMany(db.adminStatement, {
+            foreignKey: 'adminId',
+            sourceKey: 'adminId',
+            onDelete: 'cascade',
+            onUpdate: 'cascade',
+        });
+        db.admin.hasMany(db.adminDoor, {
             foreignKey: 'adminId',
             sourceKey: 'adminId',
             onDelete: 'cascade',
