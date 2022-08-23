@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 
-const Admin = require('../../db/models/admin');
+const Admin = require('../db/models/admin');
 
 const router = express.Router();
 

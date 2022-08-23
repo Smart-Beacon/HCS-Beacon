@@ -1,6 +1,6 @@
 const express = require('express');
 
-const getMainDatas = require('../../service/main.js');
+const getMainDatas = require('../service/door.js');
 
 const router = express.Router();
 
