@@ -1,24 +1,28 @@
 const Sequelize = require('sequelize');
 
-class userAllow extends Sequelize.Model {
+class alertRecord extends Sequelize.Model {
 
     static init(sequelize) {
         return super.init({
-                allowId: {
+                recordId: {
                     type: Sequelize.UUID,
                     allowNull: false,
                     primaryKey: true,
                 },
-                isAllowed: {
-                    type: Sequelize.BOOLEAN,
+                startTime: {
+                    type: Sequelize.DATE,
                     allowNull: false,
+                },
+                endTime: {
+                    type: Sequelize.DATE,
+                    allowNull: true,
                 },
             },{
                 sequelize,
                 timestamps: false,
                 underscored: false,
-                modelName: 'userAllow',
-                tableName: 'user_allow',
+                modelName: 'alertRecord',
+                tableName: 'alert_record',
                 paranoid: false,
                 charset: 'utf8',
                 collate: 'utf8_general_ci',
@@ -26,13 +30,7 @@ class userAllow extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.userAllow.belongsTo(db.user, {
-            foreignKey: 'userId',
-            targetKey: 'userId',
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-        });
-        db.userAllow.belongsTo(db.door, {
+        db.alertRecord.belongsTo(db.door, {
             foreignKey: 'doorId',
             targetKey: 'doorId',
             onDelete: 'cascade',
@@ -41,4 +39,4 @@ class userAllow extends Sequelize.Model {
     }
 };
 
-module.exports = userAllow;
+module.exports = alertRecord;

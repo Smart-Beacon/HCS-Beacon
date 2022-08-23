@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-class adminControl extends Sequelize.Model {
+class adminDoor extends Sequelize.Model {
 
     static init(sequelize) {
         return super.init({
@@ -13,8 +13,8 @@ class adminControl extends Sequelize.Model {
                 sequelize,
                 timestamps: false,
                 underscored: false,
-                modelName: 'adminControl',
-                tableName: 'admin_control',
+                modelName: 'adminDoor',
+                tableName: 'admin_door',
                 paranoid: false,
                 charset: 'utf8',
                 collate: 'utf8_general_ci',
@@ -22,13 +22,13 @@ class adminControl extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.adminControl.belongsTo(db.admin, {
+        db.adminDoor.belongsTo(db.admin, {
             foreignKey: 'adminId',
             targetKey: 'adminId',
             onDelete: 'cascade',
             onUpdate: 'cascade',
         });
-        db.adminControl.belongsTo(db.door, {
+        db.adminDoor.belongsTo(db.door, {
             foreignKey: 'doorId',
             targetKey: 'doorId',
             onDelete: 'cascade',
@@ -37,4 +37,4 @@ class adminControl extends Sequelize.Model {
     }
 };
 
-module.exports = adminControl;
+module.exports = adminDoor;

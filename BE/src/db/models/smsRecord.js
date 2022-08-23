@@ -1,20 +1,28 @@
 const Sequelize = require('sequelize');
 
-class superControl extends Sequelize.Model {
+class smsRecord extends Sequelize.Model {
 
     static init(sequelize) {
         return super.init({
-                controlId: {
+                recordId: {
                     type: Sequelize.UUID,
                     allowNull: false,
                     primaryKey: true,
+                },
+                sendTime: {
+                    type: Sequelize.DATE,
+                    allowNull: true,
+                },
+                isSend: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: true,
                 },
             },{
                 sequelize,
                 timestamps: false,
                 underscored: false,
-                modelName: 'superControl',
-                tableName: 'super_control',
+                modelName: 'smsRecord',
+                tableName: 'sms_record',
                 paranoid: false,
                 charset: 'utf8',
                 collate: 'utf8_general_ci',
@@ -22,13 +30,7 @@ class superControl extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.superControl.belongsTo(db.superAdmin, {
-            foreignKey: 'superId',
-            targetKey: 'superId',
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-        });
-        db.superControl.belongsTo(db.door, {
+        db.smsRecord.belongsTo(db.door, {
             foreignKey: 'doorId',
             targetKey: 'doorId',
             onDelete: 'cascade',
@@ -37,4 +39,4 @@ class superControl extends Sequelize.Model {
     }
 };
 
-module.exports = superControl;
+module.exports = smsRecord;

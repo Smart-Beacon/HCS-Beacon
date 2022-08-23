@@ -1,24 +1,20 @@
 const Sequelize = require('sequelize');
 
-class userAllow extends Sequelize.Model {
+class adminStatement extends Sequelize.Model {
 
     static init(sequelize) {
         return super.init({
-                allowId: {
+                controlId: {
                     type: Sequelize.UUID,
                     allowNull: false,
                     primaryKey: true,
-                },
-                isAllowed: {
-                    type: Sequelize.BOOLEAN,
-                    allowNull: false,
                 },
             },{
                 sequelize,
                 timestamps: false,
                 underscored: false,
-                modelName: 'userAllow',
-                tableName: 'user_allow',
+                modelName: 'adminStatement',
+                tableName: 'admin_statement',
                 paranoid: false,
                 charset: 'utf8',
                 collate: 'utf8_general_ci',
@@ -26,19 +22,19 @@ class userAllow extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.userAllow.belongsTo(db.user, {
-            foreignKey: 'userId',
-            targetKey: 'userId',
+        db.adminStatement.belongsTo(db.admin, {
+            foreignKey: 'adminId',
+            targetKey: 'adminId',
             onDelete: 'cascade',
             onUpdate: 'cascade',
         });
-        db.userAllow.belongsTo(db.door, {
-            foreignKey: 'doorId',
-            targetKey: 'doorId',
+        db.adminStatement.belongsTo(db.statement, {
+            foreignKey: 'staId',
+            targetKey: 'staId',
             onDelete: 'cascade',
             onUpdate: 'cascade',
         });
     }
 };
 
-module.exports = userAllow;
+module.exports = adminStatement;
