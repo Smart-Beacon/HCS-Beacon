@@ -1,45 +1,57 @@
 const express = require('express');
 
 const getMainDatas = require('../service/door.js');
+const checkAdmin = require('../service/check.js');
 
 const router = express.Router();
 
 // 실시간 감시 현황 페이지 데이터 요청
 // 건물명, 출입문 명, 비콘ID, 현재상태, 개방시간, 폐쇄시간, 경보상태를 Json 데이터로 전송
 router.get('/', async(req,res,next) =>{
-    //const { token } = req.signedCookies.accessToken
-    //if (token && token.adminId !== ''){
-        try{
+    const { id, isSuper } = req.signedCookies.accessToken;
+    console.log(id, isSuper);
+    try{
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if (check !== 2){
             const data = await getMainDatas.getAllDoorData();
-            data.map(dd => {
-                console.log(dd);
-            })
-            //console.log(JSON.stringify(data));
-            console.log('1');
-            //res.json(data);
-        }catch(err){
-            res.status(400).send(err.message);
+            console.log(data);
+            res.json(data);
+        }else{
+            res.status(400).send('Not Found Admin');
         }
-    //}else{
-        //res.status(400).send('Not Found Cookie');
-    //}
+    }catch(err){
+        res.status(400).send(err.message);
+    }
 });
 
 // 출입문 관리 설정 페이지 데이터 요청
 // 건물명, 출입문 명, 비콘ID, 현재상태, 출입관리, 개방시간, 폐쇄시간를 Json 데이터로 전송
-router.get('/', async(req,res,next) => {
-    const { token } = req.signedCookies.accessToken
-    if (token && token.adminId !== ''){
-        try{
-            const data = await getMainDatas.getDoorDatas(token.adminId);
-
+router.get('/admindoor', async(req,res,next) => {
+    const { id, isSuper } = req.signedCookies.accessToken
+    console.log(id, isSuper);
+    try{
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if(check === 0){
+            const data = await getMainDatas.getSuperDoorDatas();
             res.json(data);
-        }catch(err){
-            res.status(400).send(err.message);
+        }else if(check === 1){
+            const data = await getMainDatas.getAdminDoorDatas(id);
+            res.json(data);
+        }else{
+            res.status(400).send('Not Found Admin');
         }
-    }else{
-        res.status(400).send('Not Found Cookie');
+    }catch(err){
+        res.status(400).send(err.message);
     }
+});
+
+// 질문
+// 출입문 관리 설정 (등록 모달)
+// 담당관리자만 해당 
+// 
+router.post('/admindoor',async(req,res,next)=>{
+
+
 });
 
 module.exports = router;

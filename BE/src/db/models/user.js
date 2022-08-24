@@ -36,7 +36,7 @@ class user extends Sequelize.Model {
                     unique: true,
                 },
                 userLoginPw: {
-                    type: Sequelize.STRING(45),
+                    type: Sequelize.STRING(100),
                     allowNull: false,
                     set(value) {
                         this.setDataValue('userLoginPw', bcrypt.hashSync(value, saltRounds));

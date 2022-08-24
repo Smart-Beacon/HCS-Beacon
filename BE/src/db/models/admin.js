@@ -1,19 +1,8 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 
 class admin extends Sequelize.Model {
-    // generateToken() {
-    //     const token = jwt.sign({
-    //         adminId: this.adminId,
-    //         adminLoginId: this.adminLoginId,
-    //     },process.env.JWT_SECRET,{
-    //         expiresIn: '7d',
-    //     },);
-    //     return token;
-    // }
-
     static init(sequelize) {
         return super.init({
                 adminId: {
@@ -44,6 +33,10 @@ class admin extends Sequelize.Model {
                     set(value) {
                         this.setDataValue('adminLoginPw', bcrypt.hashSync(value, saltRounds));
                     },
+                },
+                createdAt: {
+                    type: Sequelize.DATEONLY,
+                    allowNull:false,
                 },
                 phoneNum: {
                     type: Sequelize.STRING(45),
