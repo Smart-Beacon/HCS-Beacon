@@ -35,7 +35,7 @@ class superAdmin extends Sequelize.Model {
                     unique: true,
                 },
                 superLoginPw: {
-                    type: Sequelize.STRING(45),
+                    type: Sequelize.STRING(100),
                     allowNull: false,
                     set(value) {
                         this.setDataValue('superLoginPw', bcrypt.hashSync(value, saltRounds));

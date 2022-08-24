@@ -11,7 +11,8 @@ dotenv.config();
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
 const authRouter = require('./routes/auth');
-const AdminRouter = require('./routes/door');
+const doorRouter = require('./routes/door');
+const superAdminRouter = require('./routes/super');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -45,7 +46,8 @@ app.use(cors({
 }));
 
 app.use('/auth',authRouter);
-app.use('/',AdminRouter);
+app.use('/door',doorRouter);
+app.use('/super',superAdminRouter);
 
 
  
