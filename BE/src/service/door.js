@@ -1,12 +1,12 @@
 //const Admin = require('../../db/models/admin');
 const Door =  require('../db/models/door');
-const AdminControl = require('../db/models/adminControl');
+const AdminDoor = require('../db/models/adminDoor');
 const Statement = require('../db/models/statement');
 
 
 const getDoorDatas = async(adminId) =>{
         
-    const doorIds = await AdminControl.findAll({
+    const doorIds = await AdminDoor.findAll({
         where:{ adminId },
         include: ['doorId'],
     });
