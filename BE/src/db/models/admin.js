@@ -39,7 +39,7 @@ class admin extends Sequelize.Model {
                     unique: true,
                 },
                 adminLoginPw: {
-                    type: Sequelize.STRING(45),
+                    type: Sequelize.STRING(100),
                     allowNull: false,
                     set(value) {
                         this.setDataValue('adminLoginPw', bcrypt.hashSync(value, saltRounds));
