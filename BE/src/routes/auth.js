@@ -6,22 +6,23 @@ const Admin = require('../db/models/admin');
 const router = express.Router();
 
 router.post('/login', async(req,res,next) =>{
-    const { id, password } = req.body;
-
+    const { ID, PW } = req.body;
     try{
         const exAdmin = await Admin.findOne({
-            where:{ adminLoginId:id },
+            where:{ adminLoginId:ID },
         });
     
         if(exAdmin){
-            const checkPassword = await bcrypt.compare(password,exAdmin.adminLoginPw);
+            const checkPassword = await bcrypt.compare(PW,exAdmin.adminLoginPw);
+            console.log(checkPassword)
             if(checkPassword){
                 res.cookie('accessToken',exAdmin.adminId,{
-                    expires: new Date(Date.now() + 900000),
+                    expires: new Date(Date.now() + 1000*60*60*24*7),
                     httpOnly: true,
                     secure:false,
                     signed:true,
-                })
+                });
+                console.log(res.getHeader('set-cookie'));
                 return res.status(200).end();
             }else{
                 return res.status(202).send('비밀번호가 일치하지 않습니다.');

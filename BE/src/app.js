@@ -1,9 +1,10 @@
-
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 
 dotenv.config();
 
@@ -13,7 +14,12 @@ const authRouter = require('./routes/auth');
 const AdminRouter = require('./routes/door');
 
 const app = express();
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 5000);
+
+// const corsOptions = {
+//     origin: "http://localhost:3000",
+//     credential:'true',
+// };
  
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영
@@ -33,10 +39,14 @@ app.use(morgan('dev')); // 로그
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+}));
 
 app.use('/auth',authRouter);
 app.use('/',AdminRouter);
+
 
  
 // 일부러 에러 발생시키기 TEST용
