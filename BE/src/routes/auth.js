@@ -62,7 +62,7 @@ router.post('/login', async(req,res,next) =>{
     }
 });
 
-router.get('/logout', (req,res)=>{
+router.post('/logout', (req,res)=>{
     try{
         console.log('로그아웃');
         res.clearCookie('accessToken');

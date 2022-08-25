@@ -37,6 +37,7 @@ class admin extends Sequelize.Model {
                 createdAt: {
                     type: Sequelize.DATEONLY,
                     allowNull:false,
+                    defaultValue: Sequelize.NOW,
                 },
                 phoneNum: {
                     type: Sequelize.STRING(45),
@@ -45,10 +46,12 @@ class admin extends Sequelize.Model {
                 isLogin: {
                     type: Sequelize.BOOLEAN,
                     allowNull: true,
+                    defaultValue: false,
                 },
                 sms: {
                     type: Sequelize.BOOLEAN,
                     allowNull: true,
+                    defaultValue: false,
                 },
             },{
                 sequelize,
