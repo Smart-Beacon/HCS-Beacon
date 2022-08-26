@@ -5,7 +5,7 @@
 
 ## 📑 요구사항
 > Development of access management system for major facilities using smart phone and beacon sensor (BLE)  
-정리하여 삽입예정입니다.
+정리하여 삽입예정
 
 ## 👉 Contributor
 - 최형순(팀장, BE)
