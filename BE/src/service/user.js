@@ -4,6 +4,13 @@ const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
 
+const { v4 } = require('uuid');
+
+const uuid = () => {
+    const tokens = v4().split('-');
+    return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
+}
+
 // GET : 출입자 관리 데이터
 // 모든 건물의 출입자 데이터를 확인하는 함수
 // 최고 관리자만 사용하는 함수
@@ -43,8 +50,40 @@ const getAdminEntrantList = async(adminId) => {
 // 상시 출입자를 등록하는 함수
 // 최고 관리자와 중간관리자 둘다 사용하는 함수
 //
-const createUserData = async() => {
+const createUserData = async(data) => {
+    const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
+    if(exUser){
+        const userData = await User.create({
+            userId: uuid(),
+            userName: data.userName,
+            company: data.company,
+            position: data.position,
+            phoneNum: data.phoneNum,
+            userLoginId: data.userLoginId,
+            userLoginPw: data.userLoginPw,
+            userFlag: 0,
+            reason: null,
+            enterTime: null,
+            exitTime: null,
+        });
 
+        let doorList = data.doorlist;
+
+        await Promise.all(
+            doorList.map(async doorId =>{
+                await UserAllow.create({
+                    allowId: uuid(),
+                    userId: userData.userId,
+                    doorId: doorId,
+                    isAllowed: 1,
+                });
+            })
+        );
+
+        return userData;
+    }else{
+        return null;
+    }
 }
 
 // 출입자 목록 변환 함수 getEntrantList
@@ -98,4 +137,5 @@ const getEntrantList = async(allows) => {
 module.exports = {
     getSuperEntrantList,
     getAdminEntrantList,
+    createUserData
 }
