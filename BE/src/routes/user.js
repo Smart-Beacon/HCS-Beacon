@@ -31,7 +31,7 @@ router.post('/entrant', async(req,res,next) =>{
     try{
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if(check !== 2){
-            const userData = await getMainDatas.createUserData(req,body);
+            const userData = await getMainDatas.createUserData(req.body);
             if(userData){
                 console.log(userData);
                 res.status(201).json(userData);

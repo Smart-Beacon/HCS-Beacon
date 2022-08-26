@@ -3,13 +3,8 @@ const AdminDoor = require('../db/models/adminDoor');
 const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
+const uuid  = require('./createUUID');
 
-const { v4 } = require('uuid');
-
-const uuid = () => {
-    const tokens = v4().split('-');
-    return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
-}
 
 // GET : 출입자 관리 데이터
 // 모든 건물의 출입자 데이터를 확인하는 함수
@@ -38,7 +33,8 @@ const getAdminEntrantList = async(adminId) => {
                 where:{ doorId:oneDoorId.doorId }
             });
             return userAllow;
-        }));
+        })
+    );
 
     const UserAllows = await AdminUserAllows.flatMap(data => data);
     const entrantList = await getEntrantList(UserAllows);
@@ -49,12 +45,12 @@ const getAdminEntrantList = async(adminId) => {
 // POST : 출입자 등록
 // 상시 출입자를 등록하는 함수
 // 최고 관리자와 중간관리자 둘다 사용하는 함수
-//
+// 성명,
 const createUserData = async(data) => {
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
-    if(exUser){
+    if(!exUser){
         const userData = await User.create({
-            userId: uuid(),
+            userId: await uuid.uuid(),
             userName: data.userName,
             company: data.company,
             position: data.position,
@@ -62,17 +58,15 @@ const createUserData = async(data) => {
             userLoginId: data.userLoginId,
             userLoginPw: data.userLoginPw,
             userFlag: 0,
-            reason: null,
+            reason: '상시 출입',
             enterTime: null,
             exitTime: null,
         });
 
-        let doorList = data.doorlist;
-
         await Promise.all(
-            doorList.map(async doorId =>{
+            data.doorlist.map(async doorId =>{
                 await UserAllow.create({
-                    allowId: uuid(),
+                    allowId: await uuid.uuid(),
                     userId: userData.userId,
                     doorId: doorId,
                     isAllowed: 1,

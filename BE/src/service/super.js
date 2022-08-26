@@ -1,13 +1,7 @@
 const Admin = require('../db/models/admin');
 const AdminDoor = require('../db/models/adminDoor');
 const AdminStatment = require('../db/models/adminStatement');
-
-const { v4 } = require('uuid');
- 
-const uuid = () => {
-    const tokens = v4().split('-');
-    return tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4];
-}
+const uuid  = require('./createUUID');
 
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();
@@ -34,7 +28,7 @@ const createAdminData = async(data) => {
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});
     if (!exAdmin){
         const adminData = await Admin.create({
-            adminId: uuid(),
+            adminId: await uuid.uuid(),
             company: data.company,
             position: data.position,
             adminName: data.adminName,
@@ -47,7 +41,7 @@ const createAdminData = async(data) => {
         let doorList = data.doorlist;
 
         await AdminStatment.create({
-            controlId: uuid(),
+            controlId: await uuid.uuid(),
             staId: data.staId,
             adminId: adminData.adminId
         });
@@ -55,7 +49,7 @@ const createAdminData = async(data) => {
         await Promise.all(
             doorList.map(async doorId =>{
                 await AdminDoor.create({
-                    controlId: uuid(),
+                    controlId: await uuid.uuid(),
                     doorId: doorId,
                     adminId: adminData.adminId
                 });
