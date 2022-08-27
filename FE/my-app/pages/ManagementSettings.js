@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import {
     Table,
@@ -114,12 +116,18 @@ const style = css`
     .a{
         width: 50%;
     }
+
+    .DateSelect{
+        display: flex;
+        flex-direction: column;
+    }
 `;
 
 function ManagementSettings(){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const [startDate, setStartDate] = useState(new Date());
     let modal = null;
     modal = <Modal
         initialFocusRef={initialRef}
@@ -183,7 +191,11 @@ function ManagementSettings(){
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦개방일시</FormLabel>
-              <Input/>
+                <ul className=  "DateSelect">
+                    <li>날짜 선택 🗓️</li>
+                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="Start Day"/></li>
+                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="End Day"/></li>
+                </ul>
             </FormControl>
           </ModalBody>
 

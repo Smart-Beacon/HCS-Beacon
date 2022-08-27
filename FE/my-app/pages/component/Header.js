@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import css from "styled-jsx/css";
+import Link from "next/link";
 
 const style = css`
   .container{
@@ -51,7 +52,7 @@ function Header() {
   return (
     <div>
       <div className="container">
-        <div className="MainLogo">Logo</div>
+        <div className="MainLogo"><Link href = "../main">Logo</Link></div>
         <div className="NavBar">
           <ul>
             <li>
@@ -59,7 +60,7 @@ function Header() {
             </li>
             <li>{time.format('YYYY-MM-DD(ddd)')}</li>
             <li>박병근님</li>
-            <button>로그아웃</button>
+            <button><Link href = "../login">로그아웃</Link></button>
           </ul>
         </div>
       </div>

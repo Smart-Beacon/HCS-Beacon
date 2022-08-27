@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -135,7 +137,7 @@ const style = css`
     }
 
     .daySelect .timeSelect p:first-child{
-        margin-right: 1%;
+        width: 12%;
     }
 
     .daySelect .timeSelect p:not(:first-child){
@@ -143,9 +145,15 @@ const style = css`
         margin-right: 1%;
     }
 
+    .daySelect .DatePicker{
+        width: 10%;
+    }
 `;
 
 function reservationCheck(){
+
+    const [startDate, setStartDate] = useState(new Date());
+
     return(
         <div>
             <Header/>
@@ -177,6 +185,7 @@ function reservationCheck(){
                         <div className = "daySelect">
                             <div className = "timeSelect">
                                 <p>▶ 조회날짜 선택 🗓️</p>
+                                <div className = "DatePicker"><DatePicker selected={startDate} onChange={(date) => setStartDate(date)} /></div>
                                 <p>▶ 조회 시간 선택</p>
                                 <Select placeholder='Start Time' width="10%">
                                     <option value='option1'>Option 1</option>

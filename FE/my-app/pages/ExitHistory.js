@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -154,9 +156,25 @@ const style = css`
         margin-right: 1%;
     }
 
+    .calenderSelect{
+        display: flex;
+    }
+
+    .calenderSelect p{
+        margin-left: 2.5%;
+    }
+
+    .DatePicker{
+        width: 10%;
+    }
+
 `;
 
 function ExitHistory(){
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+
     return(
         <div>
             <Header/>
@@ -186,10 +204,30 @@ function ExitHistory(){
                             <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
                         </div>
                         <div className = "daySelect">
-                            <ul>
-                                <li>▶ 월 선택 🗓️</li>
-                                <li>▶ 날짜 선택 🗓️</li>
-                            </ul>
+                            <div className = "calenderSelect">
+                                <p style = {{width: "10%"}}>▶ 날짜 선택 🗓️</p>
+                                <div className = "DatePicker">
+                                    <DatePicker
+                                                selected={startDate}
+                                                onChange={(date) => setStartDate(date)}
+                                                selectsStart
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                className="red-border"
+                                                />
+                                </div> 
+                                <div className = "DatePicker">
+                                    <DatePicker
+                                                selected={endDate}
+                                                onChange={(date) => setEndDate(date)}
+                                                selectsEnd
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                minDate={startDate}
+                                                className="red-border"
+                                                />    
+                                </div> 
+                            </div>
                             <div className = "timeSelect">
                                 <p>▶ 조회 시간 선택</p>
                                 <Select placeholder='Start Time' width="10%">
