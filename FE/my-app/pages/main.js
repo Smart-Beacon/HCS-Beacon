@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {useTable} from "react-table"
 import Header from "./component/Header";
 import css from "styled-jsx/css";
@@ -94,6 +94,11 @@ const style = css`
 
 
 function Main(){
+
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
     const COLUMNS = [
         {
             Header: "건물명",
@@ -202,17 +207,19 @@ function Main(){
 
     const [Data, setData] = useState([])
 
-    const URL = 'http://localhost:5000/door';
-    axios.defaults.withCredentials = true;
-    axios.get(URL)
-    .then(res => {
-        console.log(res);
-        if(res.status === 200){
-            setData(res.data);           
-        }else{
-            alert(res.data);
-        }
-    });
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
 
     const columns = useMemo(() => COLUMNS, [])
     const data = useMemo(() => Data, [])
