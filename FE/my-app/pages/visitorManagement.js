@@ -1,8 +1,6 @@
-import React, {useState} from "react";
+import React from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import {
     Table,
@@ -18,6 +16,7 @@ import {
   } from '@chakra-ui/react'
 import {
     Button,
+    Select,
     Input,
     FormControl,
     FormLabel,
@@ -79,7 +78,7 @@ const style = css`
 
     .MainHeader{
         display: flex;
-        justify-content: space-between;
+        align-items: center;
     }
 
     .MainHeaderTitle{
@@ -116,18 +115,12 @@ const style = css`
     .a{
         width: 50%;
     }
-
-    .DateSelect{
-        display: flex;
-        flex-direction: column;
-    }
 `;
 
-function ManagementSettings(){
+function visitorManagement(){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
-    const [startDate, setStartDate] = useState(new Date());
     let modal = null;
     modal = <Modal
         initialFocusRef={initialRef}
@@ -140,22 +133,30 @@ function ManagementSettings(){
         <ModalContent style = {{height: "80%"}}>
           <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
-            <FormControl style={{width: '85%', margin: "auto", marginBottom: "2%"}}>
-            <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "30%", marginTop: "1%", fontSize: "20px", fontWeight: "bold"}}>🟦담당관리자</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} ref={initialRef}/>
+            <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
+                    <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
+                    <div style={{display: "flex"}}>
+                        <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
+                        <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    </div>
+                    </FormControl>
+                    <FormControl mt={4} style={{width: '40%'}}>
+                    <div style={{display: "flex"}}>
+                        <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
+                        <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    </div>
+                    </FormControl>
                 </div>
-            </FormControl>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
+                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직장명</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물ID</FormLabel>
+                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
                 </div>
                 </FormControl>
@@ -163,39 +164,32 @@ function ManagementSettings(){
             <div style={{display: "flex", justifyContent: "center", marginBottom: "3%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦도어명</FormLabel>
+                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦도어ID</FormLabel>
+                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
                 </div>
                 </FormControl>
             </div>
-            <FormControl mt={4} style = {{width: '85%', margin: "auto", marginBottom: "3%"}}>
-              <div style={{display: "flex"}}>
-                <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입감시여부</FormLabel>
-                <RadioGroup defaultValue='2'>
-                    <Stack spacing={5} direction='row'>
-                        <Radio colorScheme='green' value='1'>
-                        Y
-                        </Radio>
-                        <Radio colorScheme='red' value='2'>
-                        N
-                        </Radio>
-                    </Stack>
-                    </RadioGroup>
-              </div>
+            <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
+              <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
+                <Select placeholder='' width="100%">
+                    <option value='option1'>Option 1</option>
+                    <option value='option2'>Option 2</option>
+                    <option value='option3'>Option 3</option>
+                </Select>
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
-              <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦개방일시</FormLabel>
-                <ul className=  "DateSelect">
-                    <li>날짜 선택 🗓️</li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="Start Day"/></li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="End Day"/></li>
-                </ul>
+              <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
+                <Select placeholder='' width="100%">
+                    <option value='option1'>Option 1</option>
+                    <option value='option2'>Option 2</option>
+                    <option value='option3'>Option 3</option>
+                </Select>
             </FormControl>
           </ModalBody>
 
@@ -216,9 +210,9 @@ function ManagementSettings(){
                     <div className = "SideBar">
                         <ul>
                             <li><Link href = "./main">출입문 현황</Link></li>
-                            <li className = "Select"><Link href = "#">출입문 관리설정</Link></li>
+                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
+                            <li className = "Select"><Link href = "#">출입자 관리</Link></li>
                             <li><Link href = "#">출입 관리자</Link></li>
                             <li><Link href = "#">경보 이력</Link></li>
                             <li><Link href = "#">문자발생 이력</Link></li>
@@ -226,53 +220,54 @@ function ManagementSettings(){
                     </div>
                     <div className = "Main">
                         <div className = "MainHeader">
-                            <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
-                            <Button onClick={onOpen} colorScheme='green'>➕</Button>
-                            {modal}
+                            <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입문 관리</h1>
+                            <Input placeholder= "Search Guest Name" style = {{width: "25%"}}/>
+                            <div className = "MainHeaderBtn" style = {{width: "70%"}}>
+                                <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                {modal}
+                            </div>
+                            
                         </div>
                     <div className = "Table">
                         <TableContainer>
                             <Table variant='simple'>
                                 <Thead>
                                 <Tr>
+                                    <Th>구분</Th>
+                                    <Th>성명</Th>
+                                    <Th>전화번호</Th>
+                                    <Th>직장명</Th>
+                                    <Th>직책</Th>
                                     <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
+                                    <Th>출입문명</Th>
+                                    <Th>방문일시</Th>
+                                    <Th isNumeric>방문허가</Th>
                                 </Tr>
                                 </Thead>
                                 <Tbody>
                                 <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
+                                    <Th>상시</Th>
+                                    <Th>박병근</Th>
+                                    <Th>010-3152-1297</Th>
+                                    <Th>명품시스템</Th>
+                                    <Th>FE개발자</Th>
+                                    <Th>본관</Th>
+                                    <Th>3층사무실</Th>
+                                    <Th>2022.08.22 06:00~08:00</Th>
+                                    <Th isNumeric>Yes</Th>
                                 </Tr>
                                 </Tbody>
                                 <Tfoot>
                                 <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
+                                    <Th>자주방문여부</Th>
+                                    <Th>최재훈</Th>
+                                    <Th>010-1234-1542</Th>
+                                    <Th>명품시스템</Th>
+                                    <Th>대장</Th>
+                                    <Th>본관</Th>
+                                    <Th>3층사무실</Th>
+                                    <Th>2022.08.20 09:00~10:00</Th>
+                                    <Th isNumeric>Np</Th>
                                 </Tr>
                                 </Tfoot>
                             </Table>
@@ -287,4 +282,4 @@ function ManagementSettings(){
     )
 }
 
-export default ManagementSettings;
+export default visitorManagement;

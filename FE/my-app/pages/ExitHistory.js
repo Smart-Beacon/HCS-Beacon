@@ -165,7 +165,7 @@ const style = css`
     }
 
     .DatePicker{
-        width: 10%;
+        width: 12%;
     }
 
 `;
@@ -185,7 +185,7 @@ function ExitHistory(){
                             <li><Link href = "./main">출입문 현황</Link></li>
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li className = "Select"><Link href = "#">출입문 입출이력</Link></li>
-                            <li><Link href = "#">출입자 관리</Link></li>
+                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "#">출입 관리자</Link></li>
                             <li><Link href = "#">경보 이력</Link></li>
                             <li><Link href = "#">문자발생 이력</Link></li>
@@ -208,13 +208,13 @@ function ExitHistory(){
                                 <p style = {{width: "10%"}}>▶ 날짜 선택 🗓️</p>
                                 <div className = "DatePicker">
                                     <DatePicker
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                selectsStart
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                className="red-border"
-                                                />
+                                        selected={startDate}
+                                        onChange={(date) => setStartDate(date)}
+                                        dateFormat="MM/yyyy"
+                                        showMonthYearPicker
+                                        showFullMonthYearPicker
+                                        showFourColumnMonthYearPicker
+                                        />
                                 </div> 
                                 <div className = "DatePicker">
                                     <DatePicker

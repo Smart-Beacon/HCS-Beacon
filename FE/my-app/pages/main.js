@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
+import {useTable} from "react-table"
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
+import axios from "axios";
 import {
     Table,
     Thead,
@@ -10,7 +12,6 @@ import {
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
   } from '@chakra-ui/react'
 
@@ -77,6 +78,7 @@ const style = css`
     }
 
     .Table{
+        width: 100%;
         font-weight: bold;
         font-size: 20px;
     }
@@ -84,12 +86,140 @@ const style = css`
     .TableHeader{
         font-size: 20px;
     }
+    
     .Select{
         color: blue;
     }
 `;
 
+
 function Main(){
+    const COLUMNS = [
+        {
+            Header: "건물명",
+            accessor: "staName"
+        },
+        {
+            Header: "출입문명",
+            accessor: "doorName"
+        },
+        {
+            Header: "ID(비콘)",
+            accessor: "doorId"
+        },
+        {
+            Header: "현재상태",
+            accessor: "isOpen"
+        },
+        {
+            Header: "개방시간",
+            accessor: "opentime"
+        },
+        {
+            Header: "폐쇄시간",
+            accessor: "closetime"
+        },
+        {
+            Header: "경보상태",
+            accessor: "warnning"
+        }
+    ]
+    
+    const serverData = [
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "통신실",
+                "doorId" : "A1010102",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "기계실",
+                "doorId" : "A1010103",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "통신실",
+                "doorId" : "A1010102",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "기계실",
+                "doorId" : "A1010103",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            }
+    ]
+
+    const columns = useMemo(() => COLUMNS, [])
+    const data = useMemo(() => serverData, [])
+
+    const tableInstance = useTable({columns, data})
+
+    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = tableInstance;
+
+    const URL = 'http://localhost:5000/door';
+    axios.defaults.withCredentials = true;
+    axios.get(URL)
+    .then(res => {
+        console.log(res);
+        if(res.status === 200){
+            setData(res.data);           
+        }else{
+            alert(res.data);
+        }
+    });
+
+
     return(
         <div>
             <Header/>
@@ -100,7 +230,7 @@ function Main(){
                             <li className = "Select"><a href = "#">출입문 현황</a></li>
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "#">출입자 관리</Link></li>
+                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "#">출입 관리자</Link></li>
                             <li><Link href = "#">경보 이력</Link></li>
                             <li><Link href = "#">문자발생 이력</Link></li>
@@ -115,49 +245,52 @@ function Main(){
                         <TableContainer>
                             <Table variant='simple'>
                                 <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
+                                {headerGroups.map((headerGroup) => (
+                                    <Tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map((column) => (
+                                        <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
+                                    ))}
+                                    </Tr>
+                                ))}
                                 </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
+                                <Tbody {...getTableBodyProps()} style = {{textAlign: "center", height: "300px"}}>
+                                {rows.map((row) => {
+                                prepareRow(row);
+                                return (
+                                    <Tr style = {{height: "50px"}} {...row.getRowProps()}>
+                                    {row.cells.map((cell) => {
+                                        return <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>;
+                                    })}
+                                    </Tr>
+                                );
+                                })}
+                            </Tbody>
                             </Table>
-                        </TableContainer>
+                            </TableContainer>
+                            {/* ---
+                        <table style = {{width: "100%"}}>
+                            <thead style = {{borderBottom: "solid 2px gray"}}>
+                                {headerGroups.map((headerGroup) => (
+                                    <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map((column) => (
+                                        <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                                    ))}
+                                    </tr>
+                                ))}
+                            </thead>​
+                            <tbody {...getTableBodyProps()} style = {{textAlign: "center"}}>
+                                {rows.map((row) => {
+                                prepareRow(row);
+                                return (
+                                    <tr style = {{height: "50px"}} {...row.getRowProps()}>
+                                    {row.cells.map((cell) => {
+                                        return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                                    })}
+                                    </tr>
+                                );
+                                })}
+                            </tbody>​
+                        </table> */}
                         </div>
                     </div>
                 </div>
