@@ -57,7 +57,33 @@ router.get('visitor', async (req,res,next) => {
     console.log(`adminId: ${id}, isSuper: ${isSuper}`);
     try{
         const check = await checkAdmin.checkAdmin(id, isSuper);
-        
+        if(check === 0){
+            const data = await getMainDatas.getSuperVisitorList();
+            res.json(data);
+        }else if(check === 1){
+            const data = await getMainDatas.getAdminVisitorList(id);
+            res.json(data);
+        }else{
+            res.status(400).send(err.message);
+        }
+    }catch(err){
+        res.status(403).send('Not Found Admin');
+    }
+});
+
+// 방문자 예약 승인여부 변경 API
+// POST : http://localhost:5000/user/visitor
+router.get('visitor', async (req,res,next) => {
+    const {id, isSuper} = req.signedCookies.accessToken;
+    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
+    try{
+        const check = await checkAdmin.checkAdmin(id, isSuper);
+        if(check !== 2){
+            const data = await getMainDatas.changeUserAllow();
+            res.json(data);
+        }else{
+            res.status(400).send(err.message);
+        }
     }catch(err){
         res.status(403).send('Not Found Admin');
     }

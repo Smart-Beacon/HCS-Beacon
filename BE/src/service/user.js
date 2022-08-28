@@ -6,20 +6,30 @@ const Statement = require('../db/models/statement');
 const uuid  = require('./createUUID');
 
 
-// GET : 출입자 관리 데이터
-// 모든 건물의 출입자 데이터를 확인하는 함수
-// 최고 관리자만 사용하는 함수
+// 최고관리자용 출입자 리스트 함수
+// 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getSuperEntrantList = async() => {
-    const allUserAllows = await UserAllow.findAll();
-    const entrantList = await getEntrantList(allUserAllows);
+    let userIds = await User.findAll(
+        {where:{ userFlag:0}}
+    );
+    const SuperUserAllows = await Promise.all(
+        userIds.map(async userId => {
+            const userAllow = await UserAllow.findAll({
+                where:{ userId:userId.userId }
+            });
+            return userAllow;
+        })
+    );
+
+    const UserAllows = SuperUserAllows.flatMap(data => data);
+    const entrantList = await getEntrantList(UserAllows);
 
     return entrantList;
 }
 
-// GET : 출입자 관리 데이터
-// 담당 건물의 출입자 데이터만 확인하는 함수
-// 중간 관리자만 사용하는 함수
+// 관리자용 출입자 리스트 함수
+// 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getAdminEntrantList = async(adminId) => {
     const doorIds = await AdminDoor.findAll({
@@ -42,10 +52,8 @@ const getAdminEntrantList = async(adminId) => {
     return entrantList;
 }
 
-// POST : 출입자 등록
-// 상시 출입자를 등록하는 함수
-// 최고 관리자와 중간관리자 둘다 사용하는 함수
-// 성명,
+// 출입자(상시) 등록 함수
+// 사용 API : 출입자(상시) 등록 API
 const createUserData = async(data) => {
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
     if(!exUser){
@@ -80,10 +88,22 @@ const createUserData = async(data) => {
     }
 }
 
-// 출입자 목록 변환 함수 getEntrantList
+// 최고 관리자용 방문자 예약 목록 리스트 함수
+const getSuperVisitorList = async() => {
+    const visitorsId = await User.findAll(
+        {where:{ userFlag:2 }}
+    );
+}
+
+// 중간 관리자용 방문자 예약 목록 리스트 함수
+const getAdminVisitorList = async() => {
+
+}
+
+// 출입자 리스트 함수
 // 매개변수 : 출입 허용 목록(UserAllow)
 // 리턴값 : 출입자 목록(사용자 정보, 건물명, 출입문 명)
-// 이 함수를 사용하는 함수
+// 사용함수
 //  getSuperEntrantList
 //  getAdminEntrantList
 const getEntrantList = async(allows) => {
@@ -131,5 +151,7 @@ const getEntrantList = async(allows) => {
 module.exports = {
     getSuperEntrantList,
     getAdminEntrantList,
-    createUserData
+    createUserData,
+    getSuperVisitorList,
+    getAdminVisitorList
 }
