@@ -200,12 +200,7 @@ function Main(){
             }
     ]
 
-    const columns = useMemo(() => COLUMNS, [])
-    const data = useMemo(() => serverData, [])
-
-    const tableInstance = useTable({columns, data})
-
-    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = tableInstance;
+    const [Data, setData] = useState([])
 
     const URL = 'http://localhost:5000/door';
     axios.defaults.withCredentials = true;
@@ -218,6 +213,13 @@ function Main(){
             alert(res.data);
         }
     });
+
+    const columns = useMemo(() => COLUMNS, [])
+    const data = useMemo(() => Data, [])
+
+    const tableInstance = useTable({columns, data})
+
+    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = tableInstance;
 
 
     return(
