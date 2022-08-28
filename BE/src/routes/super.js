@@ -1,12 +1,9 @@
 const express = require('express');
-
 const checkAdmin = require('../service/check.js');
 const getAdminDatas = require('../service/super.js');
 const getMainDatas = require('../service/door.js');
 
-
 const router = express.Router();
-
 
 router.get('/id/admins',async(req,res,next) => {
     const { id, isSuper } = req.signedCookies.accessToken;

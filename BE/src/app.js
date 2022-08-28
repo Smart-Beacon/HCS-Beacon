@@ -12,7 +12,7 @@ const { sequelize } = require('./db/models');
 const authRouter = require('./routes/auth');
 const doorRouter = require('./routes/door');
 const superAdminRouter = require('./routes/super');
-const warningRouter = require('./routes/warning');
+const alertRouter = require('./routes/alert');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -43,7 +43,7 @@ app.use(cors({
 app.use('/auth',authRouter);
 app.use('/door',doorRouter);
 app.use('/super',superAdminRouter);
-app.use('/warning',warningRouter);
+app.use('/alert',alertRouter);
 
 
 // 일부러 에러 발생시키기 TEST용
