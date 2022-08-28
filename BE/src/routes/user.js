@@ -5,7 +5,8 @@ const checkAdmin = require('../service/check');
 
 const router = express.Router();
 
-// 
+// 출입자 관리 리스트 API
+// GET : http://localhost:5000/user/enterant
 router.get('/entrant', async(req,res,next) => {
     const { id, isSuper } = req.signedCookies.accessToken;
     console.log(`adminId: ${id}, isSuper: ${isSuper}`);
@@ -25,6 +26,8 @@ router.get('/entrant', async(req,res,next) => {
     }
 });
 
+// 출입자(상시) 등록 API
+// POST : http://localhost:5000/user/enterant
 router.post('/entrant', async(req,res,next) =>{
     const { id, isSuper } = req.signedCookies.accessToken;
     console.log(`adminId: ${id}, isSuper: ${isSuper}`);
@@ -44,6 +47,19 @@ router.post('/entrant', async(req,res,next) =>{
         }
     }catch(err){
         res.status(400).send(err.message);
+    }
+});
+
+// 방문자 예약승인 리스트 API
+// GET : http://localhost:5000/user/visitor
+router.get('visitor', async (req,res,next) => {
+    const {id, isSuper} = req.signedCookies.accessToken;
+    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
+    try{
+        const check = await checkAdmin.checkAdmin(id, isSuper);
+        
+    }catch(err){
+        res.status(403).send('Not Found Admin');
     }
 });
 
