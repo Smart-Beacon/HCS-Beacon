@@ -13,6 +13,7 @@ const authRouter = require('./routes/auth');
 const doorRouter = require('./routes/door');
 const superAdminRouter = require('./routes/super');
 const alertRouter = require('./routes/alert');
+const smsRouter = require('./routes/sms');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -44,6 +45,7 @@ app.use('/auth',authRouter);
 app.use('/door',doorRouter);
 app.use('/super',superAdminRouter);
 app.use('/alert',alertRouter);
+app.use('/sms',smsRouter);
 
 
 // 일부러 에러 발생시키기 TEST용
