@@ -8,9 +8,9 @@ const router = express.Router();
 // 출입자 관리 리스트 API
 // GET : http://localhost:5000/user/enterant
 router.get('/entrant', async(req,res,next) => {
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
+        console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if (check === 0){
             const data = await getMainDatas.getSuperEntrantList();
@@ -29,12 +29,12 @@ router.get('/entrant', async(req,res,next) => {
 // 출입자(상시) 등록 API
 // POST : http://localhost:5000/user/enterant
 router.post('/entrant', async(req,res,next) =>{
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
+        console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if(check !== 2){
-            const userData = await getMainDatas.createUserData(req.body);
+            const userData = await getMainDatas.createRegularUserData(req.body);
             if(userData){
                 console.log(userData);
                 res.status(201).json(userData);
@@ -52,10 +52,10 @@ router.post('/entrant', async(req,res,next) =>{
 
 // 방문자 예약승인 리스트 API
 // GET : http://localhost:5000/user/visitor
-router.get('visitor', async (req,res,next) => {
-    const {id, isSuper} = req.signedCookies.accessToken;
-    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
+router.get('/visitor', async (req,res,next) => {
     try{
+        const {id, isSuper} = req.signedCookies.accessToken;
+        console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if(check === 0){
             const data = await getMainDatas.getSuperVisitorList();
@@ -73,14 +73,17 @@ router.get('visitor', async (req,res,next) => {
 
 // 방문자 예약 승인여부 변경 API
 // POST : http://localhost:5000/user/visitor
-router.get('visitor', async (req,res,next) => {
-    const {id, isSuper} = req.signedCookies.accessToken;
-    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
+router.post('/visitor', async (req,res,next) => {
     try{
+        const {id, isSuper} = req.signedCookies.accessToken;
+        console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if(check !== 2){
-            const data = await getMainDatas.changeUserAllow();
-            res.json(data);
+            const data = await getMainDatas.changeVisitorAllow(req.body);
+            if(data){
+                console.log(data);
+                res.status(201).json(data);
+            }
         }else{
             res.status(400).send(err.message);
         }

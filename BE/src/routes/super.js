@@ -9,9 +9,9 @@ const router = express.Router();
 
 
 router.get('/id/admins',async(req,res,next) => {
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(id, isSuper);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
+        console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
             const doorData = await getMainDatas.getAllDoorData();
@@ -30,9 +30,9 @@ router.get('/id/admins',async(req,res,next) => {
 });
 
 router.post('/id/admins',async(req,res,next) =>{
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(id, isSuper);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
+        console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
             const adminData = await getAdminDatas.createAdminData(req.body);

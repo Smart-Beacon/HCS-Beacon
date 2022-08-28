@@ -42,10 +42,6 @@ class user extends Sequelize.Model {
                         this.setDataValue('userLoginPw', bcrypt.hashSync(value, saltRounds));
                     }
                 },
-                userFlag: {
-                    type: Sequelize.TINYINT,
-                    allowNull: false,
-                },
                 reason: {
                     type: Sequelize.STRING,
                     allowNull: true,

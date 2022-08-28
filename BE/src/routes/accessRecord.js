@@ -7,9 +7,9 @@ const router = express.Router();
 
 
 router.get('/', async(req,res,next)=> {
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(`adminId: ${id}, isSuper: ${isSuper}`);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
+        console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
         if(check === 0){
             const data = await getMainDatas.getSuperAccessRecord();

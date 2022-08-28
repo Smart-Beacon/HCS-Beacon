@@ -108,7 +108,6 @@ const getAdminDoorDatas = async(adminId) =>{
                 latestDate: doorData.latestDate,
                 openTime: doorData.openTime,
                 closeTime: doorData.closeTime,
-                
             };
 
             return result;
@@ -118,8 +117,60 @@ const getAdminDoorDatas = async(adminId) =>{
     return doorDatas
 }
 
+const getAdminEmergency = async(adminId) => {
+    const staIds = await AdminStatement.findAll({
+        where: { adminId: adminId },
+        attributes: ['staId']
+    });
+
+    let doorDatas = await Promise.all(
+        staIds.map(async staId => {
+            const doorDatas = await Door.findAll({
+                where:{staId:staId.staId}
+            })
+            return doorDatas;
+        })
+    );
+    
+    doorDatas = await doorDatas.flatMap(data => data);
+
+    const setData = await Promise.all(
+        doorDatas.map(async doorData =>{
+
+            const statmentName = await Statement.findOne({
+                where:{staId:doorData.staId},
+                attributes: ['staName'],
+            });
+
+            const result = {
+                staName: statmentName.staName,
+                doorName: doorData.doorName,
+                doorId: doorData.doorId,
+                isOpen: doorData.isOpen,
+                isMonitoring: doorData.isMonitoring,
+                latestDate: doorData.latestDate,
+                openTime: doorData.openTime,
+                closeTime: doorData.closeTime,
+            };
+
+            return result;
+        })
+    );
+
+    return setData
+}
+
+const emergencyOpen = async(data) => {
+    const door = await Door.findOne({where: { doorId:data.doorId }});
+    door.isOpen = data.isOpen;
+    await door.save();
+    return door;
+}
+
 module.exports = {
     getAllDoorData,
     getAdminDoorDatas,
     getSuperDoorDatas,
+    getAdminEmergency,
+    emergencyOpen
 }

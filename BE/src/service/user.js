@@ -4,19 +4,21 @@ const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
 const uuid  = require('./createUUID');
+const { Op } = require('sequelize');
+const { all } = require('../routes/user');
 
 
 // 최고관리자용 출입자 리스트 함수
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getSuperEntrantList = async() => {
-    let userIds = await User.findAll(
-        {where:{ userFlag:0}}
-    );
     const SuperUserAllows = await Promise.all(
         userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({
-                where:{ userId:userId.userId }
+                where:{ 
+                    userId:userId.userId,
+                    userFlag:{[Op.ne]:2}
+                }
             });
             return userAllow;
         })
@@ -40,7 +42,10 @@ const getAdminEntrantList = async(adminId) => {
     const AdminUserAllows = await Promise.all(
         doorIds.map(async oneDoorId => {
             const userAllow = await UserAllow.findAll({
-                where:{ doorId:oneDoorId.doorId }
+                where:{ 
+                    doorId:oneDoorId.doorId,
+                    userFlag:{[Op.ne]:2}
+                }
             });
             return userAllow;
         })
@@ -54,7 +59,7 @@ const getAdminEntrantList = async(adminId) => {
 
 // 출입자(상시) 등록 함수
 // 사용 API : 출입자(상시) 등록 API
-const createUserData = async(data) => {
+const createRegularUserData = async(data) => {
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
     if(!exUser){
         const userData = await User.create({
@@ -65,7 +70,6 @@ const createUserData = async(data) => {
             phoneNum: data.phoneNum,
             userLoginId: data.userLoginId,
             userLoginPw: data.userLoginPw,
-            userFlag: 0,
             reason: '상시 출입',
             enterTime: null,
             exitTime: null,
@@ -78,6 +82,7 @@ const createUserData = async(data) => {
                     userId: userData.userId,
                     doorId: doorId,
                     isAllowed: 1,
+                    userFlag: 0,
                 });
             })
         );
@@ -89,15 +94,53 @@ const createUserData = async(data) => {
 }
 
 // 최고 관리자용 방문자 예약 목록 리스트 함수
+// 사용 API : 방문자 예약승인 리스트 API
 const getSuperVisitorList = async() => {
-    const visitorsId = await User.findAll(
-        {where:{ userFlag:2 }}
-    );
+    const SuperUserAllows = await UserAllow.findAll({
+        where:{ userFlag:2 }
+    });
+
+    const UserAllows = SuperUserAllows.flatMap(data => data);
+    const visitorList = await getEntrantList(UserAllows);
+
+    return visitorList;
 }
 
 // 중간 관리자용 방문자 예약 목록 리스트 함수
-const getAdminVisitorList = async() => {
+// 사용 API : 방문자 예약승인 리스트 API
+const getAdminVisitorList = async(adminId) => {
+    const doorIds = await AdminDoor.findAll({
+        where:{ adminId },
+        attributes:['doorId'],
+    });
 
+    const AdminUserAllows = await Promise.all(
+        doorIds.map(async oneDoorId => {
+            const userAllow = await UserAllow.findAll({
+                where:{ 
+                    doorId:oneDoorId.doorId,
+                    userFlag:2
+                }
+            });
+            return userAllow;
+        })
+    );
+
+    const UserAllows = await AdminUserAllows.flatMap(data => data);
+    const visitorList = await getEntrantList(UserAllows);
+
+    return visitorList;
+}
+
+// 방문자 예약 승인 변경
+// 사용 API : 방문자 예약 승인여부 변경 API
+const changeVisitorAllow = async(data) => {
+    const allow = await UserAllow.findOne({
+        where: {allowId: data.allowId}
+    });
+    allow.isAllowed = data.isAllowed;
+    await allow.save();
+    return allow;
 }
 
 // 출입자 리스트 함수
@@ -106,12 +149,14 @@ const getAdminVisitorList = async() => {
 // 사용함수
 //  getSuperEntrantList
 //  getAdminEntrantList
+//  getSuperVisitorList
+//  getAdminVisitorList
 const getEntrantList = async(allows) => {
     const entrantList = await Promise.all(
         allows.map(async allowData => {
             const userDatas = await User.findAll({
                 where: {userId:allowData.userId},
-                attributes: ['userId','userName','company','position','phoneNum','userFlag','enterTime','exitTime']
+                attributes: ['userId','userName','company','position','phoneNum','reason','enterTime','exitTime']
             });
 
             const setUserData = await Promise.all(
@@ -119,6 +164,7 @@ const getEntrantList = async(allows) => {
 
                     const doorData = await Door.findOne({
                         where: {doorId:allowData.doorId},
+                        attributes:['doorName', 'staId']
                     });
 
                     const stateData = await Statement.findOne({
@@ -126,7 +172,7 @@ const getEntrantList = async(allows) => {
                     })
 
                     const setData = {
-                        userFlag: userData.userFlag,
+                        userFlag: allowData.userFlag,
                         userId: userData.userId,
                         userName: userData.userName,
                         company: userData.company,
@@ -136,6 +182,7 @@ const getEntrantList = async(allows) => {
                         doorName: doorData.doorName,
                         enterTime: userData.enterTime,
                         exitTime: userData.exitTime,
+                        reason: userData.reason,
                         isAllowed: allowData.isAllowed,
                     }
                     return setData;
@@ -151,7 +198,8 @@ const getEntrantList = async(allows) => {
 module.exports = {
     getSuperEntrantList,
     getAdminEntrantList,
-    createUserData,
+    createRegularUserData,
     getSuperVisitorList,
-    getAdminVisitorList
+    getAdminVisitorList,
+    changeVisitorAllow
 }

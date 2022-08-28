@@ -13,7 +13,7 @@ class door extends Sequelize.Model {
                     type: Sequelize.STRING(45),
                     allowNull: false,
                 },
-                isOpen: { // 개방 유무
+                isOpen: { // 개방 유무(현재 상태)
                     type: Sequelize.BOOLEAN,
                     allowNull: false,
                     defaultValue: false,

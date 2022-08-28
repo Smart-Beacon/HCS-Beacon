@@ -9,6 +9,10 @@ class userAllow extends Sequelize.Model {
                     allowNull: false,
                     primaryKey: true,
                 },
+                userFlag: {
+                    type: Sequelize.TINYINT,
+                    allowNull: false,
+                },
                 isAllowed: {
                     type: Sequelize.BOOLEAN,
                     allowNull: false,
