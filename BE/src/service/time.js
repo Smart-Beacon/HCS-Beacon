@@ -13,7 +13,15 @@ const getTime = (date) => {
     return hours + ':' + minutes;
 }
 
+const getTimeSecond = (date) =>{
+    var hours = ('0' + date.getUTCHours()).slice(-2); 
+    var minutes = ('0' + date.getUTCMinutes()).slice(-2);
+    var seconds = ('0' + date.getUTCSeconds()).slice(-2);
+    return hours + ':' + minutes + ':' + seconds;
+}
+
 module.exports = {
     getDate,
-    getTime
+    getTime,
+    getTimeSecond
 }
