@@ -8,9 +8,8 @@ const router = express.Router();
 // 실시간 감시 현황 페이지 데이터 요청
 // 건물명, 출입문 명, 비콘ID, 현재상태, 개방시간, 폐쇄시간, 경보상태를 Json 데이터로 전송
 router.get('/', async(req,res,next) =>{
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(id, isSuper);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
             const data = await getMainDatas.getAllDoorData();
@@ -27,9 +26,8 @@ router.get('/', async(req,res,next) =>{
 // 출입문 관리 설정 페이지 데이터 요청
 // 건물명, 출입문 명, 비콘ID, 현재상태, 출입관리, 개방시간, 폐쇄시간를 Json 데이터로 전송
 router.get('/admin', async(req,res,next) => {
-    const { id, isSuper } = req.signedCookies.accessToken
-    console.log(id, isSuper);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check === 0){
             const data = await getMainDatas.getSuperDoorDatas();

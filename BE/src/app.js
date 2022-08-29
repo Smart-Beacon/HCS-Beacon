@@ -34,8 +34,9 @@ app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", 
     credentials: true,
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
 }));
 
 app.use('/auth',authRouter);

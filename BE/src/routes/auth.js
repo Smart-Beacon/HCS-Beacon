@@ -20,8 +20,8 @@ router.post('/login', async(req,res,next) =>{
                 };
                 res.cookie('accessToken',cookiedata,{
                     expires: new Date(Date.now() + 1000*60*60*24*7),
-                    httpOnly: true,
-                    secure:false,
+                    //httpOnly: true,
+                    secure:true,
                     signed:true,
                 });
                 console.log(res.getHeader('set-cookie'),1);
@@ -45,7 +45,7 @@ router.post('/login', async(req,res,next) =>{
                         httpOnly: true,
                         secure:false,
                         signed:true,
-                    });
+                    }); 
                     console.log(res.getHeader('set-cookie'),0);
                     return res.status(200).end();
                 }else{
