@@ -153,7 +153,6 @@ const style = css`
 function reservationCheck(){
 
     const [startDate, setStartDate] = useState(new Date());
-
     return(
         <div>
             <Header/>
@@ -199,54 +198,6 @@ function reservationCheck(){
                                     <option value='option3'>Option 3</option>
                                 </Select>
                             </div>
-                        </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
                         </div>
                     </div>
                 </div>

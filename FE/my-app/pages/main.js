@@ -1,19 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
-import {useTable} from "react-table"
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-  } from '@chakra-ui/react'
+
 
 const style = css`
     .container{
@@ -64,6 +54,7 @@ const style = css`
     }
 
     .MainHeaderTitle{
+        margin-top: 1.5%;
         font-size: 40px;
         font-weight: bold;
     }
@@ -77,12 +68,6 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        width: 100%;
-        font-weight: bold;
-        font-size: 20px;
-    }
-
     .TableHeader{
         font-size: 20px;
     }
@@ -90,6 +75,40 @@ const style = css`
     .Select{
         color: blue;
     }
+
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        width: 14.3%;
+    }
+
+    table tr td{
+        width: 14.3%;
+    }
+
+    .TableThead{
+        padding-right: 1.27%;
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
+
 `;
 
 
@@ -99,36 +118,8 @@ function Main(){
         getDoorInfo();
       }, [])
 
-    const COLUMNS = [
-        {
-            Header: "건물명",
-            accessor: "staName"
-        },
-        {
-            Header: "출입문명",
-            accessor: "doorName"
-        },
-        {
-            Header: "ID(비콘)",
-            accessor: "doorId"
-        },
-        {
-            Header: "현재상태",
-            accessor: "isOpen"
-        },
-        {
-            Header: "개방시간",
-            accessor: "opentime"
-        },
-        {
-            Header: "폐쇄시간",
-            accessor: "closetime"
-        },
-        {
-            Header: "경보상태",
-            accessor: "warnning"
-        }
-    ]
+
+    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"]
     
     const serverData = [
             {
@@ -202,6 +193,96 @@ function Main(){
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
                 "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "0"
             }
     ]
 
@@ -220,14 +301,6 @@ function Main(){
             }
      });
     }
-
-    const columns = useMemo(() => COLUMNS, [])
-    const data = useMemo(() => Data, [])
-
-    const tableInstance = useTable({columns, data})
-
-    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = tableInstance;
-
 
     return(
         <div>
@@ -250,56 +323,29 @@ function Main(){
                             <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
                             <h1 className = "siren">🚨</h1>
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                {headerGroups.map((headerGroup) => (
-                                    <Tr {...headerGroup.getHeaderGroupProps()}>
-                                        {headerGroup.headers.map((column) => (
-                                        <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
-                                    ))}
-                                    </Tr>
-                                ))}
-                                </Thead>
-                                <Tbody {...getTableBodyProps()} style = {{textAlign: "center", height: "300px"}}>
-                                {rows.map((row) => {
-                                prepareRow(row);
-                                return (
-                                    <Tr style = {{height: "50px"}} {...row.getRowProps()}>
-                                    {row.cells.map((cell) => {
-                                        return <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>;
+                    <div className = "TableThead">
+                        <table>
+                            <tr>{header.map((item)=>{
+                                return <th>{item}</th>
+                            })}</tr>
+                        </table>
+                    </div>
+                        <div className = "TableTbody">
+                            <table>
+                                    {serverData.map((item)=>{
+                                        return(
+                                            <tr>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td>{String(item.isOpen)}</td>
+                                                <td style = {{color: "blue"}}>{item.opentime}</td>
+                                                <td style = {{color: "red"}}>{item.closetime}</td>
+                                                <td>{String(item.warning)}</td>
+                                            </tr>
+                                        )
                                     })}
-                                    </Tr>
-                                );
-                                })}
-                            </Tbody>
-                            </Table>
-                            </TableContainer>
-                            {/* ---
-                        <table style = {{width: "100%"}}>
-                            <thead style = {{borderBottom: "solid 2px gray"}}>
-                                {headerGroups.map((headerGroup) => (
-                                    <tr {...headerGroup.getHeaderGroupProps()}>
-                                        {headerGroup.headers.map((column) => (
-                                        <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                                    ))}
-                                    </tr>
-                                ))}
-                            </thead>​
-                            <tbody {...getTableBodyProps()} style = {{textAlign: "center"}}>
-                                {rows.map((row) => {
-                                prepareRow(row);
-                                return (
-                                    <tr style = {{height: "50px"}} {...row.getRowProps()}>
-                                    {row.cells.map((cell) => {
-                                        return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                                    })}
-                                    </tr>
-                                );
-                                })}
-                            </tbody>​
-                        </table> */}
+                            </table>
                         </div>
                     </div>
                 </div>

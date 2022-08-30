@@ -4,18 +4,7 @@ import css from "styled-jsx/css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Center,
-  } from '@chakra-ui/react'
+
 import {
     Button,
     Input,
@@ -78,6 +67,8 @@ const style = css`
     }
 
     .MainHeader{
+        height: 15%;
+        margin-top: 1%;
         display: flex;
         justify-content: space-between;
     }
@@ -96,15 +87,6 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .TableHeader{
-        font-size: 20px;
-    }
-
     .Select{
         color: blue;
     }
@@ -121,9 +103,104 @@ const style = css`
         display: flex;
         flex-direction: column;
     }
+
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 12.5%;
+    }
+
+    table tr td{
+        width: 12.5%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
 `;
 
 function ManagementSettings(){
+
+    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
+
+    const serverData = [
+        {
+            "a": "본관",
+            "b": "전기실",
+            "c": "A010101010",
+            "d": "0",
+            "e": "0",
+            "f": "08/01",
+            "g": "06:00:00",
+            "h": "00:00:00",
+        },
+        {
+            "a": "본관",
+            "b": "통신실",
+            "c": "B010101010",
+            "d": "0",
+            "e": "0",
+            "f": "08/01",
+            "g": "06:00:00",
+            "h": "00:00:00",
+        },
+        {
+            "a": "본관",
+            "b": "사무실",
+            "c": "C010101010",
+            "d": "0",
+            "e": "0",
+            "f": "08/01",
+            "g": "06:00:00",
+            "h": "00:00:00",
+        },
+        {
+            "a": "본관",
+            "b": "실험실",
+            "c": "D010101010",
+            "d": "0",
+            "e": "0",
+            "f": "08/01",
+            "g": "06:00:00",
+            "h": "00:00:00",
+        }
+    ]
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
@@ -230,53 +307,30 @@ function ManagementSettings(){
                             <Button onClick={onOpen} colorScheme='green'>➕</Button>
                             {modal}
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
+                        <div className = "TableThead">
+                            <table>
+                                <tr>{header.map((item)=>{
+                                    return <th>{item}</th>
+                                })}</tr>
+                            </table>
+                        </div>
+                        <div className = "TableTbody">
+                            <table>
+                                    {serverData.map((item)=>{
+                                        return(
+                                            <tr>
+                                                <td>{item.a}</td>
+                                                <td>{item.b}</td>
+                                                <td>{item.c}</td>
+                                                <td style = {{color: "red"}}>{item.d}</td>
+                                                <td style = {{color: "red"}}>{item.e}</td>
+                                                <td>{item.f}</td>
+                                                <td style = {{color: "red"}}>{item.g}</td>
+                                                <td style = {{color: "blue"}}>{item.h}</td>
+                                            </tr>
+                                        )
+                                    })}
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -2,18 +2,7 @@ import React from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Center,
-  } from '@chakra-ui/react'
+import axios from "axios";
 import {
     Button,
     Select,
@@ -95,15 +84,6 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .TableHeader{
-        font-size: 20px;
-    }
-
     .Select{
         color: blue;
     }
@@ -118,6 +98,35 @@ const style = css`
 `;
 
 function visitorManagement(){
+    
+    const header = ["건물명", "출입문명", "ID(비콘)", "출입자", "날짜", "입실시간", "퇴실시간", "방문사유", "출입관리자"]
+
+    const serverData = [
+        {
+            "a": "본관",
+            "b": "전기실",
+            "c": "A010101010",
+            "d": "박병근",
+            "e": "08/30",
+            "f": "07:00:00",
+            "g": "08:00:00",
+            "h": "출근",
+            "i": "최재훈"
+        },
+        {
+            "a": "본관",
+            "b": "통신실",
+            "c": "A010101010",
+            "d": "최재훈",
+            "e": "08/31",
+            "f": "10:00:00",
+            "g": "21:00:00",
+            "h": "퇴근",
+            "i": "최재훈"
+        }
+
+    ]
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
@@ -227,51 +236,6 @@ function visitorManagement(){
                                 {modal}
                             </div>
                             
-                        </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>구분</Th>
-                                    <Th>성명</Th>
-                                    <Th>전화번호</Th>
-                                    <Th>직장명</Th>
-                                    <Th>직책</Th>
-                                    <Th>건물명</Th>
-                                    <Th>출입문명</Th>
-                                    <Th>방문일시</Th>
-                                    <Th isNumeric>방문허가</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Th>상시</Th>
-                                    <Th>박병근</Th>
-                                    <Th>010-3152-1297</Th>
-                                    <Th>명품시스템</Th>
-                                    <Th>FE개발자</Th>
-                                    <Th>본관</Th>
-                                    <Th>3층사무실</Th>
-                                    <Th>2022.08.22 06:00~08:00</Th>
-                                    <Th isNumeric>Yes</Th>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                    <Th>자주방문여부</Th>
-                                    <Th>최재훈</Th>
-                                    <Th>010-1234-1542</Th>
-                                    <Th>명품시스템</Th>
-                                    <Th>대장</Th>
-                                    <Th>본관</Th>
-                                    <Th>3층사무실</Th>
-                                    <Th>2022.08.20 09:00~10:00</Th>
-                                    <Th isNumeric>Np</Th>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
                         </div>
                     </div>
                 </div>

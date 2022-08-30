@@ -13,7 +13,19 @@ const style = css`
   }  
 
   .MainLogo{
+    margin-top: 1%;
+    display: flex;
+    width: 250px;
+    height: 100px;
+    background-color: #e0e0e0;
     font-size: 70px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+  }
+
+  .MainLogo p{
+    margin-bottom: 0px;
   }
 
   .NavBar{
@@ -52,7 +64,7 @@ function Header() {
   return (
     <div>
       <div className="container">
-        <div className="MainLogo"><Link href = "../main">Logo</Link></div>
+        <div className="MainLogo"><p><Link href = "../main">Logo</Link></p></div>
         <div className="NavBar">
           <ul>
             <li>

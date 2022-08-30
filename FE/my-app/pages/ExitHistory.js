@@ -6,18 +6,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import {
-    Select,
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
+    Select
   } from '@chakra-ui/react'
+
 
 const style = css`
     .container{
@@ -168,12 +161,89 @@ const style = css`
         width: 12%;
     }
 
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 11.1%;
+    }
+
+    table tr td{
+        width: 11.1%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
+
 `;
 
 function ExitHistory(){
 
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
+    const header = ["건물명", "출입문명", "ID(비콘)", "출입자", "날짜", "입실시간", "퇴실시간", "방문사유", "출입관리자"]
+
+    const serverData = [
+        {
+            "a": "본관",
+            "b": "전기실",
+            "c": "A010101010",
+            "d": "박병근",
+            "e": "08/30",
+            "f": "07:00:00",
+            "g": "08:00:00",
+            "h": "출근",
+            "i": "최재훈"
+        },
+        {
+            "a": "본관",
+            "b": "통신실",
+            "c": "A010101010",
+            "d": "최재훈",
+            "e": "08/31",
+            "f": "10:00:00",
+            "g": "21:00:00",
+            "h": "퇴근",
+            "i": "최재훈"
+        }
+
+    ]
 
     return(
         <div>
@@ -243,53 +313,31 @@ function ExitHistory(){
                                 </Select>
                             </div>
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
+                        <div className = "TableThead">
+                            <table>
+                                <tr>{header.map((item)=>{
+                                    return <th>{item}</th>
+                                })}</tr>
+                            </table>
+                        </div>
+                        <div className = "TableTbody">
+                            <table>
+                                    {serverData.map((item)=>{
+                                        return(
+                                            <tr>
+                                                <td>{item.a}</td>
+                                                <td>{item.b}</td>
+                                                <td>{item.c}</td>
+                                                <td>{item.d}</td>
+                                                <td>{item.e}</td>
+                                                <td style = {{color: "red"}}>{item.f}</td>
+                                                <td style = {{color: "blue"}}>{item.g}</td>
+                                                <td>{item.h}</td>
+                                                <td>{item.i}</td>
+                                            </tr>
+                                        )
+                                    })}
+                            </table>
                         </div>
                     </div>
                 </div>
