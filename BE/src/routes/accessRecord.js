@@ -18,9 +18,9 @@ router.get('/', async(req,res,next)=> {
             const data = await getMainDatas.getAdminAccessRecord(id);
             res.json(data);
         }else{
-            res.status(400).send(err.message);
+            res.status(403).send('Not Found Admin');
         }
-    }catch{
+    }catch(err){
         res.status(400).send(err.message);
     }
 });

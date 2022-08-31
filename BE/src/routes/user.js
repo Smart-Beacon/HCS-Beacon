@@ -64,10 +64,10 @@ router.get('/visitor', async (req,res,next) => {
             const data = await getMainDatas.getAdminVisitorList(id);
             res.json(data);
         }else{
-            res.status(400).send(err.message);
+            res.status(403).send('Not Found Admin');
         }
     }catch(err){
-        res.status(403).send('Not Found Admin');
+        res.status(400).send(err.message);
     }
 });
 
@@ -85,10 +85,10 @@ router.post('/visitor', async (req,res,next) => {
                 res.status(201).json(data);
             }
         }else{
-            res.status(400).send(err.message);
+            res.status(403).send('Not Found Admin');
         }
     }catch(err){
-        res.status(403).send('Not Found Admin');
+        res.status(400).send(err.message);
     }
 });
 

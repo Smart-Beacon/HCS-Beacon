@@ -63,7 +63,10 @@ router.get('/adminemergency', async(req,res,next) => {
         const { id, isSuper } = req.signedCookies.accessToken
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
-        if(check !== 2){
+        if(check === 0){
+            const data = await getMainDatas.getSuperDoorDatas();
+            res.json(data);
+        }else if(check === 1){
             const data = await getMainDatas.getAdminEmergency(id);
             res.json(data);
         }else{
