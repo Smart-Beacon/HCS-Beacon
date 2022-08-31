@@ -4,11 +4,9 @@ const checkAdmin = require('../service/check.js');
 const getAdminDatas = require('../service/super.js');
 const getMainDatas = require('../service/door.js');
 
-
 const router = express.Router();
 
-
-router.get('/id/admins',async(req,res,next) => {
+router.get('/admins',async(req,res,next) => {
     const { id, isSuper } = req.signedCookies.accessToken;
     console.log(id, isSuper);
     try{
@@ -29,7 +27,7 @@ router.get('/id/admins',async(req,res,next) => {
     }
 });
 
-router.post('/id/admins',async(req,res,next) =>{
+router.post('/admin/register',async(req,res,next) =>{
     const { id, isSuper } = req.signedCookies.accessToken;
     console.log(id, isSuper);
     try{
