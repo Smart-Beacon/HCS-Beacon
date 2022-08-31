@@ -11,6 +11,7 @@ router.get('/monitor', async(req,res,next) =>{
     const { id, isSuper } = req.signedCookies.accessToken;
     console.log(id, isSuper);
     try{
+        const { id, isSuper } = req.signedCookies.accessToken;
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
             const data = await getMainDatas.getAllDoorData();
