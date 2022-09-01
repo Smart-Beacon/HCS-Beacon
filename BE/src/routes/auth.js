@@ -20,8 +20,8 @@ router.post('/login', async(req,res,next) =>{
                 };
                 res.cookie('accessToken',cookiedata,{
                     expires: new Date(Date.now() + 1000*60*60*24*7),
-                    //httpOnly: true,
-                    secure:true,
+                    httpOnly: true,
+                    secure:false,
                     signed:true,
                 });
                 console.log(res.getHeader('set-cookie'),1);
