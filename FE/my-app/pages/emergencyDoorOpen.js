@@ -1,19 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
+import axios from "axios";
 import {
     Checkbox,
-    Select,
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
+    Select
   } from '@chakra-ui/react'
 
 const style = css`
@@ -142,9 +134,60 @@ const style = css`
         margin-right: 1%;
     }
 
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 11.1%;
+    }
+
+    table tr td{
+        width: 11.1%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
+
 `;
 
 function emergencyDoorOpen(){
+
+    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
+    
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
     return(
         <div>
             <Header/>
@@ -185,53 +228,30 @@ function emergencyDoorOpen(){
                                 <Checkbox style = {{marginLeft: "1%"}}></Checkbox>
                             </div>
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
+                        <div className = "TableThead">
+                            <table>
+                                <thead>
+                                    <tr>{header.map((item)=>{
+                                        return <th>{item}</th>
+                                    })}</tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className = "tableTbody">
+                            <table>
+                                <tbody>
+                                {Data.map((item)=>{
+                                            return(
+                                                <tr>
+                                                    <td>{item.a}</td>
+                                                    <td>{item.b}</td>
+                                                    <td>{item.c}</td>
+                                                    <td><Checkbox></Checkbox></td>
+                                                </tr>
+                                            )
+                                        })}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

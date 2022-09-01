@@ -144,44 +144,44 @@ function ManagementSettings(){
 
     const serverData = [
         {
-            "a": "본관",
-            "b": "전기실",
-            "c": "A010101010",
-            "d": "0",
-            "e": "0",
-            "f": "08/01",
-            "g": "06:00:00",
-            "h": "00:00:00",
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
         },
         {
-            "a": "본관",
-            "b": "통신실",
-            "c": "B010101010",
-            "d": "0",
-            "e": "0",
-            "f": "08/01",
-            "g": "06:00:00",
-            "h": "00:00:00",
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
         },
         {
-            "a": "본관",
-            "b": "사무실",
-            "c": "C010101010",
-            "d": "0",
-            "e": "0",
-            "f": "08/01",
-            "g": "06:00:00",
-            "h": "00:00:00",
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
         },
         {
-            "a": "본관",
-            "b": "실험실",
-            "c": "D010101010",
-            "d": "0",
-            "e": "0",
-            "f": "08/01",
-            "g": "06:00:00",
-            "h": "00:00:00",
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
         }
     ]
 
@@ -316,17 +316,17 @@ function ManagementSettings(){
                         </div>
                         <div className = "TableTbody">
                             <table>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
-                                                <td>{item.a}</td>
-                                                <td>{item.b}</td>
-                                                <td>{item.c}</td>
-                                                <td style = {{color: "red"}}>{item.d}</td>
-                                                <td style = {{color: "red"}}>{item.e}</td>
-                                                <td>{item.f}</td>
-                                                <td style = {{color: "red"}}>{item.g}</td>
-                                                <td style = {{color: "blue"}}>{item.h}</td>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td style = {{color: "red"}}>{item.isOpen}</td>
+                                                <td style = {{color: "red"}}>{item.isMonitoring}</td>
+                                                <td>{item.latestDate}</td>
+                                                <td style = {{color: "red"}}>{item.openTime}</td>
+                                                <td style = {{color: "blue"}}>{item.closeTime}</td>
                                             </tr>
                                         )
                                     })}

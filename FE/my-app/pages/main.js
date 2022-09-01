@@ -332,15 +332,15 @@ function Main(){
                     </div>
                         <div className = "TableTbody">
                             <table>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>
                                                 <td>{String(item.isOpen)}</td>
-                                                <td style = {{color: "blue"}}>{item.opentime}</td>
-                                                <td style = {{color: "red"}}>{item.closetime}</td>
+                                                <td style = {{color: "blue"}}>{item.openTime}</td>
+                                                <td style = {{color: "red"}}>{item.closeTime}</td>
                                                 <td>{String(item.warning)}</td>
                                             </tr>
                                         )

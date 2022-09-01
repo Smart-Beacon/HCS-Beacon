@@ -221,27 +221,27 @@ function ExitHistory(){
 
     const serverData = [
         {
-            "a": "본관",
-            "b": "전기실",
-            "c": "A010101010",
-            "d": "박병근",
-            "e": "08/30",
-            "f": "07:00:00",
-            "g": "08:00:00",
-            "h": "출근",
-            "i": "최재훈"
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "08/30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
         },
         {
-            "a": "본관",
-            "b": "통신실",
-            "c": "A010101010",
-            "d": "최재훈",
-            "e": "08/31",
-            "f": "10:00:00",
-            "g": "21:00:00",
-            "h": "퇴근",
-            "i": "최재훈"
-        }
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "08/30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
+        },
 
     ]
 
@@ -322,18 +322,18 @@ function ExitHistory(){
                         </div>
                         <div className = "TableTbody">
                             <table>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
-                                                <td>{item.a}</td>
-                                                <td>{item.b}</td>
-                                                <td>{item.c}</td>
-                                                <td>{item.d}</td>
-                                                <td>{item.e}</td>
-                                                <td style = {{color: "red"}}>{item.f}</td>
-                                                <td style = {{color: "blue"}}>{item.g}</td>
-                                                <td>{item.h}</td>
-                                                <td>{item.i}</td>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td>{item.userName}</td>
+                                                <td>{item.latestDate}</td>
+                                                <td style = {{color: "red"}}>{item.enterTime}</td>
+                                                <td style = {{color: "blue"}}>{item.exitTime}</td>
+                                                <td>{item.reason}</td>
+                                                <td>{item.iadminName}</td>
                                             </tr>
                                         )
                                     })}

@@ -5,18 +5,11 @@ import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
+import axios from "axios";
 import {
     Select,
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
+    Button
   } from '@chakra-ui/react'
 
 const style = css`
@@ -148,9 +141,84 @@ const style = css`
     .daySelect .DatePicker{
         width: 10%;
     }
+
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 11.1%;
+    }
+
+    table tr td{
+        width: 11.1%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
 `;
 
 function reservationCheck(){
+
+    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
+
+    const serverData = [
+        {
+            "a": "1",
+            "b": "박병근",
+            "c": "010-3152-1297",
+            "d": "08/31",
+            "e": "07:00",
+            "f": "19:00",
+            "g": "출근을 해야합니다",
+            "h": "Yes",
+        },
+        {
+            "a": "2",
+            "b": "최재훈",
+            "c": "010-1234-2342",
+            "d": "09/01",
+            "e": "08:00",
+            "f": "20:00",
+            "g": "퇴근을 해야합니다",
+            "h": "Yes",
+        }
+
+    ]
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
 
     const [startDate, setStartDate] = useState(new Date());
     return(
@@ -198,6 +266,41 @@ function reservationCheck(){
                                     <option value='option3'>Option 3</option>
                                 </Select>
                             </div>
+                        </div>
+                        <div className = "TableThead">
+                            <table>
+                                <thead>
+                                    <tr>{header.map((item)=>{
+                                        return <th>{item}</th>
+                                    })}</tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className = "tableTbody">
+                            <table>
+                                <tbody>
+                                {Data.map((item)=>{
+                                            return(
+                                                <tr>
+                                                    <td>{item.a}</td>
+                                                    <td>{item.b}</td>
+                                                    <td>{item.c}</td>
+                                                    <td>{item.d}</td>
+                                                    <td>{item.e}</td>
+                                                    <td>{item.f}</td>
+                                                    <td>{item.g}</td>
+                                                    <td>{item.h}</td>
+                                                    <td><Button colorScheme='teal' variant='solid' style = {{marginRight:"7%"}}>
+                                                        Y
+                                                        </Button>
+                                                        <Button colorScheme='orange' variant='solid'>
+                                                            N
+                                                        </Button></td>
+                                                </tr>
+                                            )
+                                        })}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
