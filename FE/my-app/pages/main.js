@@ -335,13 +335,13 @@ function Main(){
                                     {Data.map((item)=>{
                                         return(
                                             <tr>
-                                                <td>{item.staName}</td>
-                                                <td>{item.doorName}</td>
-                                                <td>{item.doorId}</td>
-                                                <td>{String(item.isOpen)}</td>
-                                                <td style = {{color: "blue"}}>{item.openTime}</td>
-                                                <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{String(item.warning)}</td>
+                                                <td>{item.doorData.staName}</td>
+                                                <td>{item.doorData.doorName}</td>
+                                                <td>{item.doorData.doorId}</td>
+                                                <td>{String(item.doorData.isOpen)}</td>
+                                                <td style = {{color: "blue"}}>{item.doorData.openTime}</td>
+                                                <td style = {{color: "red"}}>{item.doorData.closeTime}</td>
+                                                <td>{String(item.doorData.warning)}</td>
                                             </tr>
                                         )
                                     })}
