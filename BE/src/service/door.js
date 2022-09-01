@@ -135,9 +135,8 @@ const getAdminDoorDatas = async(adminId) =>{
                 isOpen: doorData.isOpen,
                 isMonitoring: doorData.isMonitoring,
                 latestDate: doorData.latestDate,
-                openTime: doorData.openTime,
-                closeTime: doorData.closeTime,
-                
+                openTime: getTimeSecond(doorData.openTime),
+                closeTime: getTimeSecond(doorData.closeTime),
             };
 
             return result;
@@ -151,7 +150,7 @@ const getAdminDoorDatas = async(adminId) =>{
 // 새로운 비콘 출입문을 등록하는 함수
 // 담당관리자ID, 건물명, 건물ID, 도어명, 도어ID, 출입감시여부, 개방일시(요일선택, 날짜 선택, 개방시간, 폐쇄시간)
 const createDoorData = async(doorData) =>{
-    
+
 
 }
 
