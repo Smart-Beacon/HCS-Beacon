@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import css from "styled-jsx/css";
 import Link from "next/link";
-import axios from "axios";
+import crypto from 'crypto-js';
 
 const style = css`
   .container{
@@ -51,24 +51,17 @@ const style = css`
 `;
 
 function Header() {
-
-    const [Data, setData] = useState("")
-
-    const URL = 'http://localhost:5000/door/monitor';
-    axios.defaults.withCredentials = true;
-    axios.get(URL)
-    .then(res => {
-        console.log(res);
-        if(res.status === 200){
-            setData(res.data);           
-        }else{
-            alert(res.data);
-        }
- });
+  const [Data, setData] = useState("")
 
   let timer = null;
   const [time, setTime] = useState(moment());
   useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
+    console.log(key);
+    const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
+    const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+    console.log(originalText);
+    setData(originalText);
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
@@ -87,7 +80,7 @@ function Header() {
             {time.format('HH:mm')}
             </li>
             <li>{time.format('YYYY-MM-DD(ddd)')}</li>
-            <li>{Data.name}</li>
+            <li>{Data}</li>
             <button><Link href = "../login">로그아웃</Link></button>
           </ul>
         </div>

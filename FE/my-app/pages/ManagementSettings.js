@@ -4,6 +4,7 @@ import css from "styled-jsx/css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
+import axios from "axios";
 
 import {
     Button,
@@ -193,6 +194,7 @@ function ManagementSettings(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
+        console.log('management start');
         const URL = 'http://localhost:5000/door/management';
         axios.defaults.withCredentials = true;
         axios.get(URL)
@@ -327,8 +329,8 @@ function ManagementSettings(){
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>
-                                                <td style = {{color: "red"}}>{item.isOpen}</td>
-                                                <td style = {{color: "red"}}>{item.isMonitoring}</td>
+                                                <td style = {{color: "red"}}>{Number(item.isOpen)}</td>
+                                                <td style = {{color: "red"}}>{Number(item.isMonitoring)}</td>
                                                 <td>{item.latestDate}</td>
                                                 <td style = {{color: "red"}}>{item.openTime}</td>
                                                 <td style = {{color: "blue"}}>{item.closeTime}</td>

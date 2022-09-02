@@ -335,20 +335,15 @@ function Main(){
                         <div className = "TableTbody">
                             <table>
                                     {Data.map((item)=>{
-                                        if(item.warnning === "True"){
-                                            warning_boolean = "1";
-                                        }else{
-                                            warning_boolean = "0";
-                                        }
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>
-                                                <td>{String(item.isOpen)}</td>
+                                                <td>{Number(item.isOpen)}</td>
                                                 <td style = {{color: "blue"}}>{item.openTime}</td>
                                                 <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{warning_boolean}</td>
+                                                <td>{Number(item.warning)}</td>
                                             </tr>
                                         )
                                     })}
