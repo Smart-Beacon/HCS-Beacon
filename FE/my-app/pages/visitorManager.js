@@ -136,30 +136,26 @@ function visitorManagement(){
       }, [])
 
     
-    const header = ["구분", "성명", "전화번호", "직장명", "직책", "건물명", "출입문명", "방문일시", "방문허가"]
+    const header = ["No.", "소속", "ID", "PW", "등록일자", "로그인 상태", "문자수신"]
 
     const serverData = [
         {
-            "a": "본관",
-            "b": "전기실",
-            "c": "A010101010",
-            "d": "박병근",
-            "e": "08/30",
-            "f": "07:00:00",
-            "g": "08:00:00",
-            "h": "출근",
-            "i": "최재훈"
+            "a": "1",
+            "b": "명품시스템",
+            "c": "asdfasdf",
+            "d": "1234",
+            "e": "2022.0202",
+            "f": "Y",
+            "g": "Y"
         },
         {
-            "a": "본관",
-            "b": "전기실",
-            "c": "A010101010",
-            "d": "박병근",
-            "e": "08/30",
-            "f": "07:00:00",
-            "g": "08:00:00",
-            "h": "출근",
-            "i": "최재훈"
+            "a": "1",
+            "b": "명품시스템",
+            "c": "asdfasdf",
+            "d": "1234",
+            "e": "2022.0202",
+            "f": "Y",
+            "g": "Y"
         }
 
     ]
@@ -171,7 +167,7 @@ function visitorManagement(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/user/enterant';
+        const URL = 'http://localhost:5000/super/admins';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -278,16 +274,15 @@ function visitorManagement(){
                             <li><Link href = "./main">출입문 현황</Link></li>
                             <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li className = "Select"><Link href = "#">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
+                            <li className = "Select"><Link href = "#">출입 관리자</Link></li>
                             <li><Link href = "#">경보 이력</Link></li>
                             <li><Link href = "#">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
                         <div className = "MainHeader">
-                            <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입문 관리</h1>
-                            <Input placeholder= "Search Guest Name" style = {{width: "25%"}}/>
+                            <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
                             <div className = "MainHeaderBtn" style = {{width: "70%"}}>
                                 <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
@@ -305,18 +300,16 @@ function visitorManagement(){
                         <div className = "tableTbody">
                             <table>
                                 <tbody>
-                                {Data.map((item)=>{
+                                {Data.map((item, index)=>{
                                             return(
                                                 <tr>
-                                                    <td>{item.userFlag}</td>
-                                                    <td>{item.userName}</td>
+                                                    <td>{index+1}</td>
+                                                    <td>{item.companyb}</td>
+                                                    <td>{item.adminLoginId}</td>
                                                     <td>{item.phoneNum}</td>
-                                                    <td>{item.staName}</td>
-                                                    <td>{item.doorName}</td>
-                                                    <td>{item.enterTime}</td>
-                                                    <td>{item.exitTime}</td>
-                                                    <td>{item.reason}</td>
-                                                    <td>{item.isAllowed}</td>
+                                                    <td>{item.createdAt}</td>
+                                                    <td>{item.isLogin}</td>
+                                                    <td>{item.sms}</td>
                                                 </tr>
                                             )
                                         })}
