@@ -6,6 +6,7 @@ const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
 
 const { getTimeSecond } = require('./time');
+const { uuid } = require('./createUUID');
 
 
 // 최고관리자 혹은 중간 관리자 이름 가져오는 함수
@@ -149,9 +150,39 @@ const getAdminDoorDatas = async(adminId) =>{
 // POST : 새로운 출입문 등록 설정 함수
 // 새로운 비콘 출입문을 등록하는 함수
 // 담당관리자ID, 건물명, 건물ID, 도어명, 도어ID, 출입감시여부, 개방일시(요일선택, 날짜 선택, 개방시간, 폐쇄시간)
-const createDoorData = async(doorData) =>{
+const createDoorData = async(data) =>{
 
+    const exAdmin = await Admin.findOne({where:{adminLoginId:data.adminLoginId}});
+    const exDoor = await Door.findOne({where:{doorId:data.doorId}});
+    if(exAdmin && !exDoor){
+        //exist Admin and Unregisted Door Id
+        await Door.create({
+            doorId: data.doorId,
+            doorName: data.doorName,
+            isMonitoring: data.isMonitoring,
+            openWeeks: data.openWeeks,
+            openDates: data.openDates,
+            openTime: data.openTime,
+            closeTime: data.closeTime,
+            staId: data.staId
+        });
+    
+        await AdminDoor.create({
+            controlId: uuid(),
+            doorId: data.doorId,
+            adminId: exAdmin.adminId,
+        });
+    
+        await AdminStatement.create({
+            controlId: uuid(),
+            staId: data.staId,
+            adminId: exAdmin.adminId,
+        });
 
+        return true;
+    }else{
+        return false;
+    }
 }
 
 module.exports = {
@@ -159,4 +190,5 @@ module.exports = {
     getAllDoorData,
     getAdminDoorDatas,
     getSuperDoorDatas,
+    createDoorData,
 }
