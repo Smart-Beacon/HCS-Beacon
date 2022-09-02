@@ -10,6 +10,7 @@ dotenv.config();
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
 const authRouter = require('./routes/auth');
+const doorRouter = require('./routes/door');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -33,11 +34,13 @@ app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", 
     credentials: true,
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
 }));
 
 app.use('/auth',authRouter);
+app.use('/door',doorRouter);
 
  
 // 일부러 에러 발생시키기 TEST용
