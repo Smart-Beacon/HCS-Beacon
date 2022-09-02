@@ -289,7 +289,7 @@ function Main(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/door/monitor';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
