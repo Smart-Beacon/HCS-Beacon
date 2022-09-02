@@ -1,19 +1,10 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Center,
-  } from '@chakra-ui/react'
+
 import {
     Button,
     Input,
@@ -76,6 +67,8 @@ const style = css`
     }
 
     .MainHeader{
+        height: 15%;
+        margin-top: 1%;
         display: flex;
         justify-content: space-between;
     }
@@ -94,15 +87,6 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .TableHeader{
-        font-size: 20px;
-    }
-
     .Select{
         color: blue;
     }
@@ -114,12 +98,118 @@ const style = css`
     .a{
         width: 50%;
     }
+
+    .DateSelect{
+        display: flex;
+        flex-direction: column;
+    }
+
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 12.5%;
+    }
+
+    table tr td{
+        width: 12.5%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
 `;
 
 function ManagementSettings(){
+
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+
+    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
+
+    const serverData = [
+        {
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
+        },
+        {
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
+        },
+        {
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
+        },
+        {
+            "staName": "본관",
+            "doorName": "통신실",
+            "doorId": "B010101010",
+            "isOpen": "0",
+            "isMonitoring": "0",
+            "latesDate": "08/01",
+            "openTime": "06:00:00",
+            "closeTime": "00:00:00",
+        }
+    ]
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door/management';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const [startDate, setStartDate] = useState(new Date());
     let modal = null;
     modal = <Modal
         initialFocusRef={initialRef}
@@ -183,7 +273,11 @@ function ManagementSettings(){
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦개방일시</FormLabel>
-              <Input/>
+                <ul className=  "DateSelect">
+                    <li>날짜 선택 🗓️</li>
+                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="Start Day"/></li>
+                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="End Day"/></li>
+                </ul>
             </FormControl>
           </ModalBody>
 
@@ -206,10 +300,10 @@ function ManagementSettings(){
                             <li><Link href = "./main">출입문 현황</Link></li>
                             <li className = "Select"><Link href = "#">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "#">출입자 관리</Link></li>
-                            <li><Link href = "#">출입 관리자</Link></li>
-                            <li><Link href = "#">경보 이력</Link></li>
-                            <li><Link href = "#">문자발생 이력</Link></li>
+                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
+                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
+                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -218,53 +312,30 @@ function ManagementSettings(){
                             <Button onClick={onOpen} colorScheme='green'>➕</Button>
                             {modal}
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
+                        <div className = "TableThead">
+                            <table>
+                                <tr>{header.map((item)=>{
+                                    return <th>{item}</th>
+                                })}</tr>
+                            </table>
+                        </div>
+                        <div className = "TableTbody">
+                            <table>
+                                    {Data.map((item)=>{
+                                        return(
+                                            <tr>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td style = {{color: "red"}}>{item.isOpen}</td>
+                                                <td style = {{color: "red"}}>{item.isMonitoring}</td>
+                                                <td>{item.latestDate}</td>
+                                                <td style = {{color: "red"}}>{item.openTime}</td>
+                                                <td style = {{color: "blue"}}>{item.closeTime}</td>
+                                            </tr>
+                                        )
+                                    })}
+                            </table>
                         </div>
                     </div>
                 </div>
