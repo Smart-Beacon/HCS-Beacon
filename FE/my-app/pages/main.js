@@ -316,8 +316,8 @@ function Main(){
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
-                            <li><Link href = "#">경보 이력</Link></li>
-                            <li><Link href = "#">문자발생 이력</Link></li>
+                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
+                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -334,7 +334,7 @@ function Main(){
                     </div>
                         <div className = "TableTbody">
                             <table>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         if(item.warnning === "True"){
                                             warning_boolean = "1";
                                         }else{
@@ -342,12 +342,12 @@ function Main(){
                                         }
                                         return(
                                             <tr>
-                                                <td>{item.doorData.staName}</td>
-                                                <td>{item.doorData.doorName}</td>
-                                                <td>{item.doorData.doorId}</td>
-                                                <td>{String(item.doorData.isOpen)}</td>
-                                                <td style = {{color: "blue"}}>{item.doorData.openTime}</td>
-                                                <td style = {{color: "red"}}>{item.doorData.closeTime}</td>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td>{String(item.isOpen)}</td>
+                                                <td style = {{color: "blue"}}>{item.openTime}</td>
+                                                <td style = {{color: "red"}}>{item.closeTime}</td>
                                                 <td>{warning_boolean}</td>
                                             </tr>
                                         )

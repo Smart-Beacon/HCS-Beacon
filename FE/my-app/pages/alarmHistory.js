@@ -3,10 +3,8 @@ import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import {
-    Checkbox,
-    Select
-  } from '@chakra-ui/react'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 const style = css`
     .container{
@@ -54,8 +52,7 @@ const style = css`
     .MainHeader{
         display: flex;
         justify-content: space-between;
-        border-top: solid 4px gray;
-        border-bottom: solid 4px gray;
+        border-bottom: solid 2px gray;
     }
 
     .MainHeaderTitle{
@@ -73,67 +70,17 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .TableHeader{
-        font-size: 20px;
-    }
     .Select{
         color: blue;
     }
 
-    .MenuBar{
-        height: 8%;
+    .ModalBody{
+        width: 500px;
     }
 
-    .MenuBarUl{
-        list-style: none;
-        height: 100%;
-        display: flex;
-        margin-left: 30px;
-        align-items: flex-end;
+    .a{
+        width: 50%;
     }
-    .MenuBarUl li{
-        width: 12%;
-        border-right: solid 2px #f5f5f5;
-        border-left: solid 2px #f5f5f5;
-        border-top: solid 2px #f5f5f5;
-        background-color: #bdbdbd;
-        padding: 8px 18px;
-        font-weight: bold;
-        border-top-right-radius: 30px;
-    }
-    .MenuBarUl li:hover{
-        background-color: #448aff;
-    }
-
-    .daySelect{
-        border-bottom: solid 4px gray;
-        display: flex;
-        flex-direction: row;
-        height: 10%;
-        font-weight: bold;
-    }
-
-    .daySelect .timeSelect{
-        margin-left: 40px;
-        align-items: center;
-        width: 100%;
-        display: flex;
-    }
-
-    .daySelect .timeSelect p:first-child{
-        margin-right: 1%;
-    }
-
-    .daySelect .timeSelect p:not(:first-child){
-        margin-left: 1%;
-        margin-right: 1%;
-    }
-
     table{
         width: 100%;
         font-weight: bold;
@@ -166,22 +113,45 @@ const style = css`
     .TableTbody table tr{
         height: 50px;
     }
-
 `;
 
-function emergencyDoorOpen(){
+function visitorManagement(){
+
+     useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+    
+    const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"]
+
+    const serverData = [
+        {
+            "a": "1",
+            "b": "명품시스템",
+            "c": "asdfasdf",
+            "d": "1234",
+            "e": "2022.0202",
+            "f": "Y"
+        },
+        {
+            "a": "1",
+            "b": "명품시스템",
+            "c": "asdfasdf",
+            "d": "1234",
+            "e": "2022.0202",
+            "f": "Y"
+        }
+
+    ]
 
     useEffect(() => {
         getDoorInfo();
       }, [])
 
-
-    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
-    
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/alert';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -201,37 +171,18 @@ function emergencyDoorOpen(){
                     <div className = "SideBar">
                         <ul>
                             <li><Link href = "./main">출입문 현황</Link></li>
-                            <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li className = "Select"><Link href = "#">출입문 입출이력</Link></li>
+                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
+                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
+                            <li className = "Select"><Link href = "#">경보 이력</Link></li>
                             <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
-                        <div className = "MenuBar">
-                            <ul className = "MenuBarUl">
-                                <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                                <li><Link href = "./reservationCheck">방문자 예약승인</Link></li>
-                                <li style= {{backgroundColor: "#448aff"}}>비상도어 개방</li>
-                            </ul>
-                        </div>
                         <div className = "MainHeader">
-                            <h1 className = "MainHeaderTitle">🟦 비상도어 개방</h1>
-                        </div>
-                        <div className = "daySelect">
-                            <div className = "timeSelect">
-                                <p>▶ 전체도어 개방</p>
-                                <Checkbox></Checkbox>
-                                <p>▶ 조회 시간 선택</p>
-                                <Select placeholder='Select Gate' width="20%">
-                                    <option value='option1'>Option 1</option>
-                                    <option value='option2'>Option 2</option>
-                                    <option value='option3'>Option 3</option>
-                                </Select>
-                                <Checkbox style = {{marginLeft: "1%"}}></Checkbox>
-                            </div>
+                            <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 경보 이력</h1>
+                            <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
                         </div>
                         <div className = "TableThead">
                             <table>
@@ -245,13 +196,16 @@ function emergencyDoorOpen(){
                         <div className = "tableTbody">
                             <table>
                                 <tbody>
-                                {Data.map((item)=>{
+                                {Data.map((item, index)=>{
                                             return(
                                                 <tr>
-                                                    <td>{item.a}</td>
-                                                    <td>{item.b}</td>
-                                                    <td>{item.c}</td>
-                                                    <td><Checkbox></Checkbox></td>
+                                                    <td>{index+1}</td>
+                                                    <td>{item.staName}</td>
+                                                    <td>{item.doorName}</td>
+                                                    <td>{item.doorId}</td>
+                                                    <td>{item.alertDate}</td>
+                                                    <td>{item.alertTime}</td>
+                                                    <td>{item.adminName}</td>
                                                 </tr>
                                             )
                                         })}
@@ -262,8 +216,9 @@ function emergencyDoorOpen(){
                 </div>
             </div>
             <style jsx>{style}</style>
+            
         </div>
     )
 }
 
-export default emergencyDoorOpen;
+export default visitorManagement;
