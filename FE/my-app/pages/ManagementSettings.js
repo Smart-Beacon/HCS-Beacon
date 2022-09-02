@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import DatePicker from "react-datepicker";
@@ -140,6 +140,11 @@ const style = css`
 
 function ManagementSettings(){
 
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
 
     const serverData = [
@@ -188,7 +193,7 @@ function ManagementSettings(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/door/management';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {

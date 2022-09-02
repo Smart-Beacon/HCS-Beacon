@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
@@ -95,11 +95,48 @@ const style = css`
     .a{
         width: 50%;
     }
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        font-size: 25px;
+        width: 11.1%;
+    }
+
+    table tr td{
+        width: 11.1%;
+    }
+
+    .TableThead{
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
 `;
 
 function visitorManagement(){
+
+     useEffect(() => {
+        getDoorInfo();
+      }, [])
+
     
-    const header = ["건물명", "출입문명", "ID(비콘)", "출입자", "날짜", "입실시간", "퇴실시간", "방문사유", "출입관리자"]
+    const header = ["구분", "성명", "전화번호", "직장명", "직책", "건물명", "출입문명", "방문일시", "방문허가"]
 
     const serverData = [
         {
@@ -115,17 +152,37 @@ function visitorManagement(){
         },
         {
             "a": "본관",
-            "b": "통신실",
+            "b": "전기실",
             "c": "A010101010",
-            "d": "최재훈",
-            "e": "08/31",
-            "f": "10:00:00",
-            "g": "21:00:00",
-            "h": "퇴근",
+            "d": "박병근",
+            "e": "08/30",
+            "f": "07:00:00",
+            "g": "08:00:00",
+            "h": "출근",
             "i": "최재훈"
         }
 
     ]
+
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/user/enterant';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
@@ -235,7 +292,36 @@ function visitorManagement(){
                                 <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>
-                            
+                        </div>
+                        <div className = "TableThead">
+                            <table>
+                                <thead>
+                                    <tr>{header.map((item)=>{
+                                        return <th>{item}</th>
+                                    })}</tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className = "tableTbody">
+                            <table>
+                                <tbody>
+                                {Data.map((item)=>{
+                                            return(
+                                                <tr>
+                                                    <td>{item.userFlag}</td>
+                                                    <td>{item.userName}</td>
+                                                    <td>{item.phoneNum}</td>
+                                                    <td>{item.staName}</td>
+                                                    <td>{item.doorName}</td>
+                                                    <td>{item.enterTime}</td>
+                                                    <td>{item.exitTime}</td>
+                                                    <td>{item.reason}</td>
+                                                    <td>{item.isAllowed}</td>
+                                                </tr>
+                                            )
+                                        })}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

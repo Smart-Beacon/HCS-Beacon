@@ -129,7 +129,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -138,7 +138,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -147,7 +147,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -156,7 +156,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -165,7 +165,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -174,7 +174,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -183,7 +183,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -192,7 +192,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -201,7 +201,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -210,7 +210,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -219,7 +219,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -228,7 +228,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -237,7 +237,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -246,7 +246,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -255,7 +255,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -264,7 +264,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "False"
             },
             {
                 "staName" : "본관",
@@ -273,7 +273,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             },
             {
                 "staName" : "본관",
@@ -282,7 +282,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "0"
+                "warnning" : "True"
             }
     ]
 
@@ -301,6 +301,8 @@ function Main(){
             }
      });
     }
+
+    let warning_boolean = "";
 
     return(
         <div>
@@ -332,7 +334,12 @@ function Main(){
                     </div>
                         <div className = "TableTbody">
                             <table>
-                                    {Data.map((item)=>{
+                                    {serverData.map((item)=>{
+                                        if(item.warnning === "True"){
+                                            warning_boolean = "1";
+                                        }else{
+                                            warning_boolean = "0";
+                                        }
                                         return(
                                             <tr>
                                                 <td>{item.doorData.staName}</td>
@@ -341,7 +348,7 @@ function Main(){
                                                 <td>{String(item.doorData.isOpen)}</td>
                                                 <td style = {{color: "blue"}}>{item.doorData.openTime}</td>
                                                 <td style = {{color: "red"}}>{item.doorData.closeTime}</td>
-                                                <td>{String(item.doorData.warning)}</td>
+                                                <td>{warning_boolean}</td>
                                             </tr>
                                         )
                                     })}

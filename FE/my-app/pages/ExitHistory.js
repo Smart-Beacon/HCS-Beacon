@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
@@ -198,13 +198,18 @@ const style = css`
 
 function ExitHistory(){
 
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/accessrecord';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -216,6 +221,7 @@ function ExitHistory(){
             }
      });
     }
+
 
     const header = ["건물명", "출입문명", "ID(비콘)", "출입자", "날짜", "입실시간", "퇴실시간", "방문사유", "출입관리자"]
 

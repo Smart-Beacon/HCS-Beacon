@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
@@ -170,6 +170,11 @@ const style = css`
 `;
 
 function emergencyDoorOpen(){
+
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
 
     const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
     

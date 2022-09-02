@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
@@ -178,14 +178,19 @@ const style = css`
 
 function reservationCheck(){
 
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+
     const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
 
     const serverData = [
         {
             "a": "1",
-            "b": "박병근",
-            "c": "010-3152-1297",
-            "d": "08/31",
+            "userName": "박병근",
+            "phoneNum": "010-3152-1297",
+            "latestDate": "08/31",
             "e": "07:00",
             "f": "19:00",
             "g": "출근을 해야합니다",
@@ -207,7 +212,7 @@ function reservationCheck(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/user/visitor';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -219,8 +224,8 @@ function reservationCheck(){
             }
      });
     }
-
     const [startDate, setStartDate] = useState(new Date());
+
     return(
         <div>
             <Header/>
