@@ -3,7 +3,8 @@ import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShield } from "@fortawesome/free-solid-svg-icons";
 
 const style = css`
     .container{
@@ -301,9 +302,6 @@ function Main(){
             }
      });
     }
-
-    let warning_boolean = "";
-
     return(
         <div>
             <Header/>
@@ -323,7 +321,7 @@ function Main(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
-                            <h1 className = "siren">🚨</h1>
+                            <h1 className = "siren"><FontAwesomeIcon icon={faShield}/></h1>
                         </div>
                     <div className = "TableThead">
                         <table>
