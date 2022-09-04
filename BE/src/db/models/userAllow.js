@@ -18,6 +18,11 @@ class userAllow extends Sequelize.Model {
                     allowNull: true,
                     defaultValue: null,
                 },
+                createdAt: {
+                    type: Sequelize.DATE,
+                    allowNull:false,
+                    defaultValue: Sequelize.NOW,
+                },
             },{
                 sequelize,
                 timestamps: false,

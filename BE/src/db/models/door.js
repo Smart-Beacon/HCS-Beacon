@@ -28,12 +28,22 @@ class door extends Sequelize.Model {
                     allowNull: false,
                     defaultValue: false,
                 },
+                openWeeks: {
+                    type: Sequelize.STRING(30),
+                    allowNull: true,
+                },
+                // "[0, 1, 2, 3, 4, 5, 6]" 최대 23자
+                openDates: {
+                    type: Sequelize.STRING,
+                    allowNull: true,
+                },
+                // "["2022-09-05", "2022-09-07"]" 최대 255자 저장 가능
                 openTime: {
-                    type: Sequelize.DATE,
+                    type: Sequelize.TIME,
                     allowNull: true,
                 },
                 closeTime: {
-                    type: Sequelize.DATE,
+                    type: Sequelize.TIME,
                     allowNull: true,
                 },
                 latestDate: {
