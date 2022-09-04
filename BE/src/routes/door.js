@@ -64,7 +64,7 @@ router.get('/adminemergency', async(req,res,next) => {
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check === 0){
-            const data = await getMainDatas.getSuperDoorDatas();
+            const data = await getMainDatas.getSuperEmergency();
             res.json(data);
         }else if(check === 1){
             const data = await getMainDatas.getAdminEmergency(id);
@@ -87,7 +87,7 @@ router.post('/adminemergency', async(req,res,next) => {
             const data = await getMainDatas.emergencyOpen(req.body);
             if(data){
                 console.log(data);
-                res.status(201).json(data);
+                res.status(200).end();
             }
         }else{
             res.status(400).send('Not Found Admin');

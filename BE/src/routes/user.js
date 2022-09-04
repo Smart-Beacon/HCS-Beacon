@@ -37,7 +37,7 @@ router.post('/entrant', async(req,res,next) =>{
             const userData = await getMainDatas.createRegularUserData(req.body);
             if(userData){
                 console.log(userData);
-                res.status(201).json(userData);
+                res.status(201).end();
             }else{
                 console.log('존재하는 사용자 ID입니다.');
                 res.status(406).json('존재하는 사용자 ID입니다.');
@@ -82,7 +82,7 @@ router.post('/visitor', async (req,res,next) => {
             const data = await getMainDatas.changeVisitorAllow(req.body);
             if(data){
                 console.log(data);
-                res.status(201).json(data);
+                res.status(200).end();
             }
         }else{
             res.status(403).send('Not Found Admin');
