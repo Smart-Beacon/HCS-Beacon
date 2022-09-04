@@ -15,7 +15,8 @@ class userAllow extends Sequelize.Model {
                 },
                 isAllowed: {
                     type: Sequelize.BOOLEAN,
-                    allowNull: false,
+                    allowNull: true,
+                    defaultValue: null,
                 },
             },{
                 sequelize,

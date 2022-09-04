@@ -34,6 +34,11 @@ class admin extends Sequelize.Model {
                         this.setDataValue('adminLoginPw', bcrypt.hashSync(value, saltRounds));
                     },
                 },
+                createdAt: {
+                    type: Sequelize.DATEONLY,
+                    allowNull:false,
+                    defaultValue: Sequelize.NOW,
+                },
                 phoneNum: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
