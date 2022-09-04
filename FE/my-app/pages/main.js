@@ -1,18 +1,9 @@
-import React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-  } from '@chakra-ui/react'
+import axios from "axios";
+
 
 const style = css`
     .container{
@@ -63,6 +54,7 @@ const style = css`
     }
 
     .MainHeaderTitle{
+        margin-top: 1.5%;
         font-size: 40px;
         font-weight: bold;
     }
@@ -76,20 +68,242 @@ const style = css`
         margin-left: 30px;
     }
 
-    .Table{
-        font-weight: bold;
-        font-size: 20px;
-    }
-
     .TableHeader{
         font-size: 20px;
     }
+    
     .Select{
         color: blue;
     }
+
+    table{
+        width: 100%;
+        font-weight: bold;
+        font-size: 20px;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    table tr th{
+        width: 14.3%;
+    }
+
+    table tr td{
+        width: 14.3%;
+    }
+
+    .TableThead{
+        padding-right: 1.27%;
+        border-bottom: solid 2px gray;
+        margin-bottom: 1%;
+    }
+
+    .TableTbody{
+        height: 65%;
+        overflow: auto;
+        text-align: center;
+    }
+
+    .TableTbody table tr{
+        height: 50px;
+    }
+
 `;
 
+
 function Main(){
+
+    useEffect(() => {
+        getDoorInfo();
+      }, [])
+
+
+    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"]
+    
+    const serverData = [
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "통신실",
+                "doorId" : "A1010102",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "기계실",
+                "doorId" : "A1010103",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "통신실",
+                "doorId" : "A1010102",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "기계실",
+                "doorId" : "A1010103",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "False"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            },
+            {
+                "staName" : "본관",
+                "doorName" : "전기실",
+                "doorId" : "A1010101",
+                "isOpen" : "0",
+                "opentime" : "08:00:00",
+                "closetime" : "08:00:00",
+                "warnning" : "True"
+            }
+    ]
+
+    const [Data, setData] = useState([])
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/door/monitor';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
+    let warning_boolean = "";
+
     return(
         <div>
             <Header/>
@@ -100,10 +314,10 @@ function Main(){
                             <li className = "Select"><a href = "#">출입문 현황</a></li>
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "#">출입자 관리</Link></li>
-                            <li><Link href = "#">출입 관리자</Link></li>
-                            <li><Link href = "#">경보 이력</Link></li>
-                            <li><Link href = "#">문자발생 이력</Link></li>
+                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
+                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
+                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -111,53 +325,29 @@ function Main(){
                             <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
                             <h1 className = "siren">🚨</h1>
                         </div>
-                    <div className = "Table">
-                        <TableContainer>
-                            <Table variant='simple'>
-                                <Thead>
-                                <Tr>
-                                    <Th>건물명</Th>
-                                    <Th>출입문 명</Th>
-                                    <Th>ID(비콘)</Th>
-                                    <Th>현재상태</Th>
-                                    <Th>개방시간</Th>
-                                    <Th>폐쇄시간</Th>
-                                    <Th isNumeric>경보상태</Th>
-                                </Tr>
-                                </Thead>
-                                <Tbody>
-                                <Tr>
-                                    <Td>본관</Td>
-                                    <Td>전기실</Td>
-                                    <Td>A01010101</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>통신실</Td>
-                                    <Td>A02020202</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tbody>
-                                <Tfoot>
-                                <Tr>
-                                <Td>본관</Td>
-                                    <Td>기계실</Td>
-                                    <Td>A03030303</Td>
-                                    <Td>0</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td>08:00:00</Td>
-                                    <Td isNumeric>0</Td>
-                                </Tr>
-                                </Tfoot>
-                            </Table>
-                        </TableContainer>
+                    <div className = "TableThead">
+                        <table>
+                            <tr>{header.map((item)=>{
+                                return <th>{item}</th>
+                            })}</tr>
+                        </table>
+                    </div>
+                        <div className = "TableTbody">
+                            <table>
+                                    {Data.map((item)=>{
+                                        return(
+                                            <tr>
+                                                <td>{item.staName}</td>
+                                                <td>{item.doorName}</td>
+                                                <td>{item.doorId}</td>
+                                                <td>{Number(item.isOpen)}</td>
+                                                <td style = {{color: "blue"}}>{item.openTime}</td>
+                                                <td style = {{color: "red"}}>{item.closeTime}</td>
+                                                <td>{Number(item.warning)}</td>
+                                            </tr>
+                                        )
+                                    })}
+                            </table>
                         </div>
                     </div>
                 </div>

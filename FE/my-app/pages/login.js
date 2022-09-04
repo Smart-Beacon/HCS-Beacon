@@ -17,7 +17,8 @@ function Login() {
                 console.log(res);
                 if(res.status === 200){
                     console.log("======================", "로그인 성공");
-                    window.location.assign('http://localhost:3000/main');
+                    localStorage.setItem('name',res.data);
+                    window.location.replace('http://localhost:3000/main');
                 }else{
                     alert(res.data);
                 }
