@@ -290,7 +290,7 @@ function Main(){
     const [Data, setData] = useState([])
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+        const URL = 'http://localhost:5000/door/monitor';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -338,10 +338,10 @@ function Main(){
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>
-                                                <td>{String(item.isOpen)}</td>
+                                                <td>{Number(item.isOpen)}</td>
                                                 <td style = {{color: "blue"}}>{item.openTime}</td>
                                                 <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{Number(item.warnning)}</td>
+                                                <td>{Number(item.warning)}</td>
                                             </tr>
                                         )
                                     })}
