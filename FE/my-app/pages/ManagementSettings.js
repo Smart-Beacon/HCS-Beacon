@@ -4,6 +4,10 @@ import css from "styled-jsx/css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { ko } from "date-fns/esm/locale";
 
 import {
     Button,
@@ -13,10 +17,8 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalFooter,
     ModalBody,
-    ModalCloseButton,
     useDisclosure,
     Stack,
     Radio, 
@@ -136,6 +138,8 @@ const style = css`
     .TableTbody table tr{
         height: 50px;
     }
+
+
 `;
 
 function ManagementSettings(){
@@ -220,7 +224,6 @@ function ManagementSettings(){
       >
         <ModalOverlay />
         <ModalContent style = {{height: "80%"}}>
-          <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <FormControl style={{width: '85%', margin: "auto", marginBottom: "2%"}}>
             <div style={{display: "flex"}}>
@@ -273,11 +276,22 @@ function ManagementSettings(){
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦개방일시</FormLabel>
-                <ul className=  "DateSelect">
-                    <li>날짜 선택 🗓️</li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="Start Day"/></li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="End Day"/></li>
-                </ul>
+                <div className = "OpenDayDiv" style = {{width: "100%" ,height: "150px", display: "flex", fontWeight: "bold"}}>
+                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center", marginLeft: "10%"}}>
+                        <li style = {{width: "25%"}}>날짜 선택 🗓️</li>
+                        <li style = {{border: "solid 3px gray"}}><DatePicker locale={ko}
+                                        dateFormat="yyyy-MM-dd"
+                                        selected={startDate} 
+                                        onChange={date => setStartDate(date)} 
+                                        placeholderText="Start Day"/></li>
+                        <li style = {{marginLeft: "1%", marginRight: "1%"}}><p>~</p></li>
+                        <li style = {{border: "solid 3px gray"}}><DatePicker locale={ko}
+                                        dateFormat="yyyy-MM-dd"
+                                        selected={startDate} 
+                                        onChange={date => setStartDate(date)} 
+                                        placeholderText="End Day"/></li>
+                    </ul>
+                </div>
             </FormControl>
           </ModalBody>
 
@@ -309,7 +323,7 @@ function ManagementSettings(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
-                            <Button onClick={onOpen} colorScheme='green'>➕</Button>
+                            <Button onClick={onOpen} colorScheme='green'><FontAwesomeIcon icon={faCirclePlus}/></Button>
                             {modal}
                         </div>
                         <div className = "TableThead">
