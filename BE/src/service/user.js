@@ -5,7 +5,6 @@ const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
 const uuid  = require('./createUUID');
 const { Op } = require('sequelize');
-const { all } = require('../routes/user');
 
 
 // 최고관리자용 출입자 리스트 함수

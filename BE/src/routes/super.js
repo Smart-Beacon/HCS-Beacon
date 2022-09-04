@@ -10,7 +10,8 @@ const router = express.Router();
 
 router.get('/id/admins',async(req,res,next) => {
     try{
-        const { id, isSuper } = req.signedCookies.accessToken;
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
@@ -31,7 +32,8 @@ router.get('/id/admins',async(req,res,next) => {
 
 router.post('/id/admins',async(req,res,next) =>{
     try{
-        const { id, isSuper } = req.signedCookies.accessToken;
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
