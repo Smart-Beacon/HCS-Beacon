@@ -1,7 +1,37 @@
+//const Admin = require('../../db/models/admin');
 const Door =  require('../db/models/door');
 const Statement = require('../db/models/statement');
 const AdminStatement = require('../db/models/adminStatement');
 const AdminDoor = require('../db/models/adminDoor');
+const Admin = require('../db/models/admin');
+const SuperAdmin = require('../db/models/superAdmin');
+
+const { getTimeSecond } = require('./time');
+const { uuid } = require('./createUUID');
+
+
+// 최고관리자 혹은 중간 관리자 이름 가져오는 함수
+// isSuper 값으로 최고 관리자 혹은 중간 관리자를 나눔
+const getAdminName = async(id,isSuper) =>{
+    try{
+        if(isSuper){
+            const adminName = await SuperAdmin.findOne({
+                where:{superId: id},
+                attributes: ['superName']
+            });
+            return adminName['superName'];
+        }else{
+            const adminName = await Admin.findOne({
+                where:{adminId: id},
+                attributes: ['adminName']
+            });
+            return adminName['adminName'];
+        }
+        
+    }catch(err){
+        return err.message
+    }
+}
 
 // GET : 실시간 관리 현황 데이터
 // 모든 건물에 있는 도어들의 데이터들을 확인하는 함수
@@ -24,8 +54,8 @@ const getAllDoorData = async() =>{
                         doorName: doorData.doorName,
                         doorId: doorData.doorId,
                         isOpen: doorData.isOpen,
-                        openTime: doorData.openTime,
-                        closeTime: doorData.closeTime,
+                        openTime: getTimeSecond(doorData.openTime),
+                        closeTime: getTimeSecond(doorData.closeTime),
                         warning: doorData.warning,
                     }
                     return setData
@@ -60,10 +90,11 @@ const getSuperDoorDatas = async() =>{
                         staName: stateData.staName,
                         doorName: doorData.doorName,
                         doorId: doorData.doorId,
+                        isOpen: doorData.isOpen,
                         isMonitoring: doorData.isMonitoring,
                         latestDate: doorData.latestDate,
-                        openTime: doorData.openTime,
-                        closeTime: doorData.closeTime,
+                        openTime: getTimeSecond(doorData.openTime),
+                        closeTime: getTimeSecond(doorData.closeTime),
                     }
                     return setData
                 }));
@@ -77,12 +108,9 @@ const getSuperDoorDatas = async() =>{
     return result;
 }
 
-// GET : 출입문 관리 설정 데이터
-// 모든 건물에 있는 도어들의 데이터들을 확인하는 함수
-// 중간 관리자만 사용하는 함수
-// 건물명, 출입문 명 ID, 현재상태, 출입관리, 날짜, 개방시간, 폐쇄시간
 const getAdminDoorDatas = async(adminId) =>{
-    const doorIds = await  AdminDoor.findAll({
+        
+    const doorIds = await AdminDoor.findAll({
         where:{ adminId },
         attributes:['doorId'],
     });
@@ -106,8 +134,8 @@ const getAdminDoorDatas = async(adminId) =>{
                 isOpen: doorData.isOpen,
                 isMonitoring: doorData.isMonitoring,
                 latestDate: doorData.latestDate,
-                openTime: doorData.openTime,
-                closeTime: doorData.closeTime,
+                openTime: getTimeSecond(doorData.openTime),
+                closeTime: getTimeSecond(doorData.closeTime),
             };
 
             return result;
@@ -115,6 +143,44 @@ const getAdminDoorDatas = async(adminId) =>{
     );
 
     return doorDatas
+}
+
+// POST : 새로운 출입문 등록 설정 함수
+// 새로운 비콘 출입문을 등록하는 함수
+// 담당관리자ID, 건물명, 건물ID, 도어명, 도어ID, 출입감시여부, 개방일시(요일선택, 날짜 선택, 개방시간, 폐쇄시간)
+const createDoorData = async(data) =>{
+
+    const exAdmin = await Admin.findOne({where:{adminLoginId:data.adminLoginId}});
+    const exDoor = await Door.findOne({where:{doorId:data.doorId}});
+    if(exAdmin && !exDoor){
+        //exist Admin and Unregisted Door Id
+        await Door.create({
+            doorId: data.doorId,
+            doorName: data.doorName,
+            isMonitoring: data.isMonitoring,
+            openWeeks: data.openWeeks,
+            openDates: data.openDates,
+            openTime: data.openTime,
+            closeTime: data.closeTime,
+            staId: data.staId
+        });
+    
+        await AdminDoor.create({
+            controlId: uuid(),
+            doorId: data.doorId,
+            adminId: exAdmin.adminId,
+        });
+    
+        await AdminStatement.create({
+            controlId: uuid(),
+            staId: data.staId,
+            adminId: exAdmin.adminId,
+        });
+
+        return true;
+    }else{
+        return false;
+    }
 }
 
 const getAdminEmergency = async(adminId) => {
@@ -168,9 +234,11 @@ const emergencyOpen = async(data) => {
 }
 
 module.exports = {
+    getAdminName,
     getAllDoorData,
     getAdminDoorDatas,
     getSuperDoorDatas,
+    createDoorData,
     getAdminEmergency,
     emergencyOpen
 }

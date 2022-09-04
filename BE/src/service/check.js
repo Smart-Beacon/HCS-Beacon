@@ -24,8 +24,6 @@ const checkAdmin = async(id,isSuper) =>{
     
 }
 
-
-
 module.exports = {
     checkAdmin
 }

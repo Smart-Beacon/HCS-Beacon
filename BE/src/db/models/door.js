@@ -39,6 +39,7 @@ class door extends Sequelize.Model {
                 latestDate: {
                     type: Sequelize.DATEONLY,
                     allowNull: true,
+                    defaultValue: null,
                 },
             },{
                 sequelize,
