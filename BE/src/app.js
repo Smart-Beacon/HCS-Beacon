@@ -5,19 +5,15 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-
 dotenv.config();
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
+const authRouter = require('./routes/auth');
+const doorRouter = require('./routes/door');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
-
-// const corsOptions = {
-//     origin: "http://localhost:3000",
-//     credential:'true',
-// };
  
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영
@@ -33,16 +29,18 @@ sequelize
 
 app.use(morgan('dev')); // 로그
 // 굳이 필요한가? public 폴더에 이미지, css, js 파일을 제공받을 때 설정
-//app.use(express.static(path.join(__dirname, 'public'))); // 요청시 기본 경로 설정 
+// app.use(express.static(path.join(__dirname, 'public'))); // 요청시 기본 경로 설정 
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", 
     credentials: true,
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
 }));
 
-
+app.use('/auth',authRouter);
+app.use('/door',doorRouter);
 
  
 // 일부러 에러 발생시키기 TEST용
