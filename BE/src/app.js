@@ -9,15 +9,15 @@ dotenv.config();
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
-const authRouter = require('./routes/auth');
-const doorRouter = require('./routes/door');
-const superAdminRouter = require('./routes/super');
-const alertRouter = require('./routes/alert');
+// const authRouter = require('./routes/auth');
+// const doorRouter = require('./routes/door');
+// const superAdminRouter = require('./routes/super');
+// const alertRouter = require('./routes/alert');
 const smsRouter = require('./routes/sms');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
- 
+
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영
     //? 테이블 삭제 후 다시 생성하기 때문에 데이터가 삭제됨
@@ -42,10 +42,10 @@ app.use(cors({
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
 }));
 
-app.use('/auth',authRouter);
-app.use('/door',doorRouter);
-app.use('/super',superAdminRouter);
-app.use('/alert',alertRouter);
+// app.use('/auth',authRouter);
+// app.use('/door',doorRouter);
+// app.use('/super',superAdminRouter);
+// app.use('/alert',alertRouter);
 app.use('/sms',smsRouter);
 
 
@@ -61,7 +61,7 @@ app.use((err, req, res, next) => {
    // 템플릿 변수 설정
    res.locals.message = err.message;
    res.locals.error = process.env.NODE_ENV !== 'production' ? err : {}; // 배포용이 아니라면 err설정 아니면 빈 객체
- 
+
    res.status(err.status || 500);
    res.render('error'); // 템플릿 엔진을 렌더링 하여 응답
 });

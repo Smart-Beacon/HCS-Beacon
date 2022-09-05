@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/record', async (req,res,next) =>{
     try{
         const id = req.signedCookies.accessToken;
-        const isSuper = req.cookies.isSuper;
+        const isSuper = Number(req.cookies.isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
             const smsRecord = await getSuperSmsRecord();
@@ -28,7 +28,7 @@ router.get('/record', async (req,res,next) =>{
 router.post('/send', async(req,res,next) => {
     try{
         const id = req.signedCookies.accessToken;
-        const isSuper = req.cookies.isSuper;
+        const isSuper = Number(req.cookies.isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
             const result = await sendSMS(req.body);
