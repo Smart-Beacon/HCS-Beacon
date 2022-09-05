@@ -37,6 +37,9 @@ router.post('/admin/register',async(req,res,next) =>{
                 console.log(adminData);
                 res.status(201).json(adminData);
             }else{
+
+
+                
                 console.log('존재하는 ID입니다.');
                 res.status(406).json('존재하는 ID입니다.');
             }

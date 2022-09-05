@@ -36,7 +36,7 @@ const getSuperSmsRecord = async() => {
         
                     const resultRow = await Promise.all(
                         smsDatas.map(async data => {
-                           
+                    
                             let smsDate =  getDate(data.sendTime);
                             let smsSendTime = getTime(data.sendTime);
         
@@ -52,7 +52,6 @@ const getSuperSmsRecord = async() => {
                             return result
                         })
                     );
-                    
                     return resultRow
                 })
             );
@@ -96,7 +95,7 @@ const getAdminSmsRecord = async(id) => {
 
             const resultRow = await Promise.all(
                 smsDatas.map(async data => {
-                   
+                
                     let smsDate =  getDate(data.sendTime);
                     let smsSendTime = getTime(data.sendTime);
 
@@ -121,10 +120,14 @@ const getAdminSmsRecord = async(id) => {
     const sortedResult = finalResult.sort((a, b) => new Date(b.alertDate)-new Date(a.alertDate));
 
     return sortedResult;
-
 };
+
+const sendSMS = async(data) =>{
+
+}
 
 module.exports = {
     getSuperSmsRecord,
-    getAdminSmsRecord
+    getAdminSmsRecord,
+    sendSMS
 }
