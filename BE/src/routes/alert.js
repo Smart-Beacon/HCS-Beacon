@@ -6,9 +6,10 @@ const checkAdmin = require('../service/check.js');
 const router = express.Router();
 
 router.get('/', async (req,res,next) =>{
-    const { id, isSuper } = req.signedCookies.accessToken;
-    console.log(id, isSuper);
-    try{
+    try{    
+        const id = req.signedCookies.accessToken;
+        const isSuper = req.cookies.isSuper;
+        console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
             const alertData = await getWarning.getAlertSuperDatas();

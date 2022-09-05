@@ -6,6 +6,50 @@ const Admin = require('../db/models/admin');
 
 const { getDate, getTime } = require('./time');
 
+const transData = async(doorIds,adminName) => {
+    const result = await Promise.all(
+        doorIds.map(async doorId => {
+            const doorData = await Door.findOne({
+                where: {doorId:doorId.doorId},
+                attributes: ['staId','doorName'],
+            });
+
+            const staName = await Statement.findOne({
+                where:{staId:doorData.staId},
+                attributes:['staName']
+            });
+
+            const alertDatas = await AlertRecord.findAll({
+                where:{doorId:doorId.doorId}
+            });
+
+            const resultRow = await Promise.all(
+                alertDatas.map(async data => {
+
+                    let alertDate =  getDate(data.startTime);
+                    let alertStartTime = getTime(data.startTime);
+                    let alertEndTime = getTime(data.endTime);
+
+                    const result = {
+                        staName:staName.staName,
+                        doorName:doorData.doorName,
+                        doorId: doorId.doorId,
+                        alertDate: alertDate,
+                        alertTime: alertStartTime + '/' + alertEndTime,
+                        adminName: adminName
+                    };
+                    return result
+                })
+            );
+            
+            return resultRow;
+        })
+    );
+
+    return result
+
+}
+
 const getAlertSuperDatas = async() => {
     const admin = await Admin.findAll({
         attributes: ['adminId', 'adminName'],
@@ -18,44 +62,7 @@ const getAlertSuperDatas = async() => {
                 attributes: ['doorId'],
             });
 
-            const doorDatas = await Promise.all(
-                doorIds.map(async doorId => {
-                    const doorData = await Door.findOne({
-                        where: {doorId:doorId.doorId},
-                        attributes: ['staId','doorName'],
-                    });
-        
-                    const staName = await Statement.findOne({
-                        where:{staId:doorData.staId},
-                        attributes:['staName']
-                    });
-        
-                    const alertDatas = await AlertRecord.findAll({
-                        where:{doorId:doorId.doorId}
-                    });
-        
-                    const resultRow = await Promise.all(
-                        alertDatas.map(async data => {
-                           
-                            let alertDate =  getDate(data.startTime);
-                            let alertStartTime = getTime(data.startTime);
-                            let alertEndTime = getTime(data.endTime);
-        
-                            const result = {
-                                staName:staName.staName,
-                                doorName:doorData.doorName,
-                                doorId: doorId.doorId,
-                                alertDate: alertDate,
-                                alertTime: alertStartTime + '/' + alertEndTime,
-                                adminName: adminData.adminName
-                            };
-                            return result
-                        })
-                    );
-                    
-                    return resultRow
-                })
-            );
+            const doorDatas = await transData(doorIds, adminData.adminName);
             return doorDatas.flatMap(data => data);
         })
     )
@@ -78,44 +85,7 @@ const getAlertDatas = async(id) => {
         attributes: ['doorId'],
     });
 
-    const doorDatas = await Promise.all(
-        doorIds.map(async doorId => {
-            const doorData = await Door.findOne({
-                where: {doorId:doorId.doorId},
-                attributes: ['staId','doorName'],
-            });
-
-            const staName = await Statement.findOne({
-                where:{staId:doorData.staId},
-                attributes:['staName']
-            });
-
-            const alertDatas = await AlertRecord.findAll({
-                where:{doorId:doorId.doorId}
-            });
-
-            const resultRow = await Promise.all(
-                alertDatas.map(async data => {
-                   
-                    let alertDate =  getDate(data.startTime);
-                    let alertStartTime = getTime(data.startTime);
-                    let alertEndTime = getTime(data.endTime);
-
-                    const result = {
-                        staName:staName.staName,
-                        doorName:doorData.doorName,
-                        doorId: doorId.doorId,
-                        alertDate: alertDate,
-                        alertTime: alertStartTime + '/' + alertEndTime,
-                        adminName: admin.adminName
-                    };
-                    return result
-                })
-            );
-            
-            return resultRow;
-        })
-    );
+    const doorDatas = await transData(doorIds, admin.adminName);
 
     const finalResult = doorDatas.flatMap(data => data);
     const sortedResult = finalResult.sort((a, b) => new Date(b.alertDate)-new Date(a.alertDate));
