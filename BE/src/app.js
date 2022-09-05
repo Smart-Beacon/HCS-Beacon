@@ -9,11 +9,12 @@ dotenv.config();
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require('./db/models');
-// const authRouter = require('./routes/auth');
-// const doorRouter = require('./routes/door');
-// const superAdminRouter = require('./routes/super');
-// const alertRouter = require('./routes/alert');
+const authRouter = require('./routes/auth');
+const doorRouter = require('./routes/door');
+const superRouter = require('./routes/super');
+const alertRouter = require('./routes/alert');
 const smsRouter = require('./routes/sms');
+const statementRouter = require('./routes/statement');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -42,11 +43,12 @@ app.use(cors({
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
 }));
 
-// app.use('/auth',authRouter);
-// app.use('/door',doorRouter);
-// app.use('/super',superAdminRouter);
-// app.use('/alert',alertRouter);
+app.use('/auth',authRouter);
+app.use('/door',doorRouter);
+app.use('/super',superRouter);
+app.use('/alert',alertRouter);
 app.use('/sms',smsRouter);
+app.use('/statement', statementRouter);
 
 
 // 일부러 에러 발생시키기 TEST용
