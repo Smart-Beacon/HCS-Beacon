@@ -1,3 +1,4 @@
+//const Admin = require('../../db/models/admin');
 const Door =  require('../db/models/door');
 const Statement = require('../db/models/statement');
 const AdminStatement = require('../db/models/adminStatement');
@@ -5,7 +6,6 @@ const AdminDoor = require('../db/models/adminDoor');
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
 
-const { getTimeSecond } = require('./time');
 const { uuid } = require('./createUUID');
 
 
@@ -53,8 +53,8 @@ const getAllDoorData = async() =>{
                         doorName: doorData.doorName,
                         doorId: doorData.doorId,
                         isOpen: doorData.isOpen,
-                        openTime: getTimeSecond(doorData.openTime),
-                        closeTime: getTimeSecond(doorData.closeTime),
+                        openTime: doorData.openTime,
+                        closeTime: doorData.closeTime,
                         warning: doorData.warning,
                     }
                     return setData
@@ -92,8 +92,8 @@ const getSuperDoorDatas = async() =>{
                         isOpen: doorData.isOpen,
                         isMonitoring: doorData.isMonitoring,
                         latestDate: doorData.latestDate,
-                        openTime: getTimeSecond(doorData.openTime),
-                        closeTime: getTimeSecond(doorData.closeTime),
+                        openTime: doorData.openTime,
+                        closeTime: doorData.closeTime,
                     }
                     return setData
                 }));
@@ -107,12 +107,9 @@ const getSuperDoorDatas = async() =>{
     return result;
 }
 
-// GET : 출입문 관리 설정 데이터
-// 모든 건물에 있는 도어들의 데이터들을 확인하는 함수
-// 중간 관리자만 사용하는 함수
-// 건물명, 출입문 명 ID, 현재상태, 출입관리, 날짜, 개방시간, 폐쇄시간
 const getAdminDoorDatas = async(adminId) =>{
-    const doorIds = await  AdminDoor.findAll({
+        
+    const doorIds = await AdminDoor.findAll({
         where:{ adminId },
         attributes:['doorId'],
     });
@@ -136,8 +133,8 @@ const getAdminDoorDatas = async(adminId) =>{
                 isOpen: doorData.isOpen,
                 isMonitoring: doorData.isMonitoring,
                 latestDate: doorData.latestDate,
-                openTime: getTimeSecond(doorData.openTime),
-                closeTime: getTimeSecond(doorData.closeTime),
+                openTime: doorData.openTime,
+                closeTime: doorData.closeTime,
             };
 
             return result;
@@ -185,10 +182,87 @@ const createDoorData = async(data) =>{
     }
 }
 
+const getSuperEmergency = async() => {
+    const doorDatas = await Door.findAll({
+        attributes: ['doorId', 'staId', 'doorName', 'isOpen']
+    });
+
+    const setData = await Promise.all(
+        doorDatas.map(async doorData => {
+
+            const statementName = await Statement.findOne({
+                where:{staId:doorData.staId},
+                attributes:['staName'],
+            });
+
+            const result = {
+                staName: statementName.staName,
+                doorName: doorData.doorName,
+                doorId: doorData.doorId,
+                isOpen: doorData.isOpen,
+            };
+
+            return result;
+        })
+    );
+
+    return setData;
+}
+
+const getAdminEmergency = async(adminId) => {
+    const staIds = await AdminStatement.findAll({
+        where: { adminId: adminId },
+        attributes: ['staId']
+    });
+
+    let doorDatas = await Promise.all(
+        staIds.map(async staId => {
+            const doorDatas = await Door.findAll({
+                where:{staId:staId.staId},
+                attributes: ['doorId', 'doorName', 'isOpen']
+            })
+            return doorDatas;
+        })
+    );
+    
+    doorDatas = await doorDatas.flatMap(data => data);
+
+    const setData = await Promise.all(
+        doorDatas.map(async doorData =>{
+
+            const statmentName = await Statement.findOne({
+                where:{staId:doorData.staId},
+                attributes: ['staName'],
+            });
+
+            const result = {
+                staName: statmentName.staName,
+                doorName: doorData.doorName,
+                doorId: doorData.doorId,
+                isOpen: doorData.isOpen,
+            };
+
+            return result;
+        })
+    );
+
+    return setData
+}
+
+const emergencyOpen = async(data) => {
+    const door = await Door.findOne({where: { doorId:data.doorId }});
+    door.isOpen = data.isOpen;
+    await door.save();
+    return door;
+}
+
 module.exports = {
     getAdminName,
     getAllDoorData,
     getAdminDoorDatas,
     getSuperDoorDatas,
     createDoorData,
+    getSuperEmergency,
+    getAdminEmergency,
+    emergencyOpen
 }

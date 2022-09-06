@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
 const CryptoJS = require('crypto-js');
@@ -78,5 +79,6 @@ router.post('/logout', (req,res)=>{
         res.status(500).send(err.message);
     }
 });
+
 
 module.exports = router;
