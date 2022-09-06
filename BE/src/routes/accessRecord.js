@@ -5,7 +5,8 @@ const checkAdmin = require('../service/check');
 
 const router = express.Router();
 
-
+// 출입문 입출이력(리스트업)
+// GET : http://localhost:5000/accessRecord
 router.get('/', async(req,res,next)=> {
     try{
         const id = req.signedCookies.accessToken;

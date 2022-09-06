@@ -14,6 +14,10 @@ class user extends Sequelize.Model {
                     allowNull: false,
                     primaryKey: true,
                 },
+                userName: {
+                    type: Sequelize.STRING(45),
+                    allowNull: false,
+                },
                 vendorId: {
                     type: Sequelize.STRING,
                     allowNull: true,
@@ -21,10 +25,6 @@ class user extends Sequelize.Model {
                 company: {
                     type: Sequelize.STRING(45),
                     allowNull: true,
-                },
-                userName: {
-                    type: Sequelize.STRING(45),
-                    allowNull: false,
                 },
                 position: {
                     type: Sequelize.STRING(45),

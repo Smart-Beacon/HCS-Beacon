@@ -17,8 +17,8 @@ const getSuperAccessRecord = async() => {
 }
 
 // GET : 출입문 입출이력
-// 모든 출입문의 출입 기록을 확인하는 함수
-// 최고 관리자만 사용하는 함수
+// 특정 건물 출입문의 출입 기록을 확인하는 함수
+// 중간 관리자만 사용하는 함수
 // 건물명, 출입문 명, 도어ID, 출입자 성명, 날짜, 입실시간, 퇴실시간, 출입사유, 출입관리자
 const getAdminAccessRecord = async(adminId) => {
     const doorIds = await AdminDoor.findAll({
@@ -75,7 +75,9 @@ const getAccessRecord = async (record) => {
                 doorName: doorData.doorName,
                 doorId: accessRecord.doorId,
                 userName: userData.userName,
+                enterDate: accessRecord.enterDate,
                 enterTime: accessRecord.enterTime,
+                exitDate: accessRecord.exitDate,
                 exitTime: accessRecord.exitTime,
                 reason: userData.reason,
                 adminName: adminName.adminName

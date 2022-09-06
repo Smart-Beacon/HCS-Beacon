@@ -11,6 +11,8 @@ const { Op } = require('sequelize');
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getSuperEntrantList = async() => {
+    const userIds = await User.findAll();
+
     const SuperUserAllows = await Promise.all(
         userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({

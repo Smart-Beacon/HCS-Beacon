@@ -101,8 +101,9 @@ router.post('/adminemergency', async(req,res,next) => {
         if(check !== 2){
             const data = await getMainDatas.emergencyOpen(req.body);
             if(data){
-                console.log(data);
-                res.status(201).json(data);
+                res.status(200).end();
+                // console.log(data);
+                // res.status(200).json(data);
             }
         }else{
             res.status(400).send('Not Found Admin');
