@@ -52,8 +52,6 @@ const style = css`
 
 function Header() {
   const [Data, setData] = useState("")
-
-  let timer = null;
   const [time, setTime] = useState(moment());
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
@@ -62,6 +60,7 @@ function Header() {
     const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
     console.log(originalText);
     setData(originalText);
+    let timer = null;
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
