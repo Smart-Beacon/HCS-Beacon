@@ -14,13 +14,17 @@ class user extends Sequelize.Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                company: {
-                    type: Sequelize.STRING(45),
-                    allowNull: true,
-                },
                 userName: {
                     type: Sequelize.STRING(45),
                     allowNull: false,
+                },
+                vendorId: {
+                    type: Sequelize.STRING,
+                    allowNull: true,
+                },
+                company: {
+                    type: Sequelize.STRING(45),
+                    allowNull: true,
                 },
                 position: {
                     type: Sequelize.STRING(45),
@@ -41,10 +45,6 @@ class user extends Sequelize.Model {
                     set(value) {
                         this.setDataValue('userLoginPw', bcrypt.hashSync(value, saltRounds));
                     }
-                },
-                userFlag: {
-                    type: Sequelize.TINYINT,
-                    allowNull: false,
                 },
                 reason: {
                     type: Sequelize.STRING,
