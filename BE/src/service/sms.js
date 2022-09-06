@@ -60,7 +60,7 @@ const getSuperSmsRecord = async() => {
                 attributes: ['doorId'],
             });
 
-            const doorDatas = transData(doorIds,adminData.adminName);
+            const doorDatas = await transData(doorIds,adminData.adminName);
             return doorDatas.flatMap(data => data);
         })
     );
@@ -82,7 +82,7 @@ const getAdminSmsRecord = async(id) => {
         attributes: ['doorId'],
     });
 
-    const doorDatas = transData(doorIds,admin.adminName);
+    const doorDatas = await transData(doorIds,admin.adminName);
 
     const finalResult = doorDatas.flatMap(data => data);
     const sortedResult = finalResult.sort((a, b) => new Date(b.alertDate)-new Date(a.alertDate));

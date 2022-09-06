@@ -35,6 +35,7 @@ const getSuperEntrantList = async() => {
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getAdminEntrantList = async(adminId) => {
+    console.log(adminId);
     const doorIds = await AdminDoor.findAll({
         where:{ adminId },
         attributes:['doorId'],
@@ -53,6 +54,7 @@ const getAdminEntrantList = async(adminId) => {
     );
 
     const UserAllows = await AdminUserAllows.flatMap(data => data);
+    console.log(UserAllows);
     const entrantList = await getEntrantList(UserAllows);
 
     return entrantList;
@@ -191,7 +193,7 @@ const getEntrantList = async(allows) => {
 
             return setUserData;
         })
-    )
+    );
     const result = await entrantList.flatMap(data => data);
     return result;
 }
