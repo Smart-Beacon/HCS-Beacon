@@ -1,7 +1,8 @@
 const Admin = require('../db/models/admin');
 const AdminDoor = require('../db/models/adminDoor');
 const AdminStatment = require('../db/models/adminStatement');
-const uuid  = require('./createUUID');
+
+const uuid = require('./createUUID');
 
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();

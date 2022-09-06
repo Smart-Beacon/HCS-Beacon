@@ -11,17 +11,15 @@ dotenv.config();
 const { sequelize } = require('./db/models');
 const authRouter = require('./routes/auth');
 const doorRouter = require('./routes/door');
-const userRouter = require('./routes/user');
 const superRouter = require('./routes/super');
+const alertRouter = require('./routes/alert');
+const smsRouter = require('./routes/sms');
+const statementRouter = require('./routes/statement');
+const userRouter = require('./routes/user');
 const accessRecordRouter = require('./routes/accessRecord');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
-
-// const corsOptions = {
-//     origin: "http://localhost:3000",
-//     credential:'true',
-// };
 
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영
@@ -49,8 +47,11 @@ app.use(cors({
 
 app.use('/auth',authRouter);
 app.use('/door',doorRouter);
-app.use('/user',userRouter);
 app.use('/super',superRouter);
+app.use('/alert',alertRouter);
+app.use('/sms',smsRouter);
+app.use('/statement', statementRouter);
+app.use('/user',userRouter);
 app.use('/accessrecord',accessRecordRouter);
 
 // 일부러 에러 발생시키기 TEST용
