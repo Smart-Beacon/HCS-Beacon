@@ -70,4 +70,47 @@ router.post('/register',async(req,res,next)=>{
     }
 });
 
+//비상도어 리스트(중간 관리자) API
+router.get('/adminemergency', async(req,res,next) => {
+    try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if(check === 0){
+            const data = await getMainDatas.getSuperDoorDatas();
+            res.json(data);
+        }else if(check === 1){
+            const data = await getMainDatas.getAdminEmergency(id);
+            res.json(data);
+        }else{
+            res.status(400).send('Not Found Admin');
+        }
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+});
+
+//비상도어 개방 API
+router.post('/adminemergency', async(req,res,next) => {
+    try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if(check !== 2){
+            const data = await getMainDatas.emergencyOpen(req.body);
+            if(data){
+                res.status(200).end();
+                // console.log(data);
+                // res.status(200).json(data);
+            }
+        }else{
+            res.status(400).send('Not Found Admin');
+        }
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+});
+
 module.exports = router;
