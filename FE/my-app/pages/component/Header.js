@@ -54,6 +54,7 @@ const style = css`
 
 
 function Header() {
+<<<<<<< HEAD
 
   const [Data, setData] = useState("");
 
@@ -78,6 +79,15 @@ function Header() {
   }
 
 
+=======
+  const [Data, setData] = useState("")
+  const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
+  console.log(key);
+  const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
+  const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+  console.log(originalText);
+  setData(originalText);
+>>>>>>> 9b6fafe52fca291bfc90b783a513128d7c7d7955
   let timer = null;
   const [time, setTime] = useState(moment());
   useEffect(() => {
