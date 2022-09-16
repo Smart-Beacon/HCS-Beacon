@@ -128,17 +128,17 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
-                "warnning" : "0"
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
+                "warnning" : "1"
             },
             {
                 "staName" : "본관",
                 "doorName" : "통신실",
                 "doorId" : "A1010102",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -146,8 +146,8 @@ function Main(){
                 "doorName" : "기계실",
                 "doorId" : "A1010103",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -155,8 +155,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -164,8 +164,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -173,8 +173,8 @@ function Main(){
                 "doorName" : "통신실",
                 "doorId" : "A1010102",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -182,8 +182,8 @@ function Main(){
                 "doorName" : "기계실",
                 "doorId" : "A1010103",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -191,8 +191,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -200,8 +200,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -209,8 +209,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -218,8 +218,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -227,8 +227,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -236,8 +236,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -245,8 +245,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -254,8 +254,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -263,8 +263,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -272,8 +272,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             },
             {
@@ -281,8 +281,8 @@ function Main(){
                 "doorName" : "전기실",
                 "doorId" : "A1010101",
                 "isOpen" : "0",
-                "opentime" : "08:00:00",
-                "closetime" : "08:00:00",
+                "openTime" : "08:00:00",
+                "closeTime" : "08:00:00",
                 "warnning" : "0"
             }
     ]
@@ -334,13 +334,16 @@ function Main(){
                         </div>
                     <div className = "TableThead">
                         <table>
-                            <tr>{header.map((item)=>{
-                                return <th>{item}</th>
-                            })}</tr>
+                            <thead>
+                                <tr>{header.map((item)=>{
+                                    return <th>{item}</th>
+                                })}</tr>
+                            </thead>
                         </table>
                     </div>
                         <div className = "TableTbody">
                             <table>
+                                <tbody>
                                     {Data.map((item)=>{
                                         return(
                                             <tr>
@@ -354,6 +357,7 @@ function Main(){
                                             </tr>
                                         )
                                     })}
+                                </tbody>
                             </table>
                         </div>
                     </div>
