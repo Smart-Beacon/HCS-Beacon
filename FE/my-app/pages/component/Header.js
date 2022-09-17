@@ -56,13 +56,7 @@ const style = css`
 
 function Header() {
   //a
-  const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
-  console.log(key);
-  const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
-  const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
-  console.log(originalText);
-  setData(originalText);
-
+  
   const Logout = (e) => {
     localStorage.clear();
     const request = axios.post('http://localhost:3000/auth/logout', null)
@@ -79,6 +73,12 @@ function Header() {
   let timer = null;
   const [time, setTime] = useState(moment());
   useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
+    console.log(key);
+    const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
+    const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+    console.log(originalText);
+    setData(originalText);
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
