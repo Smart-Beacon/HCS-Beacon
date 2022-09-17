@@ -3,6 +3,7 @@ import moment from 'moment';
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
+import crypto from 'crypto-js';
 
 const style = css`
   .container{
@@ -54,16 +55,13 @@ const style = css`
 
 
 function Header() {
-<<<<<<< HEAD
 
-  const [Data, setData] = useState("");
-
-  useEffect(() => {
-    const Datas = JSON.parse(localStorage.getItem('name'));
-    if(Datas){
-      setData(Datas);
-    }
-  }, []);
+  const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
+  console.log(key);
+  const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
+  const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+  console.log(originalText);
+  setData(originalText);
 
   const Logout = (e) => {
     localStorage.clear();
@@ -78,16 +76,6 @@ function Header() {
             });
   }
 
-
-=======
-  const [Data, setData] = useState("")
-  const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
-  console.log(key);
-  const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
-  const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
-  console.log(originalText);
-  setData(originalText);
->>>>>>> 9b6fafe52fca291bfc90b783a513128d7c7d7955
   let timer = null;
   const [time, setTime] = useState(moment());
   useEffect(() => {
