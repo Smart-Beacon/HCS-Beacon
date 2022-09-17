@@ -1,20 +1,17 @@
 import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
-import getHours from "date-fns/getHours";
-import getMinutes from "date-fns/getMinutes";
+import {setHours, setMinutes} from "date-fns";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import { ko } from "date-fns/esm/locale";
 
 import {
     Button,
+    Checkbox,
     Input,
     FormControl,
     FormLabel,
@@ -198,14 +195,17 @@ function ManagementSettings(){
             "closeTime": "00:00:00",
         }
     ])
-    const [AdminName, setAdminName] = useState("");
+    const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
     const [staName, setstaName] = useState("");
+    const [staId, setstaId] = useState("");
     const [isMonitoring, setIsMonitoring] = useState("");
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
+    const [weekCheck, setweekCheck] = useState("");
     const [isSelected, setIsSelected] = useState(false);
+    const [checkedList, setCheckedList] = useState([]);
 
     const onSelect = (time) => {
         setStartTime(time);
@@ -213,11 +213,19 @@ function ManagementSettings(){
         setEndTime(null);
     };
 
-    const handleAdminName = (e) => setAdminName(e.target.value);
+    const handleAdminId = (e) => setAdminId(e.target.value);
     const handledoorname = (e) => setDoorName(e.target.value);
     const handledoorId = (e) => setDoorId(e.target.value);
     const handlestaName = (e) => setstaName(e.target.value);
-    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);    
+    const handlestaId = (e) => setstaId(e.target.value);
+    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);  
+    const handleCheckdList = (checked, item) => {
+        if (checked) {
+          setCheckedList([...checkedList, item]);
+        } else if (!checked) {
+          setCheckedList(checkedList.filter(el => el !== item));
+        }
+      };  
 
     const addInfo = () => {
 
@@ -231,13 +239,28 @@ function ManagementSettings(){
             "doorId": doorId,
             "isOpen": "0",
             "isMonitoring": isMonitoring,
+            "latestDate": "null",
+            "openTime": saveStartTime,
+            "closeTime": saveEndTime
+        }
+
+        const serverinfo = {
+            "adminLoginId" : AdminId,
+            "staName": staName,
+            "staId" : staId,
+            "doorName": doorName,
+            "doorId": doorId,
+            "isOpen": "0",
+            "isMonitoring": isMonitoring,
             "latestDate": saveDate,
             "openTime": saveStartTime,
             "closeTime": saveEndTime,
+            "openWeeks": weekCheck,
+            "openWeeks": checkedList
         }
         setserverData = serverData.push(info);
         setData = Data.push(info);
-        console.log(info);
+        console.log(serverinfo);
         onClose();
 
     }
@@ -275,8 +298,8 @@ function ManagementSettings(){
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <FormControl style={{width: '85%', margin: "auto", marginBottom: "2%"}}>
             <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "30%", marginTop: "1%", fontSize: "20px", fontWeight: "bold"}}>🟦담당관리자</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} ref={initialRef} onChange = {handleAdminName}/>
+                    <FormLabel style={{width: "30%", marginTop: "1%", fontSize: "20px", fontWeight: "bold"}}>🟦담당관리자 ID</FormLabel>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} ref={initialRef} onChange = {handleAdminId}/>
                 </div>
             </FormControl>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
@@ -289,7 +312,7 @@ function ManagementSettings(){
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlestaId}/>
                 </div>
                 </FormControl>
             </div>
@@ -329,18 +352,18 @@ function ManagementSettings(){
                     <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", 
                                                             alignItems: "center", marginLeft: "10%", marginBottom: "5%"}}>
                         <li style = {{width: "25%"}}>날짜 선택 🗓️</li>
-                        <li style = {{border: "solid 3px gray"}}><DatePicker locale={ko}
+                        <li style = {{border: "solid 3px gray"}}><DatePicker
                                         dateFormat="yyyy-MM-dd"
                                         selected={startDate} 
                                         onChange={date => setStartDate(date)} 
                                         placeholderText="Start Day"/></li>
                     </ul>
-                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center", marginLeft: "10%"}}>
+                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center", marginLeft: "10%"
+                                                            ,marginBottom: "5%"}}>
                         <li style = {{width: "25%"}}>시간 선택</li>
                         <li style = {{border: "solid 3px gray"}}><div><DatePicker
                                         selected={startTime}
                                         onChange={onSelect}
-                                        locale={ ko }
                                         showTimeSelect
                                         showTimeSelectOnly
                                         timeIntervals={30}
@@ -351,12 +374,11 @@ function ManagementSettings(){
                                         placeholderText="start time"
                                         className="mt-4"
                                     /></div></li>
-                        <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
                             {isSelected ? // 시작 시간을 선택해야 종료 시간 선택 가능
+                            <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
                                 <div><DatePicker
                                 selected={endTime}
                                 onChange={(time) => setEndTime(time)}
-                                locale={ ko }
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={30}
@@ -371,10 +393,26 @@ function ManagementSettings(){
                                 placeholderText="end time"
                                 className="mt-3"
                             /></div>
-                
+                            </li>
                             : null 
                             }
-                        </li>
+                    </ul>
+                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center", marginLeft: "10%"}}>
+                    <li style = {{width: "25%"}}>요일 선택</li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"월요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>월요일</Checkbox></li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"화요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>화요일</Checkbox></li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"수요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>수요일</Checkbox></li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"목요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>목요일</Checkbox></li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"금요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>금요일</Checkbox></li>
+                        <li style = {{marginRight: "1%"}}><Checkbox value={"토요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>토요일</Checkbox></li>
+                        <li><Checkbox value={"일요일"} onChange={e => {
+                      handleCheckdList(e.target.checked, e.target.value);}}>일요일</Checkbox></li>
                     </ul>
                 </div>
             </FormControl>
@@ -413,13 +451,16 @@ function ManagementSettings(){
                         </div>
                         <div className = "TableThead">
                             <table>
+                                <thead>
                                 <tr>{header.map((item)=>{
                                     return <th>{item}</th>
                                 })}</tr>
+                                </thead>
                             </table>
                         </div>
                         <div className = "TableTbody">
                             <table>
+                                <tbody>
                                     {Data.map((item)=>{
                                         return(
                                             <tr>
@@ -434,6 +475,7 @@ function ManagementSettings(){
                                             </tr>
                                         )
                                     })}
+                                    </tbody>
                             </table>
                         </div>
                     </div>
