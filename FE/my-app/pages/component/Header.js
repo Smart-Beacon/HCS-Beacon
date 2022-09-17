@@ -55,7 +55,6 @@ const style = css`
 
 
 function Header() {
-  //a
   
   const Logout = (e) => {
     localStorage.clear();
@@ -71,7 +70,10 @@ function Header() {
   }
 
   let timer = null;
+
+  const [Data, setData] = useState("")
   const [time, setTime] = useState(moment());
+  
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
     console.log(key);
@@ -79,6 +81,7 @@ function Header() {
     const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
     console.log(originalText);
     setData(originalText);
+
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
