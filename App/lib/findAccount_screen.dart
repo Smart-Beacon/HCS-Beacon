@@ -38,7 +38,7 @@ class FindIdButton extends StatelessWidget {
           Navigator.pushNamed(context, '/findId');
         },
         style: ElevatedButton.styleFrom(
-          primary: const Color(0xFF4E7EFC),
+          backgroundColor: const Color(0xFF4E7EFC),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
@@ -66,7 +66,7 @@ class FindPwButton extends StatelessWidget {
           Navigator.pushNamed(context, '/findPw');
         },
         style: ElevatedButton.styleFrom(
-          primary: const Color(0xFF4E7EFC),
+          backgroundColor: const Color(0xFF4E7EFC),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),

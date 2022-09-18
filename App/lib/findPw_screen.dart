@@ -8,10 +8,9 @@ class FindPwPage extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('assets/background.png'),
-          )
-      ),
+        fit: BoxFit.cover,
+        image: AssetImage('assets/background.png'),
+      )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
@@ -22,7 +21,8 @@ class FindPwPage extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 100),
                 width: 250,
                 height: 60,
-                child: const Text('비밀번호 찾기',
+                child: const Text(
+                  '비밀번호 찾기',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
@@ -35,11 +35,9 @@ class FindPwPage extends StatelessWidget {
                           primaryColor: const Color(0xFF4E7EFC),
                           inputDecorationTheme: const InputDecorationTheme(
                               labelStyle: TextStyle(
-                                color: Color(0xFF4E7EFC),
-                                fontSize: 15.0,
-                              )
-                          )
-                      ),
+                            color: Color(0xFF4E7EFC),
+                            fontSize: 15.0,
+                          ))),
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -47,37 +45,27 @@ class FindPwPage extends StatelessWidget {
                             width: 250,
                             height: 60,
                             child: const TextField(
-                              decoration: InputDecoration(
-                                  labelText: '아이디 입력'
-                              ),
+                              decoration: InputDecoration(labelText: '아이디 입력'),
                             ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.only(top: 10),
                             width: 250,
                             height: 60,
                             child: const TextField(
-                              decoration: InputDecoration(
-                                  labelText: '이름 입력'
-                              ),
+                              decoration: InputDecoration(labelText: '이름 입력'),
                             ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.only(top: 10),
                             width: 250,
                             height: 60,
                             child: const TextField(
-                              decoration: InputDecoration(
-                                  labelText: '전화번호 입력'
-                              ),
+                              decoration: InputDecoration(labelText: '전화번호 입력'),
                             ),
                           ),
                         ],
-                      )
-                  )
-              )
+                      )))
             ],
           ),
         ),
