@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_beacon_customer_app/device_info_check.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:url_launcher/url_launcher.dart';
-import 'package:smart_beacon_customer_app/edit_personal_info.dart';
+//import 'package:smart_beacon_customer_app/device_info_check.dart';
+//import 'package:url_launcher/url_launcher.dart';
+//import 'package:smart_beacon_customer_app/edit_personal_info.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -24,27 +23,29 @@ class NavBar extends StatelessWidget {
             leading: const Icon(Icons.account_circle),
             title: const Text('개인정보 수정'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditPersonalInfo()));
+              Navigator.pushNamed(context, '/editInfo');
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => const EditPersonalInfo()));
             },
           ),
           ListTile(
             leading: const Icon(Icons.phonelink_setup),
             title: const Text('기기정보 확인'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DeviceInfoCheck()));
+              Navigator.pushNamed(context, '/deviceInfo');
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => const DeviceInfoCheck()));
             },
           ),
           ListTile(
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
             onTap: () {
-              _makePhoneCall('tel:04212345678');
+              //_makePhoneCall('tel:04212345678');
             },
           ),
           SizedBox(
@@ -59,15 +60,15 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  Future<void> _makePhoneCall(String url) async {
-    try {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        throw 'Could not launch $url';
-      }
-    } catch (err) {
-      err.toString();
-    }
-  }
+  // Future<void> _makePhoneCall(String url) async {
+  //   try {
+  //     if (await canLaunch(url)) {
+  //       await launch(url);
+  //     } else {
+  //       throw 'Could not launch $url';
+  //     }
+  //   } catch (err) {
+  //     err.toString();
+  //   }
+  // }
 }
