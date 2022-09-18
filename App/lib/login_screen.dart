@@ -18,28 +18,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void callAPI(BuildContext context) async {
     try {
-      var url = Uri.parse("주소");
-      http.Response res = await http.post(
-        url,
-        body: jsonEncode({'userId': userId.text, 'userPw': userPw.text}),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-      switch (res.statusCode) {
-        case 200:
-          // 1. 정보저장
-          // 2. 페이지 이동
-          // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, '/');
-          //onSuccess();
-          break;
-        case 400:
-          //fail
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, 'Unsigned User');
-          break;
-      }
+      Navigator.pushNamed(context, '/main');
+      // var url = Uri.parse("주소");
+      // http.Response res = await http.post(
+      //   url,
+      //   body: jsonEncode({'userId': userId.text, 'userPw': userPw.text}),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8',
+      //   },
+      // );
+      // switch (res.statusCode) {
+      //   case 200:
+      //     // 1. 정보저장
+      //     // 2. 페이지 이동
+      //     // ignore: use_build_context_synchronously
+      //     Navigator.pushNamed(context, '/main');
+      //     //onSuccess();
+      //     break;
+      //   case 400:
+      //     //fail
+      //     // ignore: use_build_context_synchronously
+      //     showSnackBar(context, 'Unsigned User');
+      //     break;
+      // }
     } catch (err) {
       showSnackBar(context, err.toString());
     }
