@@ -40,6 +40,7 @@ dependencies:
   intl: ^0.17.0
   time_picker_sheet: ^0.0.2+1
   top_snackbar_flutter: ^2.1.1
+  flutter_phone_direct_caller: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -110,6 +111,7 @@ flutter_native_splash:
   # size of the app. Only one parameter can be used, color and background_image cannot both be set.
   color: "#ffffff"
   image: "assets/splash.png"
+
 
   # Optional parameters are listed below.  To enable a parameter, uncomment the line by removing
   # the leading # character.
