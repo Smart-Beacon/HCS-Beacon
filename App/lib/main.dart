@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:smart_beacon_customer_app/find_account_screen.dart';
 import 'package:smart_beacon_customer_app/find_id_screen.dart';
 import 'package:smart_beacon_customer_app/find_pw_screen.dart';
@@ -6,7 +7,6 @@ import 'package:smart_beacon_customer_app/login_screen.dart';
 import 'package:smart_beacon_customer_app/main_view.dart';
 import 'package:smart_beacon_customer_app/middle_screen.dart';
 import 'package:smart_beacon_customer_app/register_screen.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:smart_beacon_customer_app/edit_personal_info.dart';
 import 'package:smart_beacon_customer_app/device_info_check.dart';
 

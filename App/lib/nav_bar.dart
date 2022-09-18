@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 //import 'package:smart_beacon_customer_app/device_info_check.dart';
-//import 'package:url_launcher/url_launcher.dart';
 //import 'package:smart_beacon_customer_app/edit_personal_info.dart';
 
 class NavBar extends StatelessWidget {
@@ -24,10 +23,6 @@ class NavBar extends StatelessWidget {
             title: const Text('개인정보 수정'),
             onTap: () {
               Navigator.pushNamed(context, '/editInfo');
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => const EditPersonalInfo()));
             },
           ),
           ListTile(
@@ -35,17 +30,13 @@ class NavBar extends StatelessWidget {
             title: const Text('기기정보 확인'),
             onTap: () {
               Navigator.pushNamed(context, '/deviceInfo');
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => const DeviceInfoCheck()));
             },
           ),
           ListTile(
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
             onTap: () {
-              //_makePhoneCall('tel:04212345678');
+              //_callNumber();
             },
           ),
           SizedBox(
@@ -59,6 +50,10 @@ class NavBar extends StatelessWidget {
       ),
     );
   }
+
+  // _callNumber() async {
+  //   await FlutterPhoneDirectCaller.callNumber("12345678");
+  // }
 
   // Future<void> _makePhoneCall(String url) async {
   //   try {
