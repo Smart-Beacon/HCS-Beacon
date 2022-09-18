@@ -10,6 +10,7 @@ import 'package:smart_beacon_customer_app/register_screen.dart';
 import 'package:smart_beacon_customer_app/edit_personal_info.dart';
 import 'package:smart_beacon_customer_app/device_info_check.dart';
 
+
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => const MiddleScreen(),
+        // '/': (context) => const MiddleScreen(),
+        '/': (context) => const MainView(),
         '/login': (context) => const LoginScreen(),
         '/regist': (context) => const RegisterScreen(),
         '/account': (context) => const AccountFindingPage(),
