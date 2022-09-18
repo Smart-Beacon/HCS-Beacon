@@ -12,6 +12,14 @@ class FindPwPage extends StatelessWidget {
         image: AssetImage('assets/background.png'),
       )),
       child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Color(0xff81a4ff), //색변경
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+        ),
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         body: Center(
           child: Column(
@@ -32,10 +40,10 @@ class FindPwPage extends StatelessWidget {
               Form(
                   child: Theme(
                       data: ThemeData(
-                          primaryColor: const Color(0xFF4E7EFC),
+                          primaryColor: const Color(0xff81a4ff),
                           inputDecorationTheme: const InputDecorationTheme(
                               labelStyle: TextStyle(
-                            color: Color(0xFF4E7EFC),
+                            color: Color(0xff81a4ff),
                             fontSize: 15.0,
                           ))),
                       child: Column(
