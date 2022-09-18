@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       switch (res.statusCode) {
         case 200:
-          // 1. 정보저장
+          // 1. 정보저장(구글링)
           // 2. 페이지 이동
           // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, '/');
