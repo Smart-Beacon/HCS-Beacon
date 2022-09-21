@@ -1,17 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:smart_beacon_customer_app/snackbar.dart';
 
-class FindIdPage extends StatelessWidget {
-  const FindIdPage({Key? key}) : super(key: key);
+class FindIdScreen extends StatefulWidget {
+  const FindIdScreen({Key? key}) : super(key: key);
+
+  @override
+  State<FindIdScreen> createState() => _FindIdScreenState();
+}
+
+class _FindIdScreenState extends State<FindIdScreen> {
+  TextEditingController userName = TextEditingController();
+  TextEditingController userPhone = TextEditingController();
+
+  dynamic isEnterInfo() {
+    if (userName.text.isEmpty) {
+      showSnackBar(context, '이름을 입력하세요');
+      return false;
+    }
+    if (userPhone.text.isEmpty) {
+      showSnackBar(context, '전화번호를 입력하세요');
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void dispose() {
+    userName.dispose();
+    userPhone.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('assets/background.png'),
-          )
-      ),
+        fit: BoxFit.cover,
+        image: AssetImage('assets/background.png'),
+      )),
       child: Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(
@@ -30,51 +57,73 @@ class FindIdPage extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 100),
                 width: 250,
                 height: 60,
-                child: const Text('아이디 찾기',
+                child: const Text(
+                  '아이디 찾기',
                   style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               Form(
                   child: Theme(
                       data: ThemeData(
-                        primaryColor: const Color(0xff81a4ff),
-                        inputDecorationTheme: const InputDecorationTheme(
-                          labelStyle: TextStyle(
+                          primaryColor: const Color(0xff81a4ff),
+                          inputDecorationTheme: const InputDecorationTheme(
+                              labelStyle: TextStyle(
                             color: Color(0xff81a4ff),
                             fontSize: 15.0,
-                          )
-                        )
-                      ),
+                          ))),
                       child: Column(
                         children: <Widget>[
                           Container(
                             margin: const EdgeInsets.only(top: 10),
                             width: 250,
-                            height: 60,
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                labelText: '이름 입력'
-                              ),
+                            height: 50,
+                            child: TextField(
+                              controller: userName,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: '이름',
+                                  hintText: '이름을 입력하세요'),
                             ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.only(top: 10),
                             width: 250,
-                            height: 60,
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                  labelText: '전화번호 입력'
-                              ),
+                            height: 50,
+                            child: TextField(
+                              controller: userPhone,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: '전화번호',
+                                  hintText: '전화번호를 입력하세요'),
                             ),
                           ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: 250,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (isEnterInfo()) {
+                                  // 사용자 존재 유무 체크(없으면 사용자 없습니다 스낵바)
+                                  // 존재하면 인증번호 전송후 화면 넘어가기
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff81a4ff),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0)),
+                              ),
+                              child: const Text(
+                                '인증번호 전송',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                            ),
+                          )
                         ],
-                      )
-                  )
-              )
+                      )))
             ],
           ),
         ),
