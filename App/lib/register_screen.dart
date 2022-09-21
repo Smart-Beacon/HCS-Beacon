@@ -316,10 +316,10 @@ class RegisterButton extends StatefulWidget {
 class _RegisterButtonState extends State<RegisterButton> {
   Future callAPI(BuildContext context) async {
     try {
-      var url = Uri.parse("주소");
+      var url = "";
       var dio = Dio();
       var res = await dio.post(
-        "주소",
+        url,
         data: jsonEncode({
           'name': widget.name,
           'phoneNum': widget.phoneNum,
