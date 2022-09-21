@@ -461,7 +461,7 @@ function ManagementSettings(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                    {Data.map((item)=>{
+                                    {serverData.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
