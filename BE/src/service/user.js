@@ -3,6 +3,7 @@ const AdminDoor = require('../db/models/adminDoor');
 const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
+const Token = require('../db/models/token');
 const uuid = require('./createUUID');
 
 
@@ -297,7 +298,8 @@ const findUserId = async(user) => {
     });
 
     if(exUser){
-        //임시 인증번호 만들기
+        //인증번호 만들기
+        createToken(exUser.userId);
         return exUser.userId;
     }else{
         return null;
@@ -316,7 +318,8 @@ const findUserPw = async(user) => {
     });
 
     if(exUser){
-        //임시 인증번호 만들기
+        //인증번호 만들기
+        createToken(exUser.userId);
         return exUser.userId;
     }else{
         return null;
@@ -324,11 +327,84 @@ const findUserPw = async(user) => {
     
 }
 
-const createToken = async(user) =>{
-    
+// 6자리 인증번호 만드는 함수
+// 사용 API : 유저 ID, PW 찾기 API
+const createToken = async(userId) =>{
+    const exToken = await Token.findOne({
+        where:{userId:userId}
+    });
+    const token = Math.floor(100000 + Math.random() * 900000);
+    if(exToken){
+        await Token.update({
+            token,
+            createdAt: new Date()
+        },{where:{
+            userId:userId,
+        }});
+    }else{
+        await Token.create({
+            token,
+            createAt: new Date(),
+            userId:userId
+        });
+    }
+    //문자발생 함수 token 값 인수
 }
 
+// 6자리 인증번호 검증 함수
+// 사용 API : 유저 ID, PW 찾기 API
 const checkToken = async(user) =>{
+    const exToken = await Token.findOne({
+        where:{
+            userId:user.userId,
+        }
+    })
+    if(exToken){
+        console.log('유저 존재');
+        let curr = new Date();
+        curr.setHours(curr.getHours()+9);
+        curr.setMinutes(curr.getMinutes()-5);
+        console.log(curr);
+        exToken.createdAt.setHours(exToken.createdAt.getHours()+9);
+        console.log(exToken.createdAt);
+        console.log(exToken.token);
+        console.log(user.token);
+        if(exToken.token === user.token && exToken.createdAt >= curr){
+            //일치
+            console.log('일치');
+            return 1
+        }else if(exToken.token === user.token && exToken.createdAt < curr){
+            // 시간 초과
+            console.log('시간 초과');
+            return 2
+        }else{
+            console.log('token값 불일치');
+            //token값이 노 일치
+            return 3
+        }
+    }else{
+        return 4
+    }
+}
+
+// user login Id 값 반환
+// 사용 API : 유저 ID, PW 찾기 API
+const returnId = async(userId) =>{
+    const loginId = await User.findOne({where:{userId:userId.userId}},{attributes:['userLoginId']});
+    return loginId.userLoginId;
+}
+
+// user login pw(6자리 임시) 값 반환
+// 사용 API : 유저 ID, PW 찾기 API
+const returnPw = async(userId) => {
+    const pw = Math.floor(100000 + Math.random() * 900000);
+    console.log(String(pw));
+    const result = await User.update({userLoginPw:String(pw)},{where:{userId:userId.userId}});
+    if(result){
+        return pw;
+    }else{
+        return null;
+    }
 }
 
 module.exports = {
@@ -341,4 +417,7 @@ module.exports = {
     registUser,
     findUserId,
     findUserPw,
+    checkToken,
+    returnId,
+    returnPw
 }

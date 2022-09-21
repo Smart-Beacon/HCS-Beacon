@@ -112,24 +112,73 @@ router.post('/register',async(req,res)=>{
 });
 
 // 모든 출입자 ID 찾기
-// POST : http://localhost:5000/user/findid
-router.post('/findid',async(req,res)=>{
+// POST : http://localhost:5000/user/check/id
+router.post('/check/id',async(req,res)=>{
     try{
         const result = await getMainDatas.findUserId(req.body);
-        
+        if(result){
+            res.status(200).send(result);
+        }else{
+            res.status(400).end();
+        }
     }catch(err){
         return res.status(400).send(err.message);
     }
-
-})
+});
 
 // 모든 출입자 PW 찾기
-// POST : http://localhost:5000/user/findpw
-router.post('/findpw',async(req,res)=>{
+// POST : http://localhost:5000/user/check/pw
+router.post('/check/pw',async(req,res)=>{
     try{
         const result = await getMainDatas.findUserPw(req.body);
+        if(result){
+            res.status(200).send(result);
+        }else{
+            res.status(400).end();
+        }
     }catch(err){
         return res.status(400).send(err.message);
     }  
-})
+});
+
+// 출입자 Id 반환
+// POST : http://localhost:5000/user/find/id
+router.post('/find/id',async(req,res)=>{
+    try{
+        const result = await getMainDatas.checkToken(req.body);
+        if(result === 1){
+            const userLoginId = await getMainDatas.returnId(req.body);
+            return res.status(200).json(userLoginId);
+        }else if(result === 2){
+            return res.status(400).end();
+        }else if(result === 3){
+            return res.status(401).end();
+        }else{
+            return res.status(402).end();
+        }
+    }catch(err){
+        return res.status(400).send(err.message);
+    }
+});
+
+// 출입자 임시pw 반환
+// POST : http://localhost:5000/user/find/pw
+router.post('/find/pw',async(req,res)=>{
+    try{
+        const result = await getMainDatas.checkToken(req.body);
+        if(result === 1){
+            const userLoginPw = await getMainDatas.returnPw(req.body);
+            return res.status(200).json(userLoginPw);
+        }else if(result === 2){
+            return res.status(400).end();
+        }else if(result === 3){
+            return res.status(401).end();
+        }else{
+            return res.status(402).end();
+        }
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+});
+
 module.exports = router;
