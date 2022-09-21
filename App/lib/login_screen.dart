@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
 

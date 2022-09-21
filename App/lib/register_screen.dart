@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:time_picker_sheet/widget/sheet.dart';
 import 'package:time_picker_sheet/widget/time_picker.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
 
@@ -19,7 +16,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
   TextEditingController name = TextEditingController();
   TextEditingController phoneNum = TextEditingController();
   TextEditingController company = TextEditingController();
-  TextEditingController depart = TextEditingController();
+  TextEditingController position = TextEditingController();
   TextEditingController reason = TextEditingController();
   DateTime? selectedDate;
   DateTime? selectedStartTime;
@@ -46,7 +43,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     name.dispose();
     phoneNum.dispose();
     company.dispose();
-    depart.dispose();
+    position.dispose();
     reason.dispose();
     super.dispose();
   }
@@ -128,7 +125,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
                   child: TextField(
-                    controller: depart,
+                    controller: position,
                     decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -235,7 +232,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   name: name.text,
                   phoneNum: phoneNum.text,
                   company: company.text,
-                  depart: depart.text,
+                  position: position.text,
                   reason: reason.text,
                   selectedDate: selectedDate,
                   selectedStartTime: selectedStartTime,
@@ -263,7 +260,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
   }
 
   Future pickStartTime(BuildContext context) async {
-    final newTime = await TimePicker.show(
+    final newStartTime = await TimePicker.show(
         context: context,
         sheet: TimePickerSheet(
           sheetTitle: 'Enter Time',
@@ -271,12 +268,12 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
           minuteTitle: 'Minute',
           saveButtonText: 'Select',
         ));
-
-    setState(() => selectedStartTime = newTime);
+    if (newStartTime == null) return;
+    setState(() => selectedStartTime = newStartTime);
   }
 
   Future pickEndTime(BuildContext context) async {
-    final newTime = await TimePicker.show(
+    final newEndTime = await TimePicker.show(
         context: context,
         sheet: TimePickerSheet(
           sheetTitle: 'Out Time',
@@ -284,8 +281,8 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
           minuteTitle: 'Minute',
           saveButtonText: 'Select',
         ));
-
-    setState(() => selectedEndTime = newTime);
+    if (newEndTime == null) return;
+    setState(() => selectedEndTime = newEndTime);
   }
 }
 
@@ -295,7 +292,7 @@ class RegisterButton extends StatefulWidget {
       required this.name,
       required this.phoneNum,
       required this.company,
-      required this.depart,
+      required this.position,
       required this.reason,
       required this.selectedDate,
       required this.selectedStartTime,
@@ -304,7 +301,7 @@ class RegisterButton extends StatefulWidget {
   final String? name;
   final String phoneNum;
   final String? company;
-  final String? depart;
+  final String? position;
   final String? reason;
   final DateTime? selectedDate;
   final DateTime? selectedStartTime;
@@ -317,27 +314,30 @@ class RegisterButton extends StatefulWidget {
 class _RegisterButtonState extends State<RegisterButton> {
   Future callAPI(BuildContext context) async {
     try {
-      var url = "";
+      String url = "http://10.0.2.2:5000/user/register";
       var dio = Dio();
+      var date = DateFormat('yyyy-MM-dd').format(widget.selectedDate!);
+      var startTime = await getStringTime(widget.selectedStartTime!);
+      var endTime = await getStringTime(widget.selectedEndTime!);
+      String enterTime = '$date $startTime';
+      String exitTime = '$date $endTime';
       var res = await dio.post(
         url,
-        data: jsonEncode({
+        data: {
           'name': widget.name,
           'phoneNum': widget.phoneNum,
           'company': widget.company,
-          'depart': widget.depart,
+          'position': widget.position,
           'reason': widget.reason,
-          'enterDate': widget.selectedDate.toString(),
-          'startTime': widget.selectedStartTime.toString(),
-          'endTime': widget.selectedEndTime.toString()
-        }),
+          'enterTime': enterTime,
+          'exitTime': exitTime,
+        },
       );
       switch (res.statusCode) {
+        case 200:
         case 201:
-          // 1. 저장 성공
-          // 2. 페이지 이동
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, '/loign');
+          Navigator.pushNamed(context, '/');
           //onSuccess();
           break;
         case 400:
@@ -349,6 +349,10 @@ class _RegisterButtonState extends State<RegisterButton> {
     } catch (err) {
       showSnackBar(context, err.toString());
     }
+  }
+
+  Future getStringTime(DateTime time) async {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}';
   }
 
   dynamic isEnterInfo() {
@@ -367,7 +371,7 @@ class _RegisterButtonState extends State<RegisterButton> {
     } else if (widget.company == "") {
       showSnackBar(context, 'Enter your company');
       return false;
-    } else if (widget.depart == "") {
+    } else if (widget.position == "") {
       showSnackBar(context, 'Enter your depart');
       return false;
     } else if (widget.reason == "") {

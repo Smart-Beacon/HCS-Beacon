@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -34,9 +33,7 @@ class NavBar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
-            onTap: () {
-                  _makePhoneCall('tel:04212345678');//고객센터 번호 넣기!!
-              },
+            onTap: () {},
           ),
           SizedBox(
               width: double.infinity,
@@ -49,13 +46,4 @@ class NavBar extends StatelessWidget {
       ),
     );
   }
-  
-  Future<void> _makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
 }
