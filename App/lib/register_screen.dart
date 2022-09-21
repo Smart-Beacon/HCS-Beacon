@@ -6,6 +6,7 @@ import 'package:time_picker_sheet/widget/time_picker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:dio/dio.dart';
+import 'package:smart_beacon_customer_app/snackbar.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -78,7 +79,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
             child: Column(
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.only(top: 15.0),
+                  padding: EdgeInsets.only(top: 60.0),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
@@ -410,15 +411,4 @@ class _RegisterButtonState extends State<RegisterButton> {
       ),
     );
   }
-}
-
-void showSnackBar(BuildContext context, String text) {
-  showTopSnackBar(
-      context,
-      displayDuration: const Duration(milliseconds: 1000),
-      CustomSnackBar.success(
-          icon: const Icon(null),
-          backgroundColor: const Color(0xff81a4ff),
-          textStyle: const TextStyle(color: Colors.white),
-          message: text));
 }
