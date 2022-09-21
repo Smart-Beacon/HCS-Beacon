@@ -99,5 +99,36 @@ router.post('/visitor', async (req,res,next) => {
 });
 
 
+// 출입자(방문) 등록API
+// POST : http://localhost:5000/user/register
+router.post('/register',async(req,res)=>{
+    try{
+        const result = await getMainDatas.registUser(req.body);
+        res.status(result).end();
+    }catch(err){
+        return res.status(400).send(err.message);
+    }
 
+});
+
+// 모든 출입자 ID 찾기
+// POST : http://localhost:5000/user/findid
+router.post('/findid',async(req,res)=>{
+    try{
+        
+    }catch(err){
+        return res.status(400).send(err.message);
+    }
+
+})
+
+// 모든 출입자 PW 찾기
+// POST : http://localhost:5000/user/findpw
+router.post('/findpw',async(req,res)=>{
+    try{
+
+    }catch(err){
+        return res.status(400).send(err.message);
+    }  
+})
 module.exports = router;

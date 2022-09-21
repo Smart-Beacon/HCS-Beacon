@@ -4,7 +4,8 @@ const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
 const uuid  = require('./createUUID');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
+const e = require('express');
 
 
 // 최고관리자용 출입자 리스트 함수
@@ -196,11 +197,94 @@ const getEntrantList = async(allows) => {
     return result;
 }
 
+// 예약 방문자 등록 함수
+// 사용 API : 유저 방문 등록 API
+const registUser = async(user) => {
+
+    const exUser = await User.findOne({
+        where:{
+            phoneNum:user.phoneNum,
+            userName:user.name
+        }
+    });
+
+    if(exUser){
+        await User.update({
+            reason: user.reason,
+            enterTime: user.enterTime,
+            exitTime: user.exitTime
+        },{where:{
+            phoneNum:user.phoneNum,
+            userName:user.name
+        }});
+
+        return 200
+    }else{
+        await User.create({
+            userId: await uuid.uuid(),
+            userName: user.name,
+            company: user.company,
+            position: user.position,
+            phoneNum: user.phoneNum,
+            userLoginId: user.name,
+            userLoginPw: user.phoneNum,
+            reason: user.reason,
+            enterTime: user.enterTime,
+            exitTime: user.exitTime
+        })
+        return 201
+    }
+}
+
+// 모든 방문자 ID 체킹
+// 사용 API : 유저 아이디 찾기 API
+const findUserId = async(user) => {
+    const exUser = await User.findOne({
+        where:{
+            userName:user.name,
+            phoneNum:user.phoneNum,
+        }
+    });
+
+    if(exUser){
+        return exUser.userId;
+    }else{
+        return false;
+    }
+}
+
+// 모든 방문자 PW 찾기
+// 사용 API : 유저 PW 찾기 API
+const findUserPw = async(user) => {
+    const exUser = await User.findOne({
+        where:{
+            userLoginId: user.loginId,
+            userName: user.name,
+            phoneNum: user.phoneNum,
+        }
+    });
+
+    if(exUser){
+        return exUser.userId;
+    }else{
+        return false;
+    }
+    
+}
+
+const certification = async(user) =>{
+    
+}
+
 module.exports = {
     getSuperEntrantList,
     getAdminEntrantList,
     createRegularUserData,
     getSuperVisitorList,
     getAdminVisitorList,
-    changeVisitorAllow
+    changeVisitorAllow,
+    registUser,
+    findUserId,
+    findUserPw,
+    certification 
 }

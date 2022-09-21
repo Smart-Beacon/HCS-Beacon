@@ -91,14 +91,14 @@ router.post('/user/login',async(req,res)=>{
             const checkPassword = await bcrypt.compare(userPw,exUserId.userLoginPw);
             if(checkPassword){
                 const token = jwt.sign({
-                    name:exUserId.userName
+                    userId:exUserId.userId
                 },
                 process.env.JWT_SECRET,
                 {
                     expiresIn:'3 days'
                 }
                 );
-                return res.status(200).send({token:token});
+                return res.status(200).send({token});
             }else{
                 return res.status(202).send('Do not match password');
             } 
