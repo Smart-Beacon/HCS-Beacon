@@ -12,6 +12,14 @@ class AccountFindingPage extends StatelessWidget {
         image: AssetImage('assets/background.png'),
       )),
       child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Color(0xff81a4ff), //색변경
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          ),
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         body: Center(
           child: Column(
@@ -38,7 +46,7 @@ class FindIdButton extends StatelessWidget {
           Navigator.pushNamed(context, '/findId');
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF4E7EFC),
+          backgroundColor: const Color(0xff81a4ff),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
@@ -66,7 +74,7 @@ class FindPwButton extends StatelessWidget {
           Navigator.pushNamed(context, '/findPw');
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF4E7EFC),
+          backgroundColor: const Color(0xff81a4ff),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
