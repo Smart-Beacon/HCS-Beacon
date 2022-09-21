@@ -11,56 +11,64 @@ class FindIdScreen extends StatefulWidget {
   State<FindIdScreen> createState() => _FindIdScreenState();
 }
 
-dynamic userLoginId = 'user1';
-dynamic userRealName = '김민성';
-
-
 class _FindIdScreenState extends State<FindIdScreen> {
   TextEditingController userName = TextEditingController();
   TextEditingController userPhone = TextEditingController();
   TextEditingController token = TextEditingController();
+  String? userId;
+  String? userRealName;
+  String? userLoginId;
 
-  isUserExist(BuildContext context) async {
+  void isUserExist(BuildContext context) async {
     try {
       var dio = Dio();
-      String url = "http://10.0.2.2:5000/auth/user/check";
+      String url = "http://10.0.2.2:5000/user/check/id";
       var res = await dio
-          .post(url, data: {'userName': userName.text, 'phoneNum': userPhone.text});
+          .post(url, data: {'name': userName.text, 'phoneNum': userPhone.text});
       switch (res.statusCode) {
         case 200:
           // 이름과 전화번호가 일치하는 사용자가 존재!
           // userId 받음 (*로그인 ID 아님 인덱싱 ID임)
-          var userId = res.data['userId'];
-          return userId;
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, '인증번호가 발송되었습니다.');
+          setState(() {
+            userId = res.data;
+          });
+          break;
         default:
-          return null;
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, '해당 ID는 존재하지 않습니다');
+          break;
       }
-
     } catch (err) {
       showSnackBar(context, err.toString());
     }
   }
 
-  verifyUser(BuildContext context, userId) async {
+  void verifyUser(BuildContext context) async {
     try {
       var dio = Dio();
-      String url = "http://10.0.2.2:5000/auth/user/token";
-      var res = await dio
-          .post(url, data: {'userId': userId, 'token': userPhone.text});
-      switch (res.statusCode) {
-        case 200:
-          var userId = res.data['userId'];
-          return userId;
-        default:
-          return null;
-      }
-
+      String url = "http://10.0.2.2:5000/user/find/id";
+      await dio.post(url, data: {'userId': userId, 'token': token.text}).then(
+          (value) async {
+        switch (value.statusCode) {
+          case 200:
+            String user = value.toString();
+            Map<String, dynamic> users = await jsonDecode(user);
+            // ignore: use_build_context_synchronously
+            setState(() {
+              userRealName = users['userName'];
+              userLoginId = users['userLoginId'];
+            });
+            break;
+          default:
+            break;
+        }
+      });
     } catch (err) {
       showSnackBar(context, err.toString());
     }
   }
-
-  dynamic userId = null;
 
   dynamic isEnterInfo() {
     if (userName.text.isEmpty) {
@@ -158,20 +166,17 @@ class _FindIdScreenState extends State<FindIdScreen> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (isEnterInfo()) {
-                                    // 사용자 존재 유무 체크(없으면 사용자 없습니다 스낵바)
-                                    // 존재하면 인증번호 전송후 화면 넘어가기
-                                    userId = isUserExist(context);
-                                    if(userId) {
+                                    isUserExist(context);
+                                    if (userId != null) {
                                       // 인증번호 타이머 설정
-                                    } else{
-                                      showSnackBar(context, '해당 사용자가 존재하지 않습니다.');
                                     }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff81a4ff),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                 ),
                                 child: const Text(
                                   '인증번호 전송',
@@ -179,10 +184,6 @@ class _FindIdScreenState extends State<FindIdScreen> {
                                 ),
                               ),
                             ),
-
-
-
-
                             Container(
                               margin: const EdgeInsets.only(top: 30),
                               width: 250,
@@ -203,16 +204,22 @@ class _FindIdScreenState extends State<FindIdScreen> {
                                 onPressed: () {
                                   if (token.text.isEmpty) {
                                     showSnackBar(context, '인증번호를 입력하세요');
+                                  } else {
+                                    verifyUser(context);
+                                    if (userRealName != null &&
+                                        userLoginId != null) {
+                                      Navigator.pushNamed(
+                                          context, '/findIdResult',
+                                          arguments: ScreenArguments(
+                                              userRealName!, userLoginId!));
+                                    }
                                   }
-                                  // verifyUser(context, userId);
-
-                                  // // 임시로 인증번호 확인을 누르면 결과 화면으로 이동
-                                  // Navigator.pushNamed(context, '/findIdResult');
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff81a4ff),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                 ),
                                 child: const Text(
                                   '인증번호 확인',
@@ -236,6 +243,7 @@ class FindIdResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -246,30 +254,43 @@ class FindIdResultScreen extends StatelessWidget {
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         body: Center(
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 200),
-              Text(userRealName+' 님의 아이디는', style: TextStyle(fontSize: 24),),
-              const SizedBox(height: 50),
-              Text(userLoginId+' 입니다.', style: TextStyle(fontSize: 24),),
-              const SizedBox(height: 200),
-              SizedBox(width: 100, height: 50, child: ElevatedButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                }, 
-                child: const Text('확인', style: TextStyle(fontSize: 20)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff81a4ff),
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-                  )
-              ))
-            ]
-          ),
+          child: Column(children: <Widget>[
+            const SizedBox(height: 200),
+            Text(
+              '${args.userName} 님의 아이디는',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 50),
+            Text(
+              '${args.userLoginId} 입니다.',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 200),
+            SizedBox(
+                width: 100,
+                height: 50,
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('확인', style: TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff81a4ff),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    )))
+          ]),
         ),
       ),
     );
   }
+}
+
+class ScreenArguments {
+  final String userName;
+  final String userLoginId;
+
+  ScreenArguments(this.userName, this.userLoginId);
 }
