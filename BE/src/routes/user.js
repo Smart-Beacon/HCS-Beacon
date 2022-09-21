@@ -119,7 +119,7 @@ router.post('/check/id',async(req,res)=>{
         if(result){
             res.status(200).send(result);
         }else{
-            res.status(400).end();
+            res.status(404).end();
         }
     }catch(err){
         return res.status(400).send(err.message);
@@ -147,8 +147,8 @@ router.post('/find/id',async(req,res)=>{
     try{
         const result = await getMainDatas.checkToken(req.body);
         if(result === 1){
-            const userLoginId = await getMainDatas.returnId(req.body);
-            return res.status(200).json(userLoginId);
+            const userInfo = await getMainDatas.returnId(req.body);
+            return res.status(200).json(userInfo);
         }else if(result === 2){
             return res.status(400).end();
         }else if(result === 3){

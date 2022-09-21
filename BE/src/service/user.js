@@ -390,8 +390,12 @@ const checkToken = async(user) =>{
 // user login Id 값 반환
 // 사용 API : 유저 ID, PW 찾기 API
 const returnId = async(userId) =>{
-    const loginId = await User.findOne({where:{userId:userId.userId}},{attributes:['userLoginId']});
-    return loginId.userLoginId;
+    const loginId = await User.findOne({where:{userId:userId.userId}});
+    const result = {
+        userName : loginId.userName,
+        userLoginId: loginId.userLoginId
+    }
+    return result;
 }
 
 // user login pw(6자리 임시) 값 반환
@@ -401,7 +405,11 @@ const returnPw = async(userId) => {
     console.log(String(pw));
     const result = await User.update({userLoginPw:String(pw)},{where:{userId:userId.userId}});
     if(result){
-        return pw;
+        const userInfo = await User.findOne({where:{userId:userId.userId}});
+        return {
+            userLoginPw:String(pw),
+            userName: userInfo.userName
+        };
     }else{
         return null;
     }
