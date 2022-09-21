@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,29 +17,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void callAPI(BuildContext context) async {
     try {
-      Navigator.pushNamed(context, '/main');
-      // var url = Uri.parse("주소");
-      // http.Response res = await http.post(
-      //   url,
-      //   body: jsonEncode({'userId': userId.text, 'userPw': userPw.text}),
-      //   headers: <String, String>{
-      //     'Content-Type': 'application/json; charset=UTF-8',
-      //   },
-      // );
-      // switch (res.statusCode) {
-      //   case 200:
-      //     // 1. 정보저장
-      //     // 2. 페이지 이동
-      //     // ignore: use_build_context_synchronously
-      //     Navigator.pushNamed(context, '/main');
-      //     //onSuccess();
-      //     break;
-      //   case 400:
-      //     //fail
-      //     // ignore: use_build_context_synchronously
-      //     showSnackBar(context, 'Unsigned User');
-      //     break;
-      // }
+      var dio = Dio();
+      String url = "http://10.0.2.2:5000/auth/user/login";
+      var res = await dio
+          .post(url, data: {'userId': userId.text, 'userPw': userPw.text});
+      switch (res.statusCode) {
+        case 200:
+          // 1. 정보저장
+          // 2. 페이지 이동
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamed(context, '/main');
+          //onSuccess();
+          break;
+        case 202:
+          //fail
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, 'Unsigned User');
+          break;
+      }
     } catch (err) {
       showSnackBar(context, err.toString());
     }
