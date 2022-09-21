@@ -3,9 +3,7 @@ const AdminDoor = require('../db/models/adminDoor');
 const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
-const uuid  = require('./createUUID');
-const { Op, where } = require('sequelize');
-const e = require('express');
+const uuid = require('./createUUID');
 
 
 // 최고관리자용 출입자 리스트 함수
@@ -199,39 +197,42 @@ const getEntrantList = async(allows) => {
 
 // 예약 방문자 등록 함수
 // 사용 API : 유저 방문 등록 API
-const registUser = async(user) => {
+const registUser = async(userInfo) => {
 
     const exUser = await User.findOne({
         where:{
-            phoneNum:user.phoneNum,
-            userName:user.name
+            phoneNum:userInfo.phoneNum,
+            userName:userInfo.name
         }
     });
 
     if(exUser){
+        console.log('유저 확인');
         await User.update({
-            reason: user.reason,
-            enterTime: user.enterTime,
-            exitTime: user.exitTime
+            reason: userInfo.reason,
+            enterTime: userInfo.enterTime,
+            exitTime: userInfo.exitTime
         },{where:{
-            phoneNum:user.phoneNum,
-            userName:user.name
+            phoneNum:userInfo.phoneNum,
+            userName:userInfo.name
         }});
 
         return 200
     }else{
+        console.log('유저 없음');
+        console.log(userInfo);
         await User.create({
             userId: await uuid.uuid(),
-            userName: user.name,
-            company: user.company,
-            position: user.position,
-            phoneNum: user.phoneNum,
-            userLoginId: user.name,
-            userLoginPw: user.phoneNum,
-            reason: user.reason,
-            enterTime: user.enterTime,
-            exitTime: user.exitTime
-        })
+            userName: userInfo.name,
+            company: userInfo.company,
+            position: userInfo.position,
+            phoneNum: userInfo.phoneNum,
+            userLoginId: userInfo.phoneNum.replace(/-/g,''),
+            userLoginPw: '1234',//userInfo.name,
+            reason: userInfo.reason,
+            enterTime: Date.parse(userInfo.enterTime),
+            exitTime: Date.parse(userInfo.exitTime)
+        });
         return 201
     }
 }
@@ -247,9 +248,10 @@ const findUserId = async(user) => {
     });
 
     if(exUser){
+        //임시 인증번호 만들기
         return exUser.userId;
     }else{
-        return false;
+        return null;
     }
 }
 
@@ -265,15 +267,19 @@ const findUserPw = async(user) => {
     });
 
     if(exUser){
+        //임시 인증번호 만들기
         return exUser.userId;
     }else{
-        return false;
+        return null;
     }
     
 }
 
-const certification = async(user) =>{
+const createToken = async(user) =>{
     
+}
+
+const checkToken = async(user) =>{
 }
 
 module.exports = {
@@ -286,5 +292,4 @@ module.exports = {
     registUser,
     findUserId,
     findUserPw,
-    certification 
 }

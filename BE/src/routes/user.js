@@ -115,6 +115,7 @@ router.post('/register',async(req,res)=>{
 // POST : http://localhost:5000/user/findid
 router.post('/findid',async(req,res)=>{
     try{
+        const result = await getMainDatas.findUserId(req.body);
         
     }catch(err){
         return res.status(400).send(err.message);
@@ -126,7 +127,7 @@ router.post('/findid',async(req,res)=>{
 // POST : http://localhost:5000/user/findpw
 router.post('/findpw',async(req,res)=>{
     try{
-
+        const result = await getMainDatas.findUserPw(req.body);
     }catch(err){
         return res.status(400).send(err.message);
     }  
