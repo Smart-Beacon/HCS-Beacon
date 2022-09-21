@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:time_picker_sheet/widget/sheet.dart';
 import 'package:time_picker_sheet/widget/time_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:dio/dio.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -317,9 +317,10 @@ class _RegisterButtonState extends State<RegisterButton> {
   Future callAPI(BuildContext context) async {
     try {
       var url = Uri.parse("주소");
-      http.Response res = await http.post(
-        url,
-        body: jsonEncode({
+      var dio = Dio();
+      var res = await dio.post(
+        "주소",
+        data: jsonEncode({
           'name': widget.name,
           'phoneNum': widget.phoneNum,
           'company': widget.company,
@@ -329,9 +330,6 @@ class _RegisterButtonState extends State<RegisterButton> {
           'startTime': widget.selectedStartTime.toString(),
           'endTime': widget.selectedEndTime.toString()
         }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
       );
       switch (res.statusCode) {
         case 201:
