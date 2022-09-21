@@ -12,6 +12,7 @@ const userAllow    = require('./userAllow');
 const accessRecord = require('./accessRecord');
 const alertRecord = require('./alertRecord');
 const smsRecord = require('./smsRecord');
+const token = require('./token');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -40,6 +41,7 @@ db.userAllow    = userAllow;
 db.accessRecord = accessRecord;
 db.alertRecord = alertRecord;
 db.smsRecord = smsRecord;
+db.token = token;
 
 // 모델과 테이블 종합적인 연결이 설정된다.
 statement.init(sequelize);
@@ -53,6 +55,7 @@ userAllow.init(sequelize);
 accessRecord.init(sequelize);
 alertRecord.init(sequelize);
 smsRecord.init(sequelize);
+token.init(sequelize);
 
 // db객체 안에 있는 모델들 간의 관계가 설정된다.
 statement.associate(db);
@@ -65,6 +68,7 @@ userAllow.associate(db);
 accessRecord.associate(db);
 alertRecord.associate(db);
 smsRecord.associate(db);
+token.associate(db);
 
 // 모듈로 꺼낸다.
 module.exports = db;
