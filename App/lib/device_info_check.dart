@@ -79,7 +79,7 @@ class _DeviceInfoCheckState extends State<DeviceInfoCheck> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text("VENDOR ID",
+                Text("VENDOR ID",
                     style: TextStyle(
                       letterSpacing: 2.0,
                       fontWeight: FontWeight.bold,
