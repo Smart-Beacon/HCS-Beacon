@@ -1,4 +1,3 @@
-
 const getDate = (date) => {
     var alertYear = date.getFullYear();
     var alertMonth = ('0' + (date.getUTCMonth() + 1)).slice(-2);

@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
+const checkAdmin = require('../service/check.js');
 const { getStatementOfSuper, getStatementOfAdmin, getDoorOfSuper, getDoorOfAdmin } = require('../service/statement');
 
 

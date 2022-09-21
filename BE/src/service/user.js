@@ -34,6 +34,7 @@ const getSuperEntrantList = async() => {
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getAdminEntrantList = async(adminId) => {
+    console.log(adminId);
     const doorIds = await AdminDoor.findAll({
         where:{ adminId },
         attributes:['doorId'],
@@ -52,6 +53,7 @@ const getAdminEntrantList = async(adminId) => {
     );
 
     const UserAllows = await AdminUserAllows.flatMap(data => data);
+    console.log(UserAllows);
     const entrantList = await getEntrantList(UserAllows);
 
     return entrantList;
@@ -76,7 +78,7 @@ const createRegularUserData = async(data) => {
         });
 
         await Promise.all(
-            data.doorlist.map(async doorId =>{
+            data.doorList.map(async doorId =>{
                 await UserAllow.create({
                     allowId: await uuid.uuid(),
                     userId: userData.userId,
@@ -101,7 +103,7 @@ const getSuperVisitorList = async() => {
     });
 
     const UserAllows = SuperUserAllows.flatMap(data => data);
-    const visitorList = await getEntrantList(UserAllows);
+    const visitorList = await getVisitorList(UserAllows);
 
     return visitorList;
 }
@@ -127,7 +129,7 @@ const getAdminVisitorList = async(adminId) => {
     );
 
     const UserAllows = await AdminUserAllows.flatMap(data => data);
-    const visitorList = await getEntrantList(UserAllows);
+    const visitorList = await getVisitorList(UserAllows);
 
     return visitorList;
 }
@@ -149,8 +151,6 @@ const changeVisitorAllow = async(data) => {
 // 사용함수
 //  getSuperEntrantList
 //  getAdminEntrantList
-//  getSuperVisitorList
-//  getAdminVisitorList
 const getEntrantList = async(allows) => {
     const entrantList = await Promise.all(
         allows.map(async allowData => {
@@ -173,7 +173,6 @@ const getEntrantList = async(allows) => {
 
                     const setData = {
                         userFlag: allowData.userFlag,
-                        userId: userData.userId,
                         userName: userData.userName,
                         company: userData.company,
                         position: userData.position,
@@ -191,6 +190,56 @@ const getEntrantList = async(allows) => {
             return setUserData;
         })
     )
+    const result = await entrantList.flatMap(data => data);
+    return result;
+}
+
+// 방문자 리스트 함수
+// 매개변수 : 출입 허용 목록(UserAllow)
+// 리턴값 : 방문자 목록(사용자 정보, 건물명, 출입문 명)
+// 사용함수
+//  getSuperVisitorList
+//  getAdminVisitorList
+const getVisitorList = async(allows) => {
+    const entrantList = await Promise.all(
+        allows.map(async allowData => {
+            const userDatas = await User.findAll({
+                where: {userId:allowData.userId},
+                attributes: ['userId','userName','company','position','phoneNum','reason','enterTime','exitTime']
+            });
+
+            const setUserData = await Promise.all(
+                userDatas.map(async userData => {
+
+                    const doorData = await Door.findOne({
+                        where: {doorId:allowData.doorId},
+                        attributes:['doorName', 'staId']
+                    });
+
+                    const stateData = await Statement.findOne({
+                        where: {staId:doorData.staId}
+                    })
+
+                    const setData = {
+                        allowId: allowData.allowId,
+                        userFlag: allowData.userFlag,
+                        userName: userData.userName,
+                        company: userData.company,
+                        position: userData.position,
+                        phoneNum: userData.phoneNum,
+                        staName: stateData.staName,
+                        doorName: doorData.doorName,
+                        enterTime: userData.enterTime,
+                        exitTime: userData.exitTime,
+                        reason: userData.reason,
+                        isAllowed: allowData.isAllowed,
+                    }
+                    return setData;
+                }));
+
+            return setUserData;
+        })
+    );
     const result = await entrantList.flatMap(data => data);
     return result;
 }

@@ -7,7 +7,7 @@ const router = express.Router();
 
 // 출입자 관리 리스트 API
 // GET : http://localhost:5000/user/enterant
-router.get('/entrant', async(req,res,next) => {
+router.get('/enterant', async(req,res,next) => {
     try{
         const id = req.signedCookies.accessToken;
         const isSuper = Number(req.cookies.isSuper);
@@ -29,7 +29,7 @@ router.get('/entrant', async(req,res,next) => {
 
 // 출입자(상시) 등록 API
 // POST : http://localhost:5000/user/enterant
-router.post('/entrant', async(req,res,next) =>{
+router.post('/enterant', async(req,res,next) =>{
     try{
         const id = req.signedCookies.accessToken;
         const isSuper = Number(req.cookies.isSuper);

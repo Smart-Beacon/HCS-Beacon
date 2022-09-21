@@ -1,10 +1,17 @@
 import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import css from "styled-jsx/css";
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
+import getHours from "date-fns/getHours";
+import getMinutes from "date-fns/getMinutes";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { ko } from "date-fns/esm/locale";
 
 import {
     Button,
@@ -14,10 +21,8 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalFooter,
     ModalBody,
-    ModalCloseButton,
     useDisclosure,
     Stack,
     Radio, 
@@ -137,6 +142,8 @@ const style = css`
     .TableTbody table tr{
         height: 50px;
     }
+
+
 `;
 
 function ManagementSettings(){
@@ -148,14 +155,15 @@ function ManagementSettings(){
 
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
 
-    const serverData = [
+    const [Data, setData] = useState([]);
+    const [serverData, setserverData] = useState([
         {
             "staName": "본관",
             "doorName": "전기실",
             "doorId": "A010101010",
             "isOpen": "0",
             "isMonitoring": "0",
-            "latesDate": "08/01",
+            "latestDate": "08/01",
             "openTime": "06:00:00",
             "closeTime": "00:00:00",
         },
@@ -165,7 +173,7 @@ function ManagementSettings(){
             "doorId": "B010101010",
             "isOpen": "0",
             "isMonitoring": "0",
-            "latesDate": "08/01",
+            "latestDate": "08/01",
             "openTime": "06:00:00",
             "closeTime": "00:00:00",
         },
@@ -175,7 +183,7 @@ function ManagementSettings(){
             "doorId": "B010101010",
             "isOpen": "0",
             "isMonitoring": "0",
-            "latesDate": "08/01",
+            "latestDate": "08/01",
             "openTime": "06:00:00",
             "closeTime": "00:00:00",
         },
@@ -185,13 +193,55 @@ function ManagementSettings(){
             "doorId": "B010101010",
             "isOpen": "0",
             "isMonitoring": "0",
-            "latesDate": "08/01",
+            "latestDate": "08/01",
             "openTime": "06:00:00",
             "closeTime": "00:00:00",
         }
-    ]
+    ])
+    const [AdminName, setAdminName] = useState("");
+    const [doorName, setDoorName] = useState("");
+    const [doorId, setDoorId] = useState("");
+    const [staName, setstaName] = useState("");
+    const [isMonitoring, setIsMonitoring] = useState("");
+    const [startTime, setStartTime] = useState(null);
+    const [endTime, setEndTime] = useState(null);
+    const [isSelected, setIsSelected] = useState(false);
 
-    const [Data, setData] = useState([])
+    const onSelect = (time) => {
+        setStartTime(time);
+        setIsSelected(true);
+        setEndTime(null);
+    };
+
+    const handleAdminName = (e) => setAdminName(e.target.value);
+    const handledoorname = (e) => setDoorName(e.target.value);
+    const handledoorId = (e) => setDoorId(e.target.value);
+    const handlestaName = (e) => setstaName(e.target.value);
+    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);    
+
+    const addInfo = () => {
+
+        const saveDate = startDate.getMonth()+1 + "/" + startDate.getDate();
+        const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
+
+        const info = {
+            "staName": staName,
+            "doorName": doorName,
+            "doorId": doorId,
+            "isOpen": "0",
+            "isMonitoring": isMonitoring,
+            "latestDate": saveDate,
+            "openTime": saveStartTime,
+            "closeTime": saveEndTime,
+        }
+        setserverData = serverData.push(info);
+        setData = Data.push(info);
+        console.log(info);
+        onClose();
+
+    }
+
 
     const getDoorInfo = async () =>{
         console.log('management start');
@@ -222,19 +272,18 @@ function ManagementSettings(){
       >
         <ModalOverlay />
         <ModalContent style = {{height: "80%"}}>
-          <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <FormControl style={{width: '85%', margin: "auto", marginBottom: "2%"}}>
             <div style={{display: "flex"}}>
                     <FormLabel style={{width: "30%", marginTop: "1%", fontSize: "20px", fontWeight: "bold"}}>🟦담당관리자</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} ref={initialRef}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} ref={initialRef} onChange = {handleAdminName}/>
                 </div>
             </FormControl>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlestaName}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
@@ -248,13 +297,13 @@ function ManagementSettings(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦도어명</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handledoorname}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦도어ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange= {handledoorId}/>
                 </div>
                 </FormControl>
             </div>
@@ -263,10 +312,10 @@ function ManagementSettings(){
                 <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입감시여부</FormLabel>
                 <RadioGroup defaultValue='2'>
                     <Stack spacing={5} direction='row'>
-                        <Radio colorScheme='green' value='1'>
+                        <Radio colorScheme='green' value='1' onChange = {handleisMonitoring}>
                         Y
                         </Radio>
-                        <Radio colorScheme='red' value='2'>
+                        <Radio colorScheme='red' value='2' onChange = {handleisMonitoring}>
                         N
                         </Radio>
                     </Stack>
@@ -275,16 +324,64 @@ function ManagementSettings(){
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦개방일시</FormLabel>
-                <ul className=  "DateSelect">
-                    <li>날짜 선택 🗓️</li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="Start Day"/></li>
-                    <li><DatePicker selected={startDate} onChange={date => setStartDate(date)} placeholderText="End Day"/></li>
-                </ul>
+                <div className = "OpenDayDiv" style = {{width: "100%" ,height: "150px", flexDirection: "column", justifyContent: "center",
+                                                        display: "flex", alignItems: "center",fontWeight: "bold"}}>
+                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", 
+                                                            alignItems: "center", marginLeft: "10%", marginBottom: "5%"}}>
+                        <li style = {{width: "25%"}}>날짜 선택 🗓️</li>
+                        <li style = {{border: "solid 3px gray"}}><DatePicker locale={ko}
+                                        dateFormat="yyyy-MM-dd"
+                                        selected={startDate} 
+                                        onChange={date => setStartDate(date)} 
+                                        placeholderText="Start Day"/></li>
+                    </ul>
+                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center", marginLeft: "10%"}}>
+                        <li style = {{width: "25%"}}>시간 선택</li>
+                        <li style = {{border: "solid 3px gray"}}><div><DatePicker
+                                        selected={startTime}
+                                        onChange={onSelect}
+                                        locale={ ko }
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={30}
+                                        minTime={setHours(setMinutes(new Date(), 0), 0)}
+                                        maxTime={setHours(setMinutes(new Date(), 30), 23)}
+                                        timeCaption="Time"
+                                        dateFormat="aa h:mm 시작"
+                                        placeholderText="start time"
+                                        className="mt-4"
+                                    /></div></li>
+                        <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
+                            {isSelected ? // 시작 시간을 선택해야 종료 시간 선택 가능
+                                <div><DatePicker
+                                selected={endTime}
+                                onChange={(time) => setEndTime(time)}
+                                locale={ ko }
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={30}
+                                minTime={startTime}
+                                maxTime={setHours(setMinutes(new Date(), 30), 23)}
+                                excludeTimes={[
+                                    // 시작 시간 제외
+                                    startTime,
+                                ]}
+                                timeCaption="Time"
+                                dateFormat="aa h:mm 종료"
+                                placeholderText="end time"
+                                className="mt-3"
+                            /></div>
+                
+                            : null 
+                            }
+                        </li>
+                    </ul>
+                </div>
             </FormControl>
           </ModalBody>
 
           <ModalFooter style = {{margin: "auto"}}>
-            <Button colorScheme='blue' mr={3}>
+            <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
             <Button onClick={onClose} colorScheme='blue'>취소</Button>
@@ -311,7 +408,7 @@ function ManagementSettings(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
-                            <Button onClick={onOpen} colorScheme='green'>➕</Button>
+                            <Button onClick={onOpen} colorScheme='green'><FontAwesomeIcon icon={faCirclePlus}/></Button>
                             {modal}
                         </div>
                         <div className = "TableThead">

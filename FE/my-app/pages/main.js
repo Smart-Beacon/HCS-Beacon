@@ -3,7 +3,8 @@ import Header from "./component/Header";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const style = css`
     .container{
@@ -129,7 +130,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -138,7 +139,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -147,7 +148,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -156,7 +157,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -165,7 +166,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -174,7 +175,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -183,7 +184,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -192,7 +193,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -201,7 +202,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -210,7 +211,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -219,7 +220,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -228,7 +229,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -237,7 +238,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -246,7 +247,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -255,7 +256,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -264,7 +265,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "False"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -273,7 +274,7 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -282,9 +283,17 @@ function Main(){
                 "isOpen" : "0",
                 "opentime" : "08:00:00",
                 "closetime" : "08:00:00",
-                "warnning" : "True"
+                "warnning" : "0"
             }
     ]
+
+    let ColorValue = 0;
+
+    serverData.map((item)=>{
+        if(Number(item.warnning) === 1){
+            return ColorValue = 1
+        }
+    })
 
     const [Data, setData] = useState([])
 
@@ -301,8 +310,6 @@ function Main(){
             }
      });
     }
-
-    let warning_boolean = "";
 
     return(
         <div>
@@ -323,7 +330,7 @@ function Main(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
-                            <h1 className = "siren">🚨</h1>
+                            <h1 className = "siren"><FontAwesomeIcon style = {(ColorValue === 1) ? {color : "red"} : {color : "green"}} icon={faTriangleExclamation}/></h1>
                         </div>
                     <div className = "TableThead">
                         <table>
@@ -343,7 +350,7 @@ function Main(){
                                                 <td>{Number(item.isOpen)}</td>
                                                 <td style = {{color: "blue"}}>{item.openTime}</td>
                                                 <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{Number(item.warning)}</td>
+                                                <td>{Number(item.warnning)}</td>
                                             </tr>
                                         )
                                     })}
