@@ -3,7 +3,9 @@ const bcrypt = require('bcrypt');
 
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
+const User = require('../db/models/user');
 const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -79,6 +81,36 @@ router.post('/logout', (req,res)=>{
         res.status(500).send(err.message);
     }
 });
+
+router.post('/user/login',async(req,res)=>{
+    const {userId, userPw} = req.body;
+    console.log(userId, userPw);
+    try{
+        const exUserId = await User.findOne({where:{userLoginId:userId}});
+        if(exUserId){
+            const checkPassword = await bcrypt.compare(userPw,exUserId.userLoginPw);
+            if(checkPassword){
+                const token = jwt.sign({
+                    name:exUserId.userName
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn:'3 days'
+                }
+                );
+                return res.status(200).send({token:token});
+            }else{
+                return res.status(202).send('Do not match password');
+            } 
+        }else{
+            return res.status(202).send('Not exist ID');
+        }
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).send(err.message);
+    }
+})
 
 
 module.exports = router;
