@@ -39,6 +39,9 @@ dependencies:
   time_picker_sheet: ^0.0.2+1
   top_snackbar_flutter: ^2.1.1
   url_launcher: ^6.1.5
+  device_info: ^2.0.0
+  device_info_plus: ^4.1.2
+  platform_device_id: ^1.0.1
 
 dev_dependencies:
   flutter_test:
