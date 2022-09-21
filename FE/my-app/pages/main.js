@@ -130,7 +130,7 @@ function Main(){
                 "isOpen" : "0",
                 "openTime" : "08:00:00",
                 "closeTime" : "08:00:00",
-                "warnning" : "1"
+                "warnning" : "0"
             },
             {
                 "staName" : "본관",
@@ -344,7 +344,7 @@ function Main(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                    {Data.map((item)=>{
+                                    {serverData.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
