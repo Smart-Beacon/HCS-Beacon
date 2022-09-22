@@ -4,7 +4,6 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import { CSVLink, CSVDownload } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
@@ -123,7 +122,7 @@ function visitorManagement(){
         getDoorInfo();
       }, [])
 
-    
+    const hello = "hi";
     const header = ["No.", "건물명", "출입문명", "ID(비콘)", "발송날짜", "발송시간", "관리자명", "문자발송"]
 
     const serverData = [
@@ -155,12 +154,6 @@ function visitorManagement(){
 
     const [Data, setData] = useState([])
 
-    const excel = () => { 
-        const ws = xlsx.utils.json_to_sheet(serverData);
-        const wb = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
-        xlsx.writeFile(wb, "Test.xlsx");
-    }
 
     const getDoorInfo = async () =>{
         const URL = 'http://localhost:5000/sms/record';
@@ -194,7 +187,7 @@ function visitorManagement(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 경보 이력</h1>
-                            <h1 className = "icon"><CSVLink data = {serverData} headers={header}><FontAwesomeIcon icon={faFileExcel}/></CSVLink></h1>
+                            <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
                         </div>
                         <div className = "TableThead">
                             <table>
