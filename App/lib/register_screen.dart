@@ -58,7 +58,6 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
         ),
         backgroundColor: Colors.white,
         elevation: 0.0,
-        //title: const Text("Login Page"),
       ),
       extendBodyBehindAppBar: true,
       body: GestureDetector(
@@ -337,13 +336,15 @@ class _RegisterButtonState extends State<RegisterButton> {
         case 200:
         case 201:
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, '/');
+          showSnackBar(context, "등록이 완료되었습니다.");
+          Future.delayed(const Duration(milliseconds: 3000),
+              (() => Navigator.pushNamed(context, '/')));
           //onSuccess();
           break;
         case 400:
           //fail
           // ignore: use_build_context_synchronously
-          showSnackBar(context, 'Unsigned User');
+          showSnackBar(context, '통신이 원활하지 않습니다.');
           break;
       }
     } catch (err) {
@@ -360,35 +361,45 @@ class _RegisterButtonState extends State<RegisterButton> {
     RegExp regExp = RegExp(patttern);
 
     if (widget.name == "") {
-      showSnackBar(context, 'Enter your name');
+      showSnackBar(context, '이름을 기입해주세요.');
       return false;
     } else if (widget.phoneNum == "") {
-      showSnackBar(context, 'Enter your phone number');
+      showSnackBar(context, '전화번호를 기입해주세요.');
       return false;
     } else if (!regExp.hasMatch(widget.phoneNum)) {
-      showSnackBar(context, 'Please enter your phone number correctly');
+      showSnackBar(context, '올바른 형식의 전화번호를 기입해주세요.');
       return false;
     } else if (widget.company == "") {
-      showSnackBar(context, 'Enter your company');
+      showSnackBar(context, '소속 혹은 회사를 기입해주세요.');
       return false;
     } else if (widget.position == "") {
-      showSnackBar(context, 'Enter your depart');
+      showSnackBar(context, '직책을 기입해주세요.');
       return false;
     } else if (widget.reason == "") {
-      showSnackBar(context, 'Enter your reason of enter');
+      showSnackBar(context, '방문 사유를 입력해주세요.');
       return false;
     } else if (widget.selectedDate == null) {
-      showSnackBar(context, 'Select enter date');
+      showSnackBar(context, '출입할 날짜를 선택해주세요.');
       return false;
     } else if (widget.selectedStartTime == null) {
-      showSnackBar(context, 'Select enter time');
+      showSnackBar(context, '출입할 시간를 선택해주세요.');
       return false;
     } else if (widget.selectedEndTime == null) {
-      showSnackBar(context, 'Select out time');
+      showSnackBar(context, '출입할 시간를 선택해주세요.');
       return false;
     }
-
     return true;
+  }
+
+  dynamic compareTime() {
+    final isCorrectTime =
+        widget.selectedStartTime?.isBefore(widget.selectedEndTime!);
+    if (isCorrectTime!) {
+      return true;
+    } else {
+      showSnackBar(context, '출입시간이 올바르지 않습니다.');
+      return false;
+    }
   }
 
   @override
@@ -404,7 +415,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           backgroundColor: const Color(0xff81a4ff),
         ),
         onPressed: () {
-          if (isEnterInfo()) {
+          if (isEnterInfo() && compareTime()) {
             callAPI(context);
           }
         },

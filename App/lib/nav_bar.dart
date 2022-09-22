@@ -35,7 +35,7 @@ class NavBar extends StatelessWidget {
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
             onTap: () {
-              //_makePhoneCall('tel:04212345678'); //고객센터 번호 넣기!!
+              _makePhoneCall('tel:04212345678'); //고객센터 번호 넣기!!
             },
           ),
           SizedBox(
@@ -50,11 +50,11 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  // Future<void> _makePhoneCall(String url) async {
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }

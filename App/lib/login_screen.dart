@@ -13,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userId = TextEditingController();
   TextEditingController userPw = TextEditingController();
 
-  void callAPI(BuildContext context) async {
+  Future<void> callAPI(BuildContext context) async {
     try {
       var dio = Dio();
       String url = "http://10.0.2.2:5000/auth/user/login";
@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .post(url, data: {'userId': userId.text, 'userPw': userPw.text});
       switch (res.statusCode) {
         case 200:
-          // 1. 정보저장
+          // 1. 정보저장(토큰 저장 할거야?? 토큰 활용할거지?)
           // 2. 페이지 이동
           // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, '/main');
@@ -115,9 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)),
                         backgroundColor: const Color(0xff81a4ff)),
-                    onPressed: () {
+                    onPressed: () async {
                       if (isEnterInfo()) {
-                        callAPI(context);
+                        await callAPI(context);
                       }
                     },
                     child: const Text(

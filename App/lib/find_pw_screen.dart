@@ -42,7 +42,7 @@ class _FindPwScreenState extends State<FindPwScreen> {
     super.dispose();
   }
 
-  void isUserExist(BuildContext context) async {
+  Future<int?> isUserExist(BuildContext context) async {
     try {
       var dio = Dio();
       String url = "http://10.0.2.2:5000/user/check/pw";
@@ -54,43 +54,63 @@ class _FindPwScreenState extends State<FindPwScreen> {
       switch (res.statusCode) {
         case 200:
           // userId 받음 (*로그인 ID 아님 인덱싱 ID임)
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, '인증번호가 발송되었습니다.');
           setState(() {
             userId = res.data;
           });
           break;
         default:
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, '해당 ID는 존재하지 않습니다');
           break;
       }
+      return res.statusCode;
     } catch (err) {
       showSnackBar(context, err.toString());
     }
+    return null;
   }
 
-  void verifyUser(BuildContext context) async {
+  void checkUser(result) {
+    if (result == 200) {
+      showSnackBar(context, '인증번호가 발송되었습니다.');
+    } else {
+      showSnackBar(context, '해당 ID는 존재하지 않습니다');
+    }
+  }
+
+  Future<int?> verifyUser() async {
     try {
       var dio = Dio();
       String url = "http://10.0.2.2:5000/user/find/pw";
-      var res = await dio.post(url,
-          data: {'userId': userId, 'token': token.text}).then((value) async {
-        switch (value.statusCode) {
-          case 200:
-            String user = value.toString();
-            Map<String, dynamic> users = await jsonDecode(user);
-            setState(() {
-              userRealName = users['userName'];
-              userLoginPw = users['userLoginPw'];
-            });
-            break;
-          default:
-            break;
-        }
-      });
+      final res =
+          await dio.post(url, data: {'userId': userId, 'token': token.text});
+      switch (res.statusCode) {
+        case 200:
+          var user = res.toString();
+          Map<String, dynamic> userInfo = jsonDecode(user);
+          setState(() {
+            userRealName = userInfo['userName'];
+            userLoginPw = userInfo['userLoginPw'];
+          });
+          break;
+        default:
+          break;
+      }
+      return res.statusCode;
     } catch (err) {
       showSnackBar(context, err.toString());
+    }
+    return null;
+  }
+
+  dynamic isPageMove(context, result) {
+    if (result == 200) {
+      Navigator.pushNamed(context, '/findPwResult',
+          arguments: ScreenArguments(userRealName!, userLoginPw!));
+    } else if (result == 204) {
+      showSnackBar(context, "시간 초과");
+    } else if (result == 205) {
+      showSnackBar(context, "인증번호가 일치하지 않습니다.");
+    } else {
+      showSnackBar(context, "에러");
     }
   }
 
@@ -181,12 +201,9 @@ class _FindPwScreenState extends State<FindPwScreen> {
                               width: 250,
                               height: 50,
                               child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (isEnterInfo()) {
-                                    isUserExist(context);
-                                    if (userId != null) {
-                                      // 인증번호 타이머 설정
-                                    }
+                                    checkUser(await isUserExist(context));
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -201,49 +218,46 @@ class _FindPwScreenState extends State<FindPwScreen> {
                                 ),
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 30),
-                              width: 250,
-                              height: 50,
-                              child: TextField(
-                                controller: token,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: '인증번호',
-                                    hintText: '6자리 코드 입력'),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              width: 250,
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (token.text.isEmpty) {
-                                    showSnackBar(context, '인증번호를 입력하세요');
-                                  } else {
-                                    verifyUser(context);
-                                    if (userRealName != null &&
-                                        userLoginPw != null) {
-                                      Navigator.pushNamed(
-                                          context, '/findPwResult',
-                                          arguments: ScreenArguments(
-                                              userRealName!, userLoginPw!));
-                                    }
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff81a4ff),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                            if (userId != null)
+                              Column(children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(top: 30),
+                                  width: 250,
+                                  height: 50,
+                                  child: TextField(
+                                    controller: token,
+                                    decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: '인증번호',
+                                        hintText: '6자리 코드 입력'),
+                                  ),
                                 ),
-                                child: const Text(
-                                  '인증번호 확인',
-                                  style: TextStyle(fontSize: 20.0),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  width: 250,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      if (token.text.isEmpty) {
+                                        showSnackBar(context, '인증번호를 입력하세요');
+                                      } else {
+                                        await isPageMove(
+                                            context, await verifyUser());
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xff81a4ff),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                    ),
+                                    child: const Text(
+                                      '인증번호 확인',
+                                      style: TextStyle(fontSize: 20.0),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              ])
                           ],
                         )))
               ],
