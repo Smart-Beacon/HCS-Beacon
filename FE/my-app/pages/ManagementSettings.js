@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
+import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import {setHours, setMinutes} from "date-fns";
 import DatePicker from "react-datepicker";
@@ -479,6 +480,7 @@ function ManagementSettings(){
                             </table>
                         </div>
                     </div>
+                    <UserModal/>
                 </div>
             </div>
             <style jsx>{style}</style>

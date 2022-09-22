@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Header from "./component/Header";
+import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -361,6 +362,7 @@ function Main(){
                             </table>
                         </div>
                     </div>
+                    <UserModal/>
                 </div>
             </div>
             <style jsx>{style}</style>
