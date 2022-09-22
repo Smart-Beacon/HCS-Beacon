@@ -148,13 +148,13 @@ router.post('/find/id',async(req,res)=>{
         const result = await getMainDatas.checkToken(req.body);
         if(result === 1){
             const userInfo = await getMainDatas.returnId(req.body);
-            return res.status(200).json(userInfo);
+            return res.status(200).send(userInfo);
         }else if(result === 2){
-            return res.status(400).end();
+            return res.status(204).end();
         }else if(result === 3){
-            return res.status(401).end();
+            return res.status(205).end();
         }else{
-            return res.status(402).end();
+            return res.status(400).end();
         }
     }catch(err){
         return res.status(400).send(err.message);
@@ -176,6 +176,17 @@ router.post('/find/pw',async(req,res)=>{
         }else{
             return res.status(402).end();
         }
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+});
+
+router.post('/info',async(req,res)=>{
+    //token사용할건지??
+    //사용자 인지 확인되면 그대로 값 반환
+    try{
+        const result = await getMainDatas.getUserInfo(userId);
+        return res.status(200).json(result);
     }catch(err){
         res.status(400).send(err.message);
     }
