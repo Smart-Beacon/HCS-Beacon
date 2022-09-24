@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class EditPersonalInfo extends StatefulWidget {
   const EditPersonalInfo({super.key});
@@ -11,12 +12,13 @@ class EditPersonalInfo extends StatefulWidget {
 }
 
 class _EditPersonalInfo extends State<EditPersonalInfo> {
-  String? userLoginId = "user";
-  String? userName = "최재훈";
-  String? company = "한남대학교";
-  String? position = "학생";
+  String? userLoginId = '';
+  String? userName = '';
+  String? company = '';
+  String? position = '';
+  String? phoneNum = '';
 
-  TextEditingController changePW = TextEditingController();
+  //TextEditingController changePW = TextEditingController();
 
   @override
   initState() {
@@ -26,9 +28,12 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
 
   Future<void> _getUserInfo() async {
     try {
+      const storage = FlutterSecureStorage();
+      var accessToken = await storage.read(key: 'BeaconToken');
       var dio = Dio();
+      dio.options.headers['token'] = accessToken;
       String url = "http://10.0.2.2:5000/user/info";
-      final res = await dio.post(url, data: {'userId': 'userId'});
+      final res = await dio.post(url);
       switch (res.statusCode) {
         case 200:
           var user = res.toString();
@@ -38,6 +43,7 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
             userName = userInfo["userName"];
             company = userInfo["company"];
             position = userInfo["position"];
+            phoneNum = userInfo['phoneNum'];
           });
           break;
         default:
@@ -93,7 +99,7 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                "PassWord : ${changePW.text}",
+                "PassWord : ${phoneNum!}",
                 style: const TextStyle(
                   letterSpacing: 1.5,
                   fontWeight: FontWeight.bold,
@@ -101,16 +107,16 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
                   color: Colors.indigo,
                 ),
               ),
-              TextField(
-                maxLines: 1,
-                controller: changePW,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    // border: OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.black),
-                    hintText: 'change your new pw'),
-              ),
+              // TextField(
+              //   maxLines: 1,
+              //   controller: changePW,
+              //   decoration: const InputDecoration(
+              //       filled: true,
+              //       fillColor: Colors.white,
+              //       // border: OutlineInputBorder(),
+              //       labelStyle: TextStyle(color: Colors.black),
+              //       hintText: 'change your new pw'),
+              // ),
               const SizedBox(height: 12.0),
               Text(
                 "소속 : ${company!}",

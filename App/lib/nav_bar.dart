@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -43,16 +44,28 @@ class NavBar extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 child: const Text('로그아웃'),
-                onPressed: () {}, // 로그아웃
+                onPressed: () {
+                  logOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/middle', (_) => false);
+                  // await logOut();
+                  // Navigator.popAndPushNamed(context, '/');
+                }, // 로그아웃
               ))
         ],
       ),
     );
   }
 
-  Future<void> _makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  logOut() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "BeaconToken");
+  }
+
+  Future<void> _makePhoneCall(String callNum) async {
+    final Uri url = Uri.parse(callNum);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }

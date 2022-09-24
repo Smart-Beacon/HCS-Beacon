@@ -300,12 +300,12 @@ class _FindIdResultScreenState extends State<FindIdResultScreen> {
                       Navigator.pop(context);
                       Navigator.pop(context);
                     },
-                    child: const Text('확인', style: TextStyle(fontSize: 20)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff81a4ff),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0)),
-                    )))
+                    ),
+                    child: const Text('확인', style: TextStyle(fontSize: 20))))
           ]),
         ),
       ),

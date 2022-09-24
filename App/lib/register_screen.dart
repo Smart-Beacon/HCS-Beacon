@@ -338,7 +338,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           // ignore: use_build_context_synchronously
           showSnackBar(context, "등록이 완료되었습니다.");
           Future.delayed(const Duration(milliseconds: 3000),
-              (() => Navigator.pushNamed(context, '/')));
+              (() => Navigator.pushNamed(context, '/middle')));
           //onSuccess();
           break;
         case 400:
