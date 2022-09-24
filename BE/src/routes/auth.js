@@ -83,13 +83,18 @@ router.post('/logout', (req,res)=>{
 });
 
 router.post('/user/login',async(req,res)=>{
-    const {userId, userPw} = req.body;
-    console.log(userId, userPw);
+    const {userId, userPw, venderId} = req.body;
+    console.log(userId, userPw,venderId);
     try{
         const exUserId = await User.findOne({where:{userLoginId:userId}});
         if(exUserId){
             const checkPassword = await bcrypt.compare(userPw,exUserId.userLoginPw);
             if(checkPassword){
+                if(!exUserId.vendorId){
+                    await User.update({vendorId:venderId},{where:{userLoginId:userId}});
+                    console.log("update");
+                }
+                    
                 const token = jwt.sign({
                     userId:exUserId.userId
                 },

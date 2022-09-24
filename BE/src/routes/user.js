@@ -2,6 +2,7 @@ const express = require('express');
 
 const getMainDatas = require('../service/user');
 const checkAdmin = require('../service/check');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -185,9 +186,17 @@ router.post('/info',async(req,res)=>{
     //token사용할건지??
     //사용자 인지 확인되면 그대로 값 반환
     try{
-        const result = await getMainDatas.getUserInfo(userId);
+        const token = req.headers.token;
+        console.log(token);
+        if(!token){
+            return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
+        }
+        const user = await jwt.verify(token,process.env.JWT_SECRET);
+        console.log(user.userId);
+        const result = await getMainDatas.getUserInfo(user.userId);
         return res.status(200).json(result);
     }catch(err){
+        console.log(err.message);
         res.status(400).send(err.message);
     }
 });

@@ -416,15 +416,18 @@ const returnPw = async(userId) => {
 }
 
 const getUserInfo = async(userId) => {
-    const userInfo = await User.findOne({where:{userId:userId.userId}});
+    const userInfo = await User.findOne({where:{userId:userId}});
     const result = {
         userLoginId:userInfo.userLoginId,
         userName:userInfo.userName,
+        phoneNum:userInfo.phoneNum,
         company:userInfo.company,
         position:userInfo.position,
     }
     return result;
 }
+
+
 
 module.exports = {
     getSuperEntrantList,
@@ -438,5 +441,6 @@ module.exports = {
     findUserPw,
     checkToken,
     returnId,
-    returnPw
+    returnPw,
+    getUserInfo
 }
