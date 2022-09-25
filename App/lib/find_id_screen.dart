@@ -75,7 +75,7 @@ class _FindIdScreenState extends State<FindIdScreen> {
     return null;
   }
 
-  dynamic isPageMove(context, result) {
+  dynamic isPageMove(result) {
     if (result == 200) {
       Navigator.pushNamed(context, '/findIdResult',
           arguments: ScreenArguments(userRealName!, userLoginId!));
@@ -229,8 +229,7 @@ class _FindIdScreenState extends State<FindIdScreen> {
                                             showSnackBar(
                                                 context, '인증번호를 입력하세요');
                                           } else {
-                                            isPageMove(
-                                                context, await verifyUser());
+                                            isPageMove(await verifyUser());
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(

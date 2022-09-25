@@ -48,8 +48,6 @@ class NavBar extends StatelessWidget {
                   logOut();
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/middle', (_) => false);
-                  // await logOut();
-                  // Navigator.popAndPushNamed(context, '/');
                 }, // 로그아웃
               ))
         ],

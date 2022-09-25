@@ -35,10 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigationPage() {
     if (isToken!) {
       Navigator.of(context).pushReplacementNamed('/main');
-      //Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
     } else {
       Navigator.of(context).pushReplacementNamed('/middle');
-      //Navigator.pushNamedAndRemoveUntil(context, '/middle', (_) => false);
     }
   }
 
