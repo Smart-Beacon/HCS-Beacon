@@ -78,6 +78,10 @@ class _InOutButtonState extends State<InOutButton> {
     if (result == 200) {
       // 통신 완료
       showSnackBar(context, '인증 성공하였습니다. Door is open');
+    } else if (result == 202) {
+      showSnackBar(context, '방문 인증이 되지 않았습니다.');
+    } else if (result == 204) {
+      showSnackBar(context, '방문 시간이 일치하지 않습니다.');
     } else if (result == 400) {
       // doorId 등록 x
       showSnackBar(context, '해당 출입문에는 접근이 불가합니다.');
