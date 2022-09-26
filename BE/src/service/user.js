@@ -4,7 +4,9 @@ const User = require('../db/models/user');
 const UserAllow = require('../db/models/userAllow');
 const Statement = require('../db/models/statement');
 const Token = require('../db/models/token');
+const AccessRecord = require('../db/models/accessRecord');
 const uuid = require('./createUUID');
+const time = require('./time');
 
 
 // 최고관리자용 출입자 리스트 함수
@@ -341,6 +343,9 @@ const createToken = async(userId) =>{
         },{where:{
             userId:userId,
         }});
+        // exToken.token = token;
+        // exToken.createAt = new Date();
+        // await exToken.save();
     }else{
         await Token.create({
             token,
@@ -427,6 +432,60 @@ const getUserInfo = async(userId) => {
     return result;
 }
 
+const openDoorUser = async(userId, doorId, vendorId) =>{
+    const exUser = await User.findOne({where:{userId,vendorId}});
+
+    if(!exUser){
+        // vendorId 잘못됨
+        console.log(`unRegist vendorId : ${vendorId}`);
+        return 401;
+    }else{
+        const exUserAllow = await UserAllow.findOne({where:{userId,doorId}});
+        if(exUserAllow){
+            if(exUserAllow.isAllowed){
+                const nowTime = Date.now();
+                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime || exUser.exitTime < nowTime)){
+                    //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
+                    console.log(`time range out: ${nowTime}`);
+                    return 204;
+                }
+                //상시 출입자 and 일일 방문자, 자주 방문자들
+                await AccessRecord.findOrCreate({
+                    where:{userId, exitTime:null},
+                    defaults:{
+                        uuid: await uuid.uuid(),
+                        enterDate: time.getDateHipon(nowTime),
+                        enterTime: time.getTimeSecond(nowTime),
+                        doorId: doorId,
+                    }
+                }).spread(async (record,created) => {
+                    if(created){
+                        // 들어옴 ok
+                        return 200;
+                    }else{
+                        // 나감 ok
+                        await AccessRecord.update({
+                            exitDate: time.getDateHipon(nowTime),
+                            exitTime: time.getTimeSecond(nowTime),
+                        },{where:{recordId:record.recordId}});
+
+                        return 200;
+                    }
+                })
+                
+            }else{
+                console.log(`isAllowed : ${exUserAllow.isAllowed}`);
+                return 202;
+                //수락이 안된경우 대기 or 거절
+            }
+        }else{
+            console.log(`unRegist doorId : ${doorId}`);
+            return 400;
+            // doorId 값이 잘못됨
+        }
+    }
+
+}
 
 
 module.exports = {
@@ -442,5 +501,6 @@ module.exports = {
     checkToken,
     returnId,
     returnPw,
-    getUserInfo
+    getUserInfo,
+    openDoorUser
 }

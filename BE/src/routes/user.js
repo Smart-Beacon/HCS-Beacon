@@ -201,4 +201,22 @@ router.post('/info',async(req,res)=>{
     }
 });
 
+router.post('/opendoor',async(req,res)=>{
+    try{
+        const token = req.headers.token;
+        const {doorId, deviceId} = req.body;
+        console.log(token);
+        if(!token){
+            return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
+        }
+        const user = await jwt.verify(token,process.env.JWT_SECRET);
+        console.log(user.userId);
+        const result = await getMainDatas.openDoorUser(user.userId,doorId,deviceId);
+        return res.status(result).end();
+    }catch(err){
+        console.log(err.message);
+        res.status(400).send(err.message);
+    }
+});
+
 module.exports = router;
