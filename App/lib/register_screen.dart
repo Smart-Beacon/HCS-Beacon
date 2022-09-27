@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'package:time_picker_sheet/widget/sheet.dart';
 import 'package:time_picker_sheet/widget/time_picker.dart';
 import 'package:dio/dio.dart';
@@ -23,6 +22,12 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
   DateTime? selectedDate;
   DateTime? selectedStartTime;
   DateTime? selectedEndTime;
+  String? selectStaId;
+  String? selectDoorId;
+  Statement? selectSta;
+  DoorInfo? selectDoor;
+  List<Statement>? statement;
+  List<DoorInfo>? doorInfo;
 
   String getText() {
     if (selectedDate == null) {
@@ -38,6 +43,76 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     } else {
       return '${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}';
     }
+  }
+
+  Future pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? initialDate,
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 5),
+    );
+    if (newDate == null) return;
+
+    setState(() => selectedDate = newDate);
+  }
+
+  Future pickStartTime(BuildContext context) async {
+    final newStartTime = await TimePicker.show(
+        context: context,
+        sheet: TimePickerSheet(
+          sheetTitle: 'Enter Time',
+          hourTitle: 'Hour',
+          minuteTitle: 'Minute',
+          saveButtonText: 'Select',
+        ));
+    if (newStartTime == null) return;
+    setState(() => selectedStartTime = newStartTime);
+  }
+
+  Future pickEndTime(BuildContext context) async {
+    final newEndTime = await TimePicker.show(
+        context: context,
+        sheet: TimePickerSheet(
+          sheetTitle: 'Out Time',
+          hourTitle: 'Hour',
+          minuteTitle: 'Minute',
+          saveButtonText: 'Select',
+        ));
+    if (newEndTime == null) return;
+    setState(() => selectedEndTime = newEndTime);
+  }
+
+  Future<void> getDoorInfo() async {
+    var dio = Dio();
+    String url = 'http://10.0.2.2:5000/statement/regist';
+    var res = await dio.post(url);
+    switch (res.statusCode) {
+      case 200:
+        List tagObjsJson = res.data['staData'] as List;
+        List tagObjsJson2 = res.data['doorData'] as List;
+        log(tagObjsJson.toString());
+
+        setState(() {
+          statement = tagObjsJson
+              .map((tagJson) => Statement.fromJson(tagJson))
+              .toList();
+          doorInfo = tagObjsJson2
+              .map((tagJson) => DoorInfo.fromJson(tagJson))
+              .toList();
+          statement?.map((e) => log(e.toString()));
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDoorInfo(); //건물 API 가져오기
   }
 
   @override
@@ -83,7 +158,6 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 0, bottom: 0),
                   child: TextField(
-                    maxLines: 1,
                     controller: name,
                     decoration: const InputDecoration(
                         filled: true,
@@ -227,10 +301,72 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    
                   ]),
                 ),
-                const SelectBox(),
+                SizedBox(
+                    child: Row(children: <Widget>[
+                  if (statement != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 15.0, top: 15, bottom: 0),
+                      child: DropdownButton<Statement>(
+                        borderRadius: BorderRadius.circular(10),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        hint: const Text('Select State'),
+                        value: selectSta, // 수정
+                        isDense: true,
+                        onChanged: ((value) {
+                          setState(() {
+                            selectSta = value;
+                            selectStaId = value?.staId;
+                            selectDoor = null;
+                            selectDoorId = null;
+                            log(selectStaId.toString());
+                          });
+                        }),
+                        items: statement?.map<DropdownMenuItem<Statement>>(
+                            (Statement value) {
+                          return DropdownMenuItem<Statement>(
+                            value: value,
+                            child: Text(value.staName.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  if (selectStaId != null && doorInfo != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 50.0, right: 10.0, top: 15, bottom: 0),
+                      child: DropdownButton<DoorInfo>(
+                        borderRadius: BorderRadius.circular(10),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        hint: const Text('Select door'),
+                        value: selectDoor, // 수정
+                        isDense: true,
+                        onChanged: ((value) {
+                          setState(() {
+                            selectDoor = value;
+                            selectDoorId = value?.doorId;
+                            log(selectDoorId.toString());
+                          });
+                        }),
+                        items: doorInfo
+                            ?.where((element) => element.staId == selectStaId)
+                            .map<DropdownMenuItem<DoorInfo>>((DoorInfo value) {
+                          return DropdownMenuItem<DoorInfo>(
+                            value: value,
+                            child: Text(value.doorName.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                ])),
                 RegisterButton(
                   name: name.text,
                   phoneNum: phoneNum.text,
@@ -240,6 +376,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   selectedDate: selectedDate,
                   selectedStartTime: selectedStartTime,
                   selectedEndTime: selectedEndTime,
+                  doorId: selectDoorId,
                 ),
               ],
             ),
@@ -247,45 +384,6 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
         ),
       ),
     );
-  }
-
-  Future pickDate(BuildContext context) async {
-    final initialDate = DateTime.now();
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? initialDate,
-      firstDate: DateTime(DateTime.now().year),
-      lastDate: DateTime(DateTime.now().year + 5),
-    );
-    if (newDate == null) return;
-
-    setState(() => selectedDate = newDate);
-  }
-
-  Future pickStartTime(BuildContext context) async {
-    final newStartTime = await TimePicker.show(
-        context: context,
-        sheet: TimePickerSheet(
-          sheetTitle: 'Enter Time',
-          hourTitle: 'Hour',
-          minuteTitle: 'Minute',
-          saveButtonText: 'Select',
-        ));
-    if (newStartTime == null) return;
-    setState(() => selectedStartTime = newStartTime);
-  }
-
-  Future pickEndTime(BuildContext context) async {
-    final newEndTime = await TimePicker.show(
-        context: context,
-        sheet: TimePickerSheet(
-          sheetTitle: 'Out Time',
-          hourTitle: 'Hour',
-          minuteTitle: 'Minute',
-          saveButtonText: 'Select',
-        ));
-    if (newEndTime == null) return;
-    setState(() => selectedEndTime = newEndTime);
   }
 }
 
@@ -299,13 +397,15 @@ class RegisterButton extends StatefulWidget {
       required this.reason,
       required this.selectedDate,
       required this.selectedStartTime,
-      required this.selectedEndTime});
+      required this.selectedEndTime,
+      required this.doorId});
 
   final String? name;
   final String phoneNum;
   final String? company;
   final String? position;
   final String? reason;
+  final String? doorId;
   final DateTime? selectedDate;
   final DateTime? selectedStartTime;
   final DateTime? selectedEndTime;
@@ -334,6 +434,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           'reason': widget.reason,
           'enterTime': enterTime,
           'exitTime': exitTime,
+          'doorId': widget.doorId,
         },
       );
       switch (res.statusCode) {
@@ -391,6 +492,9 @@ class _RegisterButtonState extends State<RegisterButton> {
     } else if (widget.selectedEndTime == null) {
       showSnackBar(context, '출입할 시간를 선택해주세요.');
       return false;
+    } else if (widget.doorId == null) {
+      showSnackBar(context, '출입할 도어를 선택해주세요.');
+      return false;
     }
     return true;
   }
@@ -432,95 +536,6 @@ class _RegisterButtonState extends State<RegisterButton> {
   }
 }
 
-class SelectBox extends StatefulWidget {
-  const SelectBox({super.key});
-
-  @override
-  State<SelectBox> createState() => _SelectBoxState();
-}
-
-class _SelectBoxState extends State<SelectBox> {
-
-  String? selectStaName;
-  String? selectStaId;
-  String? selectDoorId;
-  String? selectDoorName;
-  List<Statement>? statement;
-  List<DoorInfo>? doorInfo;
-
-  Future<void> getDoorInfo() async{
-    var dio = Dio();
-    String url = 'http://10.0.2.2:5000/statement/regist';
-    var res = await dio.post(url);
-    switch(res.statusCode){
-      case 200:
-          //String staInfo = jsonDecode(res.data.toString());
-          // Map<String, dynamic> resultData = jsonDecode(res.data);
-          //_statement = json.decode(res.data['staData'].toString());
-          //log(res.data.toString());
-          // log(res.data['staData'].toString());
-          // log(res.data['doorData'].toString());
-          //var rest = result['staData'] as List;
-          // List data = jsonDecode(res.data)['staData'];
-          //Event event = Event.fromJson(res.data);
-          //List<Statement> ss = Statement.fromJson(resultData['staData']);
-          //Map<String, dynamic> staDatas = jsonDecode(res.data.toString());
-          //Map<String, dynamic> doorDatas = jsonDecode(staInfo['doorData'].toString());
-          List tagObjsJson = res.data['staData'] as List;
-          List tagObjsJson2 = res.data['doorData'] as List;
-          log(tagObjsJson.toString());
-          // log(tagObjsJson[0].toString());
-          // log(tagObjsJson2[0]["doorId"].toString());
-
-        setState(() {
-          // statement = res.data['staData'].cast;
-          // doorInfo = res.data['doorData'] as List;
-          //log(doorInfo.toString());
-          //_statement = json.decode(res.data['staData'].toString());
-          //_statement = rest.map<Statement>((e) => Statement.fromJson(e)).toList();
-          statement = tagObjsJson.map((tagJson) => Statement.fromJson(tagJson)).toList();
-          doorInfo = tagObjsJson2.map((tagJson) => DoorInfo.fromJson(tagJson)).toList();
-          log(statement![0].toString());
-        });
-        break;
-      default:
-        break;
-    }
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getDoorInfo();  //건물 API 가져오기
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      // child: Row(
-      //   children: <Widget>[
-      //     DropdownButton<String>(
-      //         hint: const Text('Select Statement'),
-      //         value: statement![0].staName!, // 수정
-      //         isDense: true,
-      //         onChanged: ((value) {
-      //           setState(() {
-      //             selectStaId = value;
-      //           });
-      //         }),
-      //         items: statement?.map<DropdownMenuItem<String>>((Statement value) {
-      //           return DropdownMenuItem<String>(
-      //             value: value.staName.toString(),
-      //             child: Text(value.staName.toString()),
-      //             );
-      //         }).toList(),
-      //        ),
-      //   ]));
-    );
-  }
-}
-
 class Statement {
   final String? staId;
   final String? staName;
@@ -528,8 +543,7 @@ class Statement {
   Statement({this.staId, this.staName});
 
   factory Statement.fromJson(Map<String, dynamic> json) {
-    return Statement(
-        staId: json['staId'], staName: json['staName']);
+    return Statement(staId: json['staId'], staName: json['staName']);
   }
 }
 
@@ -541,23 +555,8 @@ class DoorInfo {
   DoorInfo({this.staId, this.doorId, this.doorName});
   factory DoorInfo.fromJson(Map<String, dynamic> json) {
     return DoorInfo(
-        staId: json['staId'], doorId: json['doorId'], doorName: json['doorName']);
-  }
-}
-
-class Event{
-  final List<Statement>? staDatas;
-  final List<DoorInfo>? doorDatas;
-
-  Event({this.doorDatas, this.staDatas});
-  factory Event.fromJson(dynamic json) {
-    var stas = json['staData'] as List;
-    var doors = json['doorData'] as List;
-    List<Statement> stateList = stas.map((i) => Statement.fromJson(i)).toList();
-    List<DoorInfo> doorList = doors.map((i) => DoorInfo.fromJson(i)).toList();
-    return Event(
-        staDatas: stateList,//List<Statement>.from(json["staData"].map((x) => Statement.fromJson(x))),
-        doorDatas: doorList//List<DoorInfo>.from(json["doorData"].map((x) => DoorInfo.fromJson(x))),
-    );
+        staId: json['staId'],
+        doorId: json['doorId'],
+        doorName: json['doorName']);
   }
 }
