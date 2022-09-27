@@ -31,5 +31,16 @@ router.post('/',async(req,res,next) =>{
     }
 });
 
+router.post('/regist',async(req,res,next) =>{
+    try{
+        const result = {
+            staData: await getStatementOfSuper(),
+            doorData: await getDoorOfSuper(),
+        }
+        res.status(200).json(result);
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+});
 module.exports = router;
 
