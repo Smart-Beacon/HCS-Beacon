@@ -260,7 +260,7 @@ const registUser = async(userInfo) => {
 
     if(exUser){
         console.log('유저 확인');
-        await User.update({
+        const user = await User.update({
             reason: userInfo.reason,
             enterTime: userInfo.enterTime,
             exitTime: userInfo.exitTime
@@ -269,11 +269,18 @@ const registUser = async(userInfo) => {
             userName:userInfo.name
         }});
 
+        await UserAllow.create({
+            allowId: await uuid.uuid(),
+            userFlag:3,
+            userId: user.userId,
+            doorId: userInfo.doorId
+        });
+
         return 200
     }else{
         console.log('유저 없음');
         console.log(userInfo);
-        await User.create({
+        const user = await User.create({
             userId: await uuid.uuid(),
             userName: userInfo.name,
             company: userInfo.company,
@@ -284,6 +291,12 @@ const registUser = async(userInfo) => {
             reason: userInfo.reason,
             enterTime: Date.parse(userInfo.enterTime),
             exitTime: Date.parse(userInfo.exitTime)
+        });
+        await UserAllow.create({
+            allowId: await uuid.uuid(),
+            userFlag:3,
+            userId: user.userId,
+            doorId: userInfo.doorId
         });
         return 201
     }
