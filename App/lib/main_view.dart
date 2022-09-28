@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smart_beacon_customer_app/nav_bar.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
+import 'dart:developer';
 
 class MainView extends StatelessWidget {
   const MainView({Key? key}) : super(key: key);
@@ -29,8 +30,8 @@ class MainView extends StatelessWidget {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const <Widget>[
-              InOutButton(text: 'In'),
-              InOutButton(text: 'Out')
+              InOutButton(text: 'Open'),
+              //InOutButton(text: 'Out')
             ],
           ))),
     );
@@ -45,34 +46,6 @@ class InOutButton extends StatefulWidget {
 }
 
 class _InOutButtonState extends State<InOutButton> {
-  String? deviceId;
-  String? token;
-  String? doorId;
-
-  getDeviceId() async {
-    String? result = await PlatformDeviceId.getDeviceId;
-
-    // Update the UI
-    setState(() {
-      deviceId = result;
-    });
-  }
-
-  getToken() async {
-    const storage = FlutterSecureStorage();
-    var result = await storage.read(key: 'BeaconToken');
-
-    setState(() {
-      token = result;
-    });
-  }
-
-  getDoorId() async {
-    // 블루투스 통신
-    setState(() {
-      doorId = '1';
-    });
-  }
 
   void checkUser(result) {
     if (result == 200) {
@@ -92,41 +65,54 @@ class _InOutButtonState extends State<InOutButton> {
       // token 일치 x
       showSnackBar(context, '사용자 인증이 안되었습니다.');
     } else {
+      log(result.toString());
       showSnackBar(context, '서버 오류');
     }
   }
 
   Future<int?> isOpen() async {
     try {
-      getDeviceId();
-      getToken();
-      getDoorId();
-      var dio = Dio();
-      dio.options.headers['token'] = token;
-      String url = "http://10.0.2.2:5000/user/opendoor";
-      var res =
-          await dio.post(url, data: {'doorId': doorId, 'deviceId': deviceId});
-      return res.statusCode;
+      String? deviceId = await PlatformDeviceId.getDeviceId;
+      const storage = FlutterSecureStorage();
+      String? token = await storage.read(key:'BeaconToken');
+      String? doorId = '01';
+
+      if(deviceId != "" && token != "" && doorId != ""){
+        log("${deviceId.toString()}, ${token.toString()}, ${doorId.toString()}");        
+        var dio = Dio();
+        dio.options.headers['token'] = token;
+        String url = "http://10.0.2.2:5000/user/opendoor";
+        var res = await dio.post(url, data: {'doorId': doorId, 'deviceId': deviceId});
+        return res.statusCode;
+      }
+      return 404;
+      
     } catch (err) {
       showSnackBar(context, err.toString());
     }
     return null;
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(20),
       width: 150,
-      height: 110,
+      height: 150,
       child: ElevatedButton(
         onPressed: () async {
           checkUser(await isOpen());
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF4E7EFC),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0))),
+            shape: const CircleBorder(),),
+            // shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(30.0))),
         child: Text(
           widget.text,
           style: const TextStyle(fontSize: 50.0),
