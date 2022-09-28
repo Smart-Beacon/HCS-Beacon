@@ -260,19 +260,22 @@ const registUser = async(userInfo) => {
 
     if(exUser){
         console.log('유저 확인');
-        const user = await User.update({
-            reason: userInfo.reason,
-            enterTime: userInfo.enterTime,
-            exitTime: userInfo.exitTime
-        },{where:{
-            phoneNum:userInfo.phoneNum,
-            userName:userInfo.name
-        }});
-
+        exUser.reason = userInfo.reason;
+        exUser.enterTime = userInfo.enterTime;
+        exUser.exitTime = userInfo.exitTime;
+        // const user = await User.update({
+        //     reason: userInfo.reason,
+        //     enterTime: userInfo.enterTime,
+        //     exitTime: userInfo.exitTime
+        // },{where:{
+        //     phoneNum:userInfo.phoneNum,
+        //     userName:userInfo.name
+        // }});
+        await exUser.save();
         await UserAllow.create({
             allowId: await uuid.uuid(),
             userFlag:3,
-            userId: user.userId,
+            userId: exUser.userId,
             doorId: userInfo.doorId
         });
 
@@ -447,7 +450,7 @@ const getUserInfo = async(userId) => {
 
 const openDoorUser = async(userId, doorId, vendorId) =>{
     const exUser = await User.findOne({where:{userId,vendorId}});
-
+    console.log(doorId)
     if(!exUser){
         // vendorId 잘못됨
         console.log(`unRegist vendorId : ${vendorId}`);
@@ -456,36 +459,31 @@ const openDoorUser = async(userId, doorId, vendorId) =>{
         const exUserAllow = await UserAllow.findOne({where:{userId,doorId}});
         if(exUserAllow){
             if(exUserAllow.isAllowed){
-                const nowTime = Date.now();
-                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime || exUser.exitTime < nowTime)){
+                var nowTime = new Date();
+                nowTime.setHours(nowTime.getHours()+9);
+                console.log(nowTime);
+                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime)){
                     //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
                     console.log(`time range out: ${nowTime}`);
                     return 204;
                 }
                 //상시 출입자 and 일일 방문자, 자주 방문자들
-                await AccessRecord.findOrCreate({
-                    where:{userId, exitTime:null},
-                    defaults:{
-                        uuid: await uuid.uuid(),
+                const exAccessRecord = await AccessRecord.findOne({where:{userId, doorId, exitTime:null}});
+                if(exAccessRecord){
+                    exAccessRecord.exitDate = time.getDateHipon(nowTime);
+                    exAccessRecord.exitTime = time.getTimeSecond(nowTime),
+                    console.log(exAccessRecord.recordId);
+                    await exAccessRecord.save();
+                }else{
+                    await AccessRecord.create({
+                        recordId: await uuid.uuid(),
                         enterDate: time.getDateHipon(nowTime),
                         enterTime: time.getTimeSecond(nowTime),
                         doorId: doorId,
-                    }
-                }).spread(async (record,created) => {
-                    if(created){
-                        // 들어옴 ok
-                        return 200;
-                    }else{
-                        // 나감 ok
-                        await AccessRecord.update({
-                            exitDate: time.getDateHipon(nowTime),
-                            exitTime: time.getTimeSecond(nowTime),
-                        },{where:{recordId:record.recordId}});
-
-                        return 200;
-                    }
-                })
-                
+                        userId: userId,
+                    });
+                }
+                return 200;
             }else{
                 console.log(`isAllowed : ${exUserAllow.isAllowed}`);
                 return 202;

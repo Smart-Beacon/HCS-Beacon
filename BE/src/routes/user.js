@@ -206,6 +206,7 @@ router.post('/opendoor',async(req,res)=>{
         const token = req.headers.token;
         const {doorId, deviceId} = req.body;
         console.log(token);
+        console.log(doorId, deviceId);
         if(!token){
             return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
         }
@@ -215,7 +216,7 @@ router.post('/opendoor',async(req,res)=>{
         return res.status(result).end();
     }catch(err){
         console.log(err.message);
-        res.status(400).send(err.message);
+        res.status(404).send(err.message);
     }
 });
 

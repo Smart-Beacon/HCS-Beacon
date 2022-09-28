@@ -7,6 +7,7 @@ const getDate = (date) => {
 }
 
 const getDateHipon = (date) =>{
+    console.log(date);
     var alertYear = date.getFullYear();
     var alertMonth = ('0' + (date.getUTCMonth() + 1)).slice(-2);
     var alertDay = ('0' + date.getUTCDate()).slice(-2);
