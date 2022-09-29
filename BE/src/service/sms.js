@@ -137,7 +137,13 @@ const sendSMS = async(phoneNum, msg) =>{
         "repeatNum": '',
         "repeatTime": '',
     };
-    var smsRequest = await request.post(sms_url,datas,function(err, res, body) {
+
+    const option = {
+        uri: sms_url,
+        method: "POST",
+        form: datas,
+    }
+    var smsRequest = await request.post(option,function(err, res, body) {
         if(err){    
             //console.log(err);
         }else{
