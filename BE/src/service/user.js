@@ -7,6 +7,7 @@ const Token = require('../db/models/token');
 const AccessRecord = require('../db/models/accessRecord');
 const uuid = require('./createUUID');
 const time = require('./time');
+const {sendSMS} = require('./sms');
 
 
 // 최고관리자용 출입자 리스트 함수
@@ -337,7 +338,7 @@ const findUserPw = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        createToken(exUser.userId);
+        createToken(exUser.userId,exUser.phoneNum);
         return exUser.userId;
     }else{
         return null;
@@ -347,7 +348,7 @@ const findUserPw = async(user) => {
 
 // 6자리 인증번호 만드는 함수
 // 사용 API : 유저 ID, PW 찾기 API
-const createToken = async(userId) =>{
+const createToken = async(userId,phoneNum) =>{
     const exToken = await Token.findOne({
         where:{userId:userId}
     });
@@ -369,6 +370,7 @@ const createToken = async(userId) =>{
             userId:userId
         });
     }
+    sendSMS(phoneNum,token);
     //문자발생 함수 token 값 인수
 }
 
@@ -462,7 +464,7 @@ const openDoorUser = async(userId, doorId, vendorId) =>{
                 var nowTime = new Date();
                 nowTime.setHours(nowTime.getHours()+9);
                 console.log(nowTime);
-                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime)){
+                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime || exUser.exitTime < nowTime)){
                     //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
                     console.log(`time range out: ${nowTime}`);
                     return 204;
