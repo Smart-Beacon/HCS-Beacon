@@ -78,7 +78,7 @@ router.get('/adminemergency', async(req,res,next) => {
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check === 0){
-            const data = await getMainDatas.getSuperDoorDatas();
+            const data = await getMainDatas.getSuperEmergency();
             res.json(data);
         }else if(check === 1){
             const data = await getMainDatas.getAdminEmergency(id);
@@ -112,5 +112,7 @@ router.post('/adminemergency', async(req,res,next) => {
         res.status(400).send(err.message);
     }
 });
+
+
 
 module.exports = router;

@@ -31,15 +31,14 @@ const getStatementOfAdmin = async(id) => {
                 where:{staId:staId.staId},
                 attributes:['staId','staName']
             });
-
             return staData;
         })
     );
-
+    
     return result;
 };
 
-const getDoorOfAdmin = async() => {
+const getDoorOfAdmin = async(id) => {
     const doorIds = await AdminDoor.findAll({
         where:{adminId:id},
         attributes:['doorId']
