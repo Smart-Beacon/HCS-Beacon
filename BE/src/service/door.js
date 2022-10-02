@@ -5,8 +5,7 @@ const AdminStatement = require('../db/models/adminStatement');
 const AdminDoor = require('../db/models/adminDoor');
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
-
-const { uuid } = require('./createUUID');
+const uuid = require('./createUUID');
 
 
 // 최고관리자 혹은 중간 관리자 이름 가져오는 함수
@@ -148,9 +147,10 @@ const getAdminDoorDatas = async(adminId) =>{
 // 새로운 비콘 출입문을 등록하는 함수
 // 담당관리자ID, 건물명, 건물ID, 도어명, 도어ID, 출입감시여부, 개방일시(요일선택, 날짜 선택, 개방시간, 폐쇄시간)
 const createDoorData = async(data) =>{
-
+    console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId:data.adminLoginId}});
     const exDoor = await Door.findOne({where:{doorId:data.doorId}});
+    console.log(String(data.openWeeks));
     if(exAdmin && !exDoor){
         //exist Admin and Unregisted Door Id
         await Door.create({
@@ -165,15 +165,16 @@ const createDoorData = async(data) =>{
         });
     
         await AdminDoor.create({
-            controlId: uuid(),
+            controlId: uuid.uuid(),
             doorId: data.doorId,
             adminId: exAdmin.adminId,
         });
-    
-        await AdminStatement.create({
-            controlId: uuid(),
-            staId: data.staId,
-            adminId: exAdmin.adminId,
+        
+        await AdminStatement.findOrCreate({
+            where: { staId: data.staId, adminId: exAdmin.adminId },
+            defaults:{
+                controlId: uuid.uuid(),    
+            }
         });
 
         return true;

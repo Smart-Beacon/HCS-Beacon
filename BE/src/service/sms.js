@@ -96,7 +96,7 @@ const sendAppLinkSMS = async(body) => {
 };
 //문자 전송 함수
 const sendSMS = async(phoneNum, msg) =>{
-    let sms_url = "http://sslsms.cafe24.com/sms_sender.php"; // HTTPS 전송요청 URL
+    let sms_url = "https://sslsms.cafe24.com/sms_sender.php"; // HTTPS 전송요청 URL
     //sms_url = "http://sslsms.cafe24.com/sms_sender.php";
     
     const params = {
@@ -171,7 +171,7 @@ const sendSMS = async(phoneNum, msg) =>{
         method: "POST",
         body: {
             user_id: Buffer.from(process.env.CAFE24_USER_ID, "utf8").toString('base64'),
-            passwd: Buffer.from(process.env.CAFE24_SECURE_KEY, "utf8").toString('base64'),
+            secure: Buffer.from(process.env.CAFE24_SECURE_KEY, "utf8").toString('base64'),
             sphone1: Buffer.from(process.env.CAFE24_SPHONE1, "utf8").toString('base64'),
             sphone2: Buffer.from(process.env.CAFE24_SPHONE2, "utf8").toString('base64'),
             sphone3: Buffer.from(process.env.CAFE24_SPHONE3, "utf8").toString('base64'),
