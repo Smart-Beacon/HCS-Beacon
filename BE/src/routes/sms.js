@@ -31,7 +31,6 @@ router.post('/send', async(req,res,next) => {
         const isSuper = Number(req.cookies.isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
-            console.log('ok');
             const { name, phoneNum }= req.body;
             let link = 'ss';
             const result = await sendSMS(phoneNum, link);
