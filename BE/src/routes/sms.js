@@ -31,13 +31,16 @@ router.post('/send', async(req,res,next) => {
         const isSuper = Number(req.cookies.isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
-            const result = await sendSMS(req.body);
+            const { name, phoneNum }= req.body;
+            let link = 'ss';
+            const result = await sendSMS(phoneNum, link);
             res.json(result);
         }else{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
         res.status(400).send(err.message);
+        console.log(err.message);
     }
 });
 

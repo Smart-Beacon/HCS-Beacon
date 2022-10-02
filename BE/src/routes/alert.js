@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (req,res,next) =>{
     try{    
         const id = req.signedCookies.accessToken;
-        const isSuper = req.cookies.isSuper;
+        const isSuper = Number(req.cookies.isSuper);
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
