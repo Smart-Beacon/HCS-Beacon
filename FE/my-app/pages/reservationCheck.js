@@ -8,9 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios";
-import {setHours, setMinutes} from "date-fns";
 import {
-    Select,
     Button
   } from '@chakra-ui/react'
 
@@ -192,7 +190,7 @@ function reservationCheck(){
         {
             "userName": "박병근",
             "phoneNum": "010-3152-1297",
-            "latestDate": "08/05",
+            "latestDate": "2022/08/05",
             "enterTime": "07:00",
             "exitDate": "19:00",
             "reason": "출근을 해야합니다",
@@ -201,7 +199,7 @@ function reservationCheck(){
         {
             "userName": "박병근",
             "phoneNum": "010-3152-1297",
-            "latestDate": "08/15",
+            "latestDate": "2022/08/15",
             "enterTime": "07:00",
             "exitDate": "19:00",
             "reason": "출근을 해야합니다",
@@ -210,7 +208,7 @@ function reservationCheck(){
         {
             "userName": "최재훈",
             "phoneNum": "010-1234-2342",
-            "latestDate": "09/01",
+            "latestDate": "2022/09/01",
             "enterTime": "08:00",
             "exitDate": "20:00",
             "reason": "퇴근을 해야합니다",
@@ -222,7 +220,7 @@ function reservationCheck(){
         {
             "userName": "박병근",
             "phoneNum": "010-3152-1297",
-            "latestDate": "08/05",
+            "latestDate": "2022/08/05",
             "enterTime": "07:00",
             "exitDate": "19:00",
             "reason": "출근을 해야합니다",
@@ -231,7 +229,7 @@ function reservationCheck(){
         {
             "userName": "박병근",
             "phoneNum": "010-3152-1297",
-            "latestDate": "08/15",
+            "latestDate": "2022/08/15",
             "enterTime": "07:00",
             "exitDate": "19:00",
             "reason": "출근을 해야합니다",
@@ -240,7 +238,7 @@ function reservationCheck(){
         {
             "userName": "최재훈",
             "phoneNum": "010-1234-2342",
-            "latestDate": "09/01",
+            "latestDate": "2022/09/01",
             "enterTime": "08:00",
             "exitDate": "20:00",
             "reason": "퇴근을 해야합니다",
@@ -248,12 +246,17 @@ function reservationCheck(){
         }
 
     ])
-    const [startTime, setStartTime] = useState(null);
-    const [endTime, setEndTime] = useState(null);
+    const [number, setNumber] = useState(0);
     const [isSelected, setIsSelected] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [allow, setAllow] = useState("");
+    const [allow, setAllow] = useState(false);
+
+    const DataLen = [];
+    for(let i = 0; i < serverData.length; i++){
+        DataLen.push(false);
+    }
+    const [disabled, setDisabled] = useState(DataLen);
 
     //시작일 선택시 시작일별 필터링 함수
     const StartDaySearch = (date) => {
@@ -266,19 +269,31 @@ function reservationCheck(){
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
-        const Month = date.getMonth()+1;
+        startDate.setDate(startDate.getDate()-1);
         const endDayresult = serverDataClone.filter(e => 
-            new Date(e.latestDate).getMonth()+1 === Month && 
+            new Date(e.latestDate).getTime() >= startDate.getTime() &&
             new Date(e.latestDate).getTime() <= date.getTime());
         setserverData(endDayresult);
-        }
-
-    const haddleButtonTrue = () => {
-        setAllow("Yes");
     }
 
-    const haddleButtonFalse = () => {
-        setAllow("No");
+    const haddleButtonTrue = (e) => {
+        setAllow(true);
+        e.preventDefault();
+        e.currentTarget.disabled = true;
+        const disabledClone = [...disabled];
+        disabledClone[number] = true;
+        setDisabled(disabledClone); 
+        setNumber(number+1);
+    }
+
+    const haddleButtonFalse = (e) => {
+        setAllow(false);
+        e.preventDefault();
+        e.currentTarget.disabled = true;
+        const disabledClone = [...disabled];
+        disabledClone[number] = true;
+        setDisabled(disabledClone); 
+        setNumber(number+1);
     }
 
     const getDoorInfo = async () =>{
@@ -314,7 +329,6 @@ function reservationCheck(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -331,8 +345,8 @@ function reservationCheck(){
                         </div>
                         <div className = "daySelect">
                             <div className = "timeSelect">
-                            <p style = {{width: "15%"}}>▶ 날짜 선택 🗓️</p> 
-                                <div className = "DatePicker" style = {{border: "solid 3px gray", marginRight: "3%"}}> 
+                            <p style = {{width: "10%"}}>▶ 날짜 선택 🗓️</p> 
+                                <div className = "DatePicker" style = {{border: "solid 3px gray", marginRight: "3%", width: "12%"}}> 
                                     <DatePicker
                                         selected={startDate}
                                         onChange={(date) => {
@@ -345,12 +359,13 @@ function reservationCheck(){
                                         endDate={endDate}
                                     />
                                 </div>
-                                <div className = "DatePicker" style = {{border: "solid 3px gray"}}> 
+                                <div className = "DatePicker" style = {{border: "solid 3px gray", width: "12%"}}> 
                                     <DatePicker
                                         selected={endDate}
                                         onChange={(date) => {
                                             setEndDate(date)
-                                            EndDaySearch(date)}}
+                                            EndDaySearch(date)
+                                        }}
                                         dateFormat="yyyy년 MM월 dd일"
                                         selectsEnd
                                         startDate={startDate}
@@ -358,45 +373,6 @@ function reservationCheck(){
                                         minDate={startDate}
                                     />
                                 </div>
-                                    <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center"
-                                                            ,marginLeft: "7%"}}>
-                                        <li style = {{width: "10%", marginRight: "3%"}}>▶ 시간 선택</li>
-                                        <li style = {{border: "solid 3px gray"}}><div><DatePicker
-                                                        selected={startTime}
-                                                        onChange={onSelect}
-                                                        showTimeSelect
-                                                        showTimeSelectOnly
-                                                        timeIntervals={30}
-                                                        minTime={setHours(setMinutes(new Date(), 0), 0)}
-                                                        maxTime={setHours(setMinutes(new Date(), 30), 23)}
-                                                        timeCaption="Time"
-                                                        dateFormat="aa h:mm 시작"
-                                                        placeholderText="start time"
-                                                        className="mt-4"
-                                                    /></div></li>
-                                            {isSelected ? // 시작 시간을 선택해야 종료 시간 선택 가능
-                                            <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
-                                                <div><DatePicker
-                                                selected={endTime}
-                                                onChange={(time) => setEndTime(time)}
-                                                showTimeSelect
-                                                showTimeSelectOnly
-                                                timeIntervals={30}
-                                                minTime={startTime}
-                                                maxTime={setHours(setMinutes(new Date(), 30), 23)}
-                                                excludeTimes={[
-                                                    // 시작 시간 제외
-                                                    startTime,
-                                                ]}
-                                                timeCaption="Time"
-                                                dateFormat="aa h:mm 종료"
-                                                placeholderText="end time"
-                                                className="mt-3"
-                                            /></div>
-                                            </li>
-                                            : null 
-                                            }
-                                        </ul>
                             </div>
                         </div>
                         <div className = "TableThead">
@@ -422,15 +398,18 @@ function reservationCheck(){
                                                     <td>{item.exitDate}</td>
                                                     <td>{item.reason}</td>
                                                     <td>{item.isAllowed}</td>
-                                                    <td><Button colorScheme='teal' variant='solid' 
-                                                    onClick={haddleButtonTrue}
-                                                    style = {{marginRight:"7%"}}>
-                                                        Y
-                                                        </Button>
-                                                        <Button colorScheme='orange' variant='solid'
-                                                        onClick={haddleButtonFalse}>
-                                                            N
-                                                        </Button></td>
+                                                    <td>
+                                                        <fieldset disabled = {disabled[index]}>
+                                                            <Button colorScheme='teal' variant='solid' 
+                                                        onClick={haddleButtonTrue}
+                                                        style = {{marginRight:"7%"}}>
+                                                            Y
+                                                            </Button>
+                                                            <Button colorScheme='orange' variant='solid'
+                                                            onClick={haddleButtonFalse}>
+                                                                N
+                                                            </Button>
+                                                        </fieldset></td>
                                                 </tr>
                                             )
                                         })}

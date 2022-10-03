@@ -325,7 +325,6 @@ function Main(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">

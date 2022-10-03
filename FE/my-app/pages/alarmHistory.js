@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import ExportExcel from "./component/Excelexport";
 
 const style = css`
     .container{
@@ -145,11 +144,12 @@ function visitorManagement(){
 
     ]
 
+
     useEffect(() => {
         getDoorInfo();
       }, [])
 
-    const [Data, setData] = useState([])
+    const [Data, setData] = useState([]);
 
     const getDoorInfo = async () =>{
         const URL = 'http://localhost:5000/alert';
@@ -177,13 +177,12 @@ function visitorManagement(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li className = "Select"><Link href = "#">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 경보 이력</h1>
-                            <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
+                            <ExportExcel excelData={serverData} fileName={"Excel Export"}/>
                         </div>
                         <div className = "TableThead">
                             <table>
