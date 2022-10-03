@@ -158,7 +158,7 @@ const createDoorData = async(data) =>{
             doorName: data.doorName,
             isMonitoring: data.isMonitoring,
             openWeeks: data.openWeeks,
-            openDates: data.openDates,
+            openDates: String(data.openDates),
             openTime: data.openTime,
             closeTime: data.closeTime,
             staId: data.staId
