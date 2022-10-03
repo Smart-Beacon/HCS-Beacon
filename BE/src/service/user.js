@@ -69,7 +69,7 @@ const createRegularUserData = async(data) => {
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
     if(!exUser){
         const userData = await User.create({
-            userId: await uuid.uuid(),
+            userId: uuid.uuid(),
             userName: data.userName,
             company: data.company,
             position: data.position,
@@ -84,7 +84,7 @@ const createRegularUserData = async(data) => {
         await Promise.all(
             data.doorList.map(async doorId =>{
                 await UserAllow.create({
-                    allowId: await uuid.uuid(),
+                    allowId: uuid.uuid(),
                     userId: userData.userId,
                     doorId: doorId,
                     isAllowed: 1,
