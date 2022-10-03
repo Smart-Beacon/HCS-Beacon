@@ -196,12 +196,13 @@ function ManagementSettings(){
             "closeTime": "00:00:00",
         }
     ])
+    const [serverDataInfo, setServerDataInfo] = useState([]);
     const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
     const [staName, setstaName] = useState("");
     const [staId, setstaId] = useState("");
-    const [isMonitoring, setIsMonitoring] = useState("");
+    const [isMonitoring, setIsMonitoring] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
     const [weekCheck, setweekCheck] = useState("");
@@ -233,6 +234,7 @@ function ManagementSettings(){
         const saveDate = startDate.getMonth()+1 + "/" + startDate.getDate();
         const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        const isMonitoringBoolean = Boolean(Number(isMonitoring));
 
         const info = {
             "staName": staName,
@@ -251,17 +253,17 @@ function ManagementSettings(){
             "staId" : staId,
             "doorName": doorName,
             "doorId": doorId,
-            "isOpen": "0",
-            "isMonitoring": isMonitoring,
-            "latestDate": saveDate,
+            "isMonitoring": isMonitoringBoolean,
+            "openWeeks": checkedList,
+            "openDates": String(startDate),
             "openTime": saveStartTime,
-            "closeTime": saveEndTime,
-            "openWeeks": weekCheck,
-            "openWeeks": checkedList
+            "closeTime": saveEndTime
         }
         setserverData = serverData.push(info);
         setData = Data.push(info);
         console.log(serverinfo);
+        setServerDataInfo = serverDataInfo.push(serverinfo);
+        postDoorInfo();
         onClose();
 
     }
@@ -271,7 +273,7 @@ function ManagementSettings(){
         console.log('management start');
         const URL = 'http://localhost:5000/door/management';
         axios.defaults.withCredentials = true;
-        axios.get(URL)
+        await axios.get(URL)
         .then(res => {
             console.log(res);
             if(res.status === 200){
@@ -280,6 +282,20 @@ function ManagementSettings(){
                 alert(res.data);
             }
      });
+    }
+
+    const postDoorInfo = async () =>{
+        const URL = "http://localhost:5000/door/register"
+        axios.defaults.withCredentials = true;
+            await axios.post(URL, serverDataInfo)
+            .then(res => {
+                console.log(res);
+                if(res.status === 201){
+                    console.log("======================", "데이터 전송 성공");
+                }else{
+                    alert(res.data);
+                }
+            });
     }
 
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -336,10 +352,10 @@ function ManagementSettings(){
                 <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입감시여부</FormLabel>
                 <RadioGroup defaultValue='2'>
                     <Stack spacing={5} direction='row'>
-                        <Radio colorScheme='green' value='1' onChange = {handleisMonitoring}>
+                        <Radio colorScheme='green' value = "1" onChange = {handleisMonitoring}>
                         Y
                         </Radio>
-                        <Radio colorScheme='red' value='2' onChange = {handleisMonitoring}>
+                        <Radio colorScheme='red' value = "0" onChange = {handleisMonitoring}>
                         N
                         </Radio>
                     </Stack>
@@ -441,13 +457,12 @@ function ManagementSettings(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
-                            <Button onClick={onOpen} colorScheme='green'><FontAwesomeIcon icon={faCirclePlus}/></Button>
+                            <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
                             {modal}
                         </div>
                         <div className = "TableThead">
@@ -462,7 +477,7 @@ function ManagementSettings(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>

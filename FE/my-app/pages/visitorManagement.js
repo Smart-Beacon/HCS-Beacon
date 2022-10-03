@@ -240,7 +240,8 @@ function visitorManagement(){
         }
 
     ]);
-    const [Data, setData] = useState([])
+    const [Data, setData] = useState([]);
+    const [staData, setStaData] = useState([]);
     const [userName, setUserName] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
     const [company, setCompany] = useState("");
@@ -258,8 +259,12 @@ function visitorManagement(){
     const handleGuestName = (e) => setGuestName(e.target.value);
 
     const SearchName = () => {
-        const search = serverDataClone.filter(e => e.userName === guestName);
-        setserverData(search);
+        if(guestName !== ""){
+            const search = serverDataClone.filter(e => e.userName === guestName);
+            setserverData(search);
+        }else{
+            setserverData(serverDataClone);
+        }
     }
 
     const addInfo = () => {
@@ -296,6 +301,20 @@ function visitorManagement(){
      });
     }
 
+    const StaDoorInfo = async () => {
+        const URL = 'http://localhost:5000/statement';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setStaData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
@@ -314,13 +333,13 @@ function visitorManagement(){
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                     <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                     <div style={{display: "flex"}}>
-                        <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
+                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
                         <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserName}/>
                     </div>
                     </FormControl>
                     <FormControl mt={4} style={{width: '40%'}}>
                     <div style={{display: "flex"}}>
-                        <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
+                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
                         <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlePhoneNum}/>
                     </div>
                     </FormControl>
@@ -328,13 +347,13 @@ function visitorManagement(){
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직장명</FormLabel>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직장명</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleCompany}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlePosition}/>
                 </div>
                 </FormControl>
@@ -342,13 +361,13 @@ function visitorManagement(){
             <div style={{display: "flex", justifyContent: "center", marginBottom: "3%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserId}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
                     <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserPw}/>
                 </div>
                 </FormControl>
@@ -393,7 +412,6 @@ function visitorManagement(){
                             <li className = "Select"><Link href = "#">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">

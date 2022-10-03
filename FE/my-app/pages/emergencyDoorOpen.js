@@ -177,12 +177,147 @@ function emergencyDoorOpen(){
       }, [])
 
 
-    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
+    const header = ["No.", "시설명", "도어명", "개방여부"]
     
-    const [Data, setData] = useState([])
+    const [serverData, setserverData] = useState([
+        {
+            "staName" : "공과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "이과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "공과대학",
+            "doorName" : "3층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "공과대학",
+            "doorName" : "4층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "법정대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "의과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        
+    ])
 
-    const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door';
+    const [serverDataClone, setserverDataClone] = useState([
+        {
+            "staName" : "공과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "이과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "공과대학",
+            "doorName" : "3층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "공과대학",
+            "doorName" : "4층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "법정대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        {
+            "staName" : "의과대학",
+            "doorName" : "1층 사무실",
+            "doorId" : "A001",
+            "isOpen" : "Open"
+        },
+        
+    ])
+
+    const [staDoorData, setStaDoorData] = useState({
+        "staData":[       
+        {
+            "staId" : 1,
+            "staName": "공과대학"
+        },
+        {
+            "staId" : 2,
+            "staName": "이과대학"
+        },
+        {
+            "staId" : 3,
+            "staName": "의과대학"
+        },
+        {
+            "staId" : 4,
+            "staName": "문과대학"
+        },
+    ],
+    "doorData":[    
+        {
+            "doorId": "A1",
+            "doorName": "사무실",
+            "staId": 1
+        },
+        {
+            "doorId": "A1",
+            "doorName": "PC실A",
+            "staId": 2
+        },
+        {
+            "doorId": "A1",
+            "doorName": "PC실B",
+            "staId": 3
+        },
+        {
+            "doorId": "A1",
+            "doorName": "사무실",
+            "staId": 4
+        },
+        {
+            "doorId": "A1",
+            "doorName": "창고",
+            "staId": 4
+        },
+    ]});
+    
+    const [Data, setData] = useState([]);
+    const [Selected, setSelected] = useState("");
+
+
+    const handleFilter = async (e) => {
+        setSelected(e.target.value);
+        const result =  serverDataClone.filter(e => Selected === e.staName);
+        setserverData(result);
+    };
+
+    const getInfo = async () =>{
+        const URL = 'http://localhost:5000/door/adminemergency';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -194,6 +329,22 @@ function emergencyDoorOpen(){
             }
      });
     }
+
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/statement';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
+
     return(
         <div>
             <Header/>
@@ -207,7 +358,6 @@ function emergencyDoorOpen(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -225,11 +375,17 @@ function emergencyDoorOpen(){
                             <div className = "timeSelect">
                                 <p>▶ 전체도어 개방</p>
                                 <Checkbox></Checkbox>
-                                <p>▶ 조회 시간 선택</p>
-                                <Select placeholder='Select Gate' width="20%">
-                                    <option value='option1'>Option 1</option>
-                                    <option value='option2'>Option 2</option>
-                                    <option value='option3'>Option 3</option>
+                                <p>▶ 관리 시설 선택</p>
+                                <Select placeholder='Select Gate' 
+                                onChange={(e) => {
+                                    handleFilter(e)
+                                }}
+                                value={Selected} width="20%">
+                                    {staDoorData.staData.map((item) => (
+                                        <option value={item.staName} key={item.staId}>
+                                        {item.staName}
+                                        </option>
+                                    ))}
                                 </Select>
                                 <Checkbox style = {{marginLeft: "1%"}}></Checkbox>
                             </div>
@@ -243,15 +399,15 @@ function emergencyDoorOpen(){
                                 </thead>
                             </table>
                         </div>
-                        <div className = "tableTbody">
+                        <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                {Data.map((item)=>{
+                                {serverData.map((item, index)=>{
                                             return(
                                                 <tr>
-                                                    <td>{item.a}</td>
-                                                    <td>{item.b}</td>
-                                                    <td>{item.c}</td>
+                                                    <td>{index+1}</td>
+                                                    <td>{item.staName}</td>
+                                                    <td>{item.doorName}</td>
                                                     <td><Checkbox></Checkbox></td>
                                                 </tr>
                                             )

@@ -20,13 +20,19 @@
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.29.2",
+    "fetch-blob": "^3.2.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^6.5.1",
     "moment": "^2.29.4",
     "next": "12.2.5",
     "react": "18.2.0",
+    "react-csv": "^2.2.2",
     "react-datepicker": "^4.8.0",
     "react-dom": "18.2.0",
-    "react-table": "^7.8.0"
+    "react-table": "^7.8.0",
+    "sheetjs-style": "^0.15.8",
+    "untils": "^1.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "8.21.0",

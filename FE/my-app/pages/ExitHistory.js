@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import {setHours, setMinutes} from "date-fns";
+import ExportExcel from "./component/Excelexport";
 
 const style = css`
     .container{
@@ -117,13 +118,13 @@ const style = css`
         border-bottom: solid 4px gray;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         height: 17%;
         font-weight: bold;
     }
 
     .calenderSelect{
         display: flex;
-        margin-top: 1.5%;
     }
 
     .calenderSelect p{
@@ -159,7 +160,7 @@ const style = css`
     }
 
     .TableTbody{
-        height: 65%;
+        height: 55%;
         overflow: auto;
         text-align: center;
     }
@@ -178,6 +179,50 @@ function ExitHistory(){
       }, [])
 
     const [serverData, setserverData] = useState([
+        {
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "2022-08-30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
+        },
+        {
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "2022-08-30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
+        },
+        {
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "2022-08-30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
+        },
+        {
+            "staName": "본관",
+            "doorName": "전기실",
+            "doorId": "A010101010",
+            "userName": "박병근",
+            "latestDate": "2022-08-30",
+            "enterTime": "07:00:00",
+            "exitTime": "08:00:00",
+            "reason": "출근",
+            "adminName": "최재훈"
+        },
         {
             "staName": "본관",
             "doorName": "전기실",
@@ -283,8 +328,6 @@ function ExitHistory(){
     const [startMonth, setStartMonth] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [startTime, setStartTime] = useState(null);
-    const [endTime, setEndTime] = useState(null);
     const [isSelected, setIsSelected] = useState(false);
     const [MonthView , setMonthView] = useState(false);
     const [DayView , setDayView] = useState(false);
@@ -334,23 +377,12 @@ function ExitHistory(){
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
-        const year = date.getFullYear();
-        const Month = date.getMonth()+1;
+        startDate.setDate(startDate.getDate()-1);
         const endDayresult = serverDataClone.filter(e => 
-            new Date(e.latestDate).getFullYear() === year && 
-            new Date(e.latestDate).getMonth()+1 === Month && 
             new Date(e.latestDate).getTime() <= date.getTime() &&
             new Date(e.latestDate).getTime() >= startDate.getTime());
         setserverData(endDayresult);
         }
-
-    /*const TimeSearch = (time) => {
-        const start = startTime;
-        const end = time;
-        const Timeresult = serverData.filter(e => 
-            new Date(e.enterTime).getTime() >= start.getTime() && new Date(e.exitTime).getTime() <= end.getTime());
-        setserverData(Timeresult);
-    }*/
 
     return(
         <div>
@@ -365,7 +397,6 @@ function ExitHistory(){
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
                             <li><Link href = "./visitorManager">출입 관리자</Link></li>
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                            <li><Link href = "./smsHistory">문자발생 이력</Link></li>
                         </ul>
                     </div>
                     <div className = "Main">
@@ -378,7 +409,7 @@ function ExitHistory(){
                         </div>
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 입출 이력</h1>
-                            <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
+                            <ExportExcel excelData={serverData} fileName={"Excel Export"}/>
                         </div>
                         <div className = "daySelect">                                      
                             <div className = "calenderSelect">
@@ -428,50 +459,6 @@ function ExitHistory(){
                                         minDate={startDate}
                                     />
                                 </div> 
-                            </div>
-                            <div className = "timeSelect">
-                                <ul className=  "DateSelect" style = {{display: "flex", width: "100%",listStyle: "none", alignItems: "center"
-                                                            ,marginTop: "1%", marginLeft: "2.5%"}}>
-                                    <li style = {{width: "10%"}}>▶ 시간 선택</li>
-                                    <li style = {{border: "solid 3px gray"}}><div><DatePicker
-                                                    selected={startTime}
-                                                    onChange={onSelect}
-                                                    showTimeSelect
-                                                    showTimeSelectOnly
-                                                    timeIntervals={30}
-                                                    minTime={setHours(setMinutes(new Date(), 0), 0)}
-                                                    maxTime={setHours(setMinutes(new Date(), 30), 23)}
-                                                    timeCaption="Time"
-                                                    dateFormat="aa h:mm 시작"
-                                                    placeholderText="start time"
-                                                    className="mt-4"
-                                                /></div></li>
-                                        {isSelected ? // 시작 시간을 선택해야 종료 시간 선택 가능
-                                        <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
-                                            <div><DatePicker
-                                            selected={endTime}
-                                            onChange={(time) => {
-                                                setEndTime(time)
-                                                //TimeSearch(time)
-                                            }}
-                                            showTimeSelect
-                                            showTimeSelectOnly
-                                            timeIntervals={30}
-                                            minTime={startTime}
-                                            maxTime={setHours(setMinutes(new Date(), 30), 23)}
-                                            excludeTimes={[
-                                                // 시작 시간 제외
-                                                startTime,
-                                            ]}
-                                            timeCaption="Time"
-                                            dateFormat="aa h:mm 종료"
-                                            placeholderText="end time"
-                                            className="mt-3"
-                                        /></div>
-                                        </li>
-                                        : null 
-                                        }
-                                </ul>
                             </div>
                         </div>
                         <div className = "TableThead">
