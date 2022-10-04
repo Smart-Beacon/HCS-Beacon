@@ -20,8 +20,7 @@ const getSuperEntrantList = async() => {
         userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({
                 where:{ 
-                    userId:userId.userId,
-                    userFlag:{[Op.ne]:2}
+                    isAllowed:true,
                 }
             });
             return userAllow;
@@ -49,7 +48,7 @@ const getAdminEntrantList = async(adminId) => {
             const userAllow = await UserAllow.findAll({
                 where:{ 
                     doorId:oneDoorId.doorId,
-                    userFlag:{[Op.ne]:2}
+                    isAllowed:true,
                 }
             });
             return userAllow;
@@ -186,7 +185,6 @@ const getEntrantList = async(allows) => {
                         enterTime: userData.enterTime,
                         exitTime: userData.exitTime,
                         reason: userData.reason,
-                        isAllowed: allowData.isAllowed,
                     }
                     return setData;
                 }));
@@ -298,7 +296,7 @@ const registUser = async(userInfo) => {
         });
         await UserAllow.create({
             allowId: await uuid.uuid(),
-            userFlag:3,
+            userFlag:2,
             userId: user.userId,
             doorId: userInfo.doorId
         });

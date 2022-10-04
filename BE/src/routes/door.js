@@ -22,7 +22,7 @@ router.get('/monitor', async(req,res,next) =>{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 

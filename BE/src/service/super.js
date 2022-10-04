@@ -3,6 +3,7 @@ const AdminDoor = require('../db/models/adminDoor');
 const AdminStatment = require('../db/models/adminStatement');
 
 const uuid = require('./createUUID');
+const time = require('./time');
 
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();
@@ -29,7 +30,7 @@ const createAdminData = async(data) => {
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});
     if (!exAdmin){
         const adminData = await Admin.create({
-            adminId: await uuid.uuid(),
+            adminId: uuid.uuid(),
             company: data.company,
             position: data.position,
             adminName: data.adminName,
@@ -56,7 +57,7 @@ const createAdminData = async(data) => {
                 });
             })
         );
-
+        adminData.createdAt = time.getDateHipon(adminData.createdAt);
         return adminData;
     }else{
         return null;

@@ -91,8 +91,10 @@ router.post('/user/login',async(req,res)=>{
             const checkPassword = await bcrypt.compare(userPw,exUserId.userLoginPw);
             if(checkPassword){
                 if(!exUserId.vendorId){
-                    await User.update({vendorId:venderId},{where:{userLoginId:userId}});
-                    console.log("update");
+                    exUserId.venderId = venderId;
+                    await exUserId.save();
+                    //await User.update({vendorId:venderId},{where:{userLoginId:userId}});
+                    console.log("user update");
                 }
                     
                 const token = jwt.sign({

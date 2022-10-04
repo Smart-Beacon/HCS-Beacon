@@ -6,6 +6,17 @@ const AdminDoor = require('../db/models/adminDoor');
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
 const uuid = require('./createUUID');
+const time = require('./time');
+
+const WEEKDAY = {
+    "일요일":0,
+    "월요일":1,
+    "화요일":2,
+    "수요일":3,
+    "목요일":4,
+    "금요일":5,
+    "토요일":6
+}
 
 
 // 최고관리자 혹은 중간 관리자 이름 가져오는 함수
@@ -115,7 +126,7 @@ const getAdminDoorDatas = async(adminId) =>{
 
     const doorDatas = await Promise.all(
         doorIds.map(async doorId =>{
-
+            console.log(doorId);
             const doorData = await Door.findOne({
                 where:{doorId:doorId.doorId}
             });
@@ -150,15 +161,17 @@ const createDoorData = async(data) =>{
     console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId:data.adminLoginId}});
     const exDoor = await Door.findOne({where:{doorId:data.doorId}});
-    console.log(String(data.openWeeks));
     if(exAdmin && !exDoor){
+        let daysWeek = await Promise.all(data.openWeeks.map(async day =>{
+            return WEEKDAY[day];
+        }));
         //exist Admin and Unregisted Door Id
         await Door.create({
             doorId: data.doorId,
             doorName: data.doorName,
             isMonitoring: data.isMonitoring,
-            openWeeks: data.openWeeks,
-            openDates: String(data.openDates),
+            openWeeks: String(daysWeek),
+            openDates: time.getDateHipon(new Date(data.openDates)),
             openTime: data.openTime,
             closeTime: data.closeTime,
             staId: data.staId
