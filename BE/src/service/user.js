@@ -316,8 +316,11 @@ const findUserId = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        createToken(exUser.userId);
-        return exUser.userId;
+        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        if(statusCode == 202){
+            return exUser.userId;
+        }
+        return null;
     }else{
         return null;
     }
@@ -336,8 +339,12 @@ const findUserPw = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        createToken(exUser.userId,exUser.phoneNum);
-        return exUser.userId;
+        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        if(statusCode == 202){
+            return exUser.userId;
+        }
+        return null;
+        
     }else{
         return null;
     }
@@ -352,15 +359,15 @@ const createToken = async(userId,phoneNum) =>{
     });
     const token = Math.floor(100000 + Math.random() * 900000);
     if(exToken){
-        await Token.update({
-            token,
-            createdAt: new Date()
-        },{where:{
-            userId:userId,
-        }});
-        // exToken.token = token;
-        // exToken.createAt = new Date();
-        // await exToken.save();
+        // await Token.update({
+        //     token,
+        //     createdAt: new Date()
+        // },{where:{
+        //     userId:userId,
+        // }});
+        exToken.token = token;
+        exToken.createAt = new Date();
+        await exToken.save();
     }else{
         await Token.create({
             token,
@@ -368,7 +375,8 @@ const createToken = async(userId,phoneNum) =>{
             userId:userId
         });
     }
-    sendSMS(phoneNum,token);
+    const result = await sendSMS(phoneNum,token);
+    return result;
     //문자발생 함수 token 값 인수
 }
 
