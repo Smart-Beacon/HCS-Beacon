@@ -357,7 +357,7 @@ const createToken = async(userId,phoneNum) =>{
     const exToken = await Token.findOne({
         where:{userId:userId}
     });
-    const token = Math.floor(100000 + Math.random() * 900000);
+    var token = Math.floor(100000 + Math.random() * 900000);
     if(exToken){
         // await Token.update({
         //     token,
@@ -375,7 +375,8 @@ const createToken = async(userId,phoneNum) =>{
             userId:userId
         });
     }
-    const result = await sendSMS(phoneNum,token);
+    var message = `[(주) 명품시스템] 인증번호 [${token}]를 입력해주세요.`
+    const result = await sendSMS(phoneNum,message);
     return result;
     //문자발생 함수 token 값 인수
 }
