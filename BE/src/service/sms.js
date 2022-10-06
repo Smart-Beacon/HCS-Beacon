@@ -96,8 +96,17 @@ const sendAppLinkSMS = async(body) => {
 };
 //문자 전송 함수
 const sendSMS = async(phoneNum, msg) =>{
-    let sms_url = "https://sslsms.cafe24.com/sms_sender.php"; // HTTPS 전송요청 URL
+    var sms_url = "https://sslsms.cafe24.com/sms_sender.php"; // HTTPS 전송요청 URL
     //sms_url = "http://sslsms.cafe24.com/sms_sender.php";
+
+    var host_info = sms_url.split("/");
+    var host = host_info[2];
+    var path = "/" + host_info[3];
+    var port = 80;
+    var ss = CryptoJS.MD5(Math.random(0,32000)).toString();
+    var boundary = "---------------------" + ss.substr(0,10);
+    
+    const formData = new FormData();
     
     const params = {
         "user_id": Buffer.from(process.env.CAFE24_USER_ID, "utf8").toString('base64'),
@@ -120,90 +129,42 @@ const sendSMS = async(phoneNum, msg) =>{
         "mode": Buffer.from('1', "utf8").toString('base64'),
     };
 
-    const datas = {
-        "user_id": process.env.CAFE24_USER_ID,
-        "secure": process.env.CAFE24_SECURE_KEY,
-        "sphone1": process.env.CAFE24_SPHONE1,
-        "sphone2": process.env.CAFE24_SPHONE2,
-        "sphone3": process.env.CAFE24_SPHONE3,
-        "rphone": phoneNum,
-        "destination": '',
-        "title" : '',
-        "msg": msg,
-        "rdate": '',
-        "rtime": '',
-        "returnurl": '',
-        "testflag": "Y",
-        "nointeractive": '',
-        "repeatFlag": '', 
-        "repeatNum": '',
-        "repeatTime": '',
-        "mode": '1',
-    };
-
-    //console.log(datas);
-    const options = {
-        uri: sms_url,
-        method: "POST",
-        form: {
-            user_id: process.env.CAFE24_USER_ID,
-            secure: process.env.CAFE24_SECURE_KEY,
-            sphone1: process.env.CAFE24_SPHONE1,
-            sphone2: process.env.CAFE24_SPHONE2,
-            sphone3: process.env.CAFE24_SPHONE3,
-            rphone: phoneNum,
-            destination: '',
-            title : '',
-            msg: msg,
-            rdate: '',
-            rtime: '',
-            returnurl: '',
-            testflag: "Y",
-            nointeractive: '',
-            repeatFlag: '', 
-            repeatNum: '',
-            repeatTime: '',
-        },
+    
+    for (var param in params) {
+        // console.log(param);
+        // console.log(params[param]);
+        formData.append(param, params[param]);
     }
 
     const options2 = {
         uri: sms_url,
         method: "POST",
-        body: {
-            user_id: Buffer.from(process.env.CAFE24_USER_ID, "utf8").toString('base64'),
-            secure: Buffer.from(process.env.CAFE24_SECURE_KEY, "utf8").toString('base64'),
-            sphone1: Buffer.from(process.env.CAFE24_SPHONE1, "utf8").toString('base64'),
-            sphone2: Buffer.from(process.env.CAFE24_SPHONE2, "utf8").toString('base64'),
-            sphone3: Buffer.from(process.env.CAFE24_SPHONE3, "utf8").toString('base64'),
-            rphone: Buffer.from(phoneNum, "utf8").toString('base64'),
-            destination: Buffer.from('', "utf8").toString('base64'),
-            title : Buffer.from('', "utf8").toString('base64'),
-            msg: Buffer.from(msg, "utf8").toString('base64'),
-            rdate: Buffer.from('', "utf8").toString('base64'),
-            rtime: Buffer.from('', "utf8").toString('base64'),
-            returnurl: Buffer.from('', "utf8").toString('base64'),
-            testflag: Buffer.from("Y", "utf8").toString('base64'), 
-            nointeractive: Buffer.from('', "utf8").toString('base64'),
-            repeatFlag: Buffer.from('', "utf8").toString('base64'),
-            repeatNum: Buffer.from('', "utf8").toString('base64'),
-            repeatTime: Buffer.from('', "utf8").toString('base64'),
-            smsType: Buffer.from('', "utf8").toString('base64'),
-            mode: Buffer.from('1', "utf8").toString('base64'),
+        headers:{
+            'Host': `${host}\r\n`,
+            'Content-Type': `multipart/form-data, boundary=${boundary}\r\n` ,
         },
-        json:true,
+        data:formData,
     }
 
+        //$header = "POST /".$path ." HTTP/1.0\r\n";
 
-    var smsRequest = request.post(options2,function(err, res, result) {
+
+    var smsRequest = request(options2 ,function(err, res, result) {
         if(err){    
-            //console.log(err);
+            console.log(err);
         }else{
             console.log(res.headers);
             console.log(result);
         }
     });
 
-    console.log(smsRequest);
+    // var reqForm = smsRequest.form();
+    // for (var param in params) {
+    //   reqForm.append(param, params[param]);
+    // }
+    // console.log(reqForm);
+
+    //console.log(smsRequest);
 }
 
 module.exports = {
