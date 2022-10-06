@@ -4,7 +4,11 @@ const Door = require('../db/models/door');
 const Statement = require('../db/models/statement');
 const Admin = require('../db/models/admin');
 const { getDate, getTime } = require('./time');
+
 const request = require('request');
+const CryptoJS = require("crypto-js");
+const SHA256 = require("crypto-js/sha256");
+const Base64 = require("crypto-js/enc-base64");
 
 const transData = async(doorIds,adminName) => {
     const result = await Promise.all(
@@ -89,82 +93,64 @@ const getAdminSmsRecord = async(id) => {
 
     return sortedResult;
 };
-const sendAppLinkSMS = async(body) => {
-    let msg = "";// 어플 주소
-    let phoneNum = body.phoneNum;
-    const result = sendSMS(phoneNum, msg);
-};
-//문자 전송 함수
-const sendSMS = async(phoneNum, msg) =>{
-    var sms_url = "https://sslsms.cafe24.com/sms_sender.php"; // HTTPS 전송요청 URL
-    //sms_url = "http://sslsms.cafe24.com/sms_sender.php";
 
-    var host_info = sms_url.split("/");
-    var host = host_info[2];
-    var path = "/" + host_info[3];
-    var port = 80;
-    var ss = CryptoJS.MD5(Math.random(0,32000)).toString();
-    var boundary = "---------------------" + ss.substr(0,10);
-    
-    const formData = new FormData();
-    
-    const params = {
-        "user_id": Buffer.from(process.env.CAFE24_USER_ID, "utf8").toString('base64'),
-        "secure": Buffer.from(process.env.CAFE24_SECURE_KEY, "utf8").toString('base64'),
-        "sphone1": Buffer.from(process.env.CAFE24_SPHONE1, "utf8").toString('base64'),
-        "sphone2": Buffer.from(process.env.CAFE24_SPHONE2, "utf8").toString('base64'),
-        "sphone3": Buffer.from(process.env.CAFE24_SPHONE3, "utf8").toString('base64'),
-        "rphone": Buffer.from(phoneNum, "utf8").toString('base64'),
-        "destination": Buffer.from('', "utf8").toString('base64'),
-        "title" : Buffer.from('', "utf8").toString('base64'),
-        "msg": Buffer.from(msg, "utf8").toString('base64'),
-        "rdate": Buffer.from('', "utf8").toString('base64'),
-        "rtime": Buffer.from('', "utf8").toString('base64'),
-        "returnurl": Buffer.from('', "utf8").toString('base64'),
-        "testflag": Buffer.from("Y", "utf8").toString('base64'), 
-        "nointeractive": Buffer.from('', "utf8").toString('base64'),
-        "repeatFlag": Buffer.from('', "utf8").toString('base64'),
-        "repeatNum": Buffer.from('', "utf8").toString('base64'),
-        "repeatTime": Buffer.from('', "utf8").toString('base64'),
-        "mode": Buffer.from('1', "utf8").toString('base64'),
+//문자 전송 함수
+const sendSMS = async (phoneNum, msg) =>{
+    var space = " ";				// one space
+	var newLine = "\n";				// new line
+	var method = "POST";				// method
+	var url = `https://sens.apigw.ntruss.com/sms/v2/services/${process.env.SMS_SERVER_ID}/messages`;	// url (include query string)
+    var url2 = `/sms/v2/services/${process.env.SMS_SERVER_ID}/messages`;
+	var timestamp = Date.now().toString();			// current timestamp (epoch)
+	var accessKey = process.env.SMS_ACCESS_KEY_ID;			// access key id (from portal or Sub Account)
+	var secretKey = process.env.SMS_SECRET_KEY;			// secret key (from portal or Sub Account)
+
+	var hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
+	hmac.update(method);
+	hmac.update(space);
+	hmac.update(url2);
+	hmac.update(newLine);
+	hmac.update(timestamp);
+    hmac.update(newLine);
+	hmac.update(accessKey);
+
+	var hash = hmac.finalize();
+	const signature = hash.toString(CryptoJS.enc.Base64);
+
+    var newPhoneNum = phoneNum.replace(/\-/g,'');
+    console.log(newPhoneNum);
+    const option = {
+        uri: url,
+        method: method,
+        json:true,
+        headers:{
+            "Content-Type": "application/json; charset=utf-8",
+            "x-ncp-apigw-timestamp": `${timestamp}`,
+            "x-ncp-iam-access-key": `${accessKey}`,
+            "x-ncp-apigw-signature-v2": `${signature}`,
+        },
+        body:{
+            "type":"SMS",
+            "contentType":"COMM",
+            "countryCode":"82",
+            "from":process.env.FROM_PHONENUM,
+            "subject":"본인인증",
+            "content":msg,
+            "messages":[
+                {
+                    "to":newPhoneNum,
+                }
+            ],
+        },
     };
 
-    
-    for (var param in params) {
-        // console.log(param);
-        // console.log(params[param]);
-        formData.append(param, params[param]);
-    }
-
-    const options2 = {
-        uri: sms_url,
-        method: "POST",
-        headers:{
-            'Host': `${host}\r\n`,
-            'Content-Type': `multipart/form-data, boundary=${boundary}\r\n` ,
-        },
-        data:formData,
-    }
-
-        //$header = "POST /".$path ." HTTP/1.0\r\n";
-
-
-    var smsRequest = request(options2 ,function(err, res, result) {
-        if(err){    
-            console.log(err);
-        }else{
-            console.log(res.headers);
-            console.log(result);
+    request(option,function (err, res, body) {
+        if (err) console.log(err);
+        else {
+            console.log(body);
+            return body.statusCode;
         }
     });
-
-    // var reqForm = smsRequest.form();
-    // for (var param in params) {
-    //   reqForm.append(param, params[param]);
-    // }
-    // console.log(reqForm);
-
-    //console.log(smsRequest);
 }
 
 module.exports = {
