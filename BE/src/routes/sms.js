@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { getAdminSmsRecord, getSuperSmsRecord, sendAppLinkSMS, } = require('../service/sms');
+const { getAdminSmsRecord, getSuperSmsRecord, sendSMS, } = require('../service/sms');
 const checkAdmin = require('../service/check.js');
 
 const router = express.Router();
@@ -32,8 +32,8 @@ router.post('/send', async(req,res,next) => {
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check !== 2){
             let msg = "test" //어플 주소
-            const result = await sendSMS(req.body.phoneNum,msg);
-            res.status(result).end();
+            const result = await sendSMS(req.body.phoneNum, msg);
+            res.status(result).send(result);
         }else{
             res.status(400).send('Not Found Admin');
         }

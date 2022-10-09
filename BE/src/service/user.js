@@ -492,6 +492,7 @@ const openDoorUser = async(userId, doorId, vendorId) =>{
                         userId: userId,
                     });
                 }
+                //도어 Open socket Io
                 return 200;
             }else{
                 console.log(`isAllowed : ${exUserAllow.isAllowed}`);
