@@ -196,6 +196,9 @@ const createDoorData = async(data) =>{
     }
 }
 
+//GET : (최고관리자) 비상 도어 정보 리스트 반환 함수
+// 모든 도어를 위급 상황 시 열기 위해 도어 정보들을 리턴해주는 함수
+// 건물명, 도어명, 도어ID, 개방여부
 const getSuperEmergency = async() => {
     const doorDatas = await Door.findAll({
         attributes: ['doorId', 'staId', 'doorName', 'isOpen']
@@ -223,52 +226,56 @@ const getSuperEmergency = async() => {
     return setData;
 }
 
+//GET : (중간관리자) 비상 도어 정보 리스트 반환 함수
+// 자신이 담당하는 도어들을 위급 상황 시 열기 위해 도어 정보들을 리턴해주는 함수
+// 건물명, 도어명, 도어ID, 개방여부
 const getAdminEmergency = async(adminId) => {
     const staIds = await AdminStatement.findAll({
         where: { adminId: adminId },
-        attributes: ['staId']
+        attributes: ['staId'],
+        include:[{
+            model:Statement,
+        }],
     });
+    const buildingInfo = staIds.flatMap(data=>data.statement);
 
-    let doorDatas = await Promise.all(
-        staIds.map(async staId => {
+    const result = await Promise.all(
+        buildingInfo.map(async building => {
             const doorDatas = await Door.findAll({
-                where:{staId:staId.staId},
-                attributes: ['doorId', 'doorName', 'isOpen']
-            })
+                where:{staId:building.staId},
+                attributes: ['doorId', 'doorName', 'isOpen'],
+                include:[{
+                    model:Statement,
+                    attributes:['staName'],
+                    required: false,
+                }],
+                raw: true,
+            });
             return doorDatas;
         })
     );
-    
-    doorDatas = await doorDatas.flatMap(data => data);
 
-    const setData = await Promise.all(
-        doorDatas.map(async doorData =>{
-
-            const statmentName = await Statement.findOne({
-                where:{staId:doorData.staId},
-                attributes: ['staName'],
-            });
-
-            const result = {
-                staName: statmentName.staName,
-                doorName: doorData.doorName,
-                doorId: doorData.doorId,
-                isOpen: doorData.isOpen,
-            };
-
-            return result;
-        })
-    );
-
-    return setData
+    const newResult = result.flatMap(data => data).map(door =>{
+            return{ staName:door["statement.staName"], doorId: door.doorId, doorName:door.doorName, isOpen:door.isOpen}
+    });
+    console.log(newResult);
+    return newResult;
 }
 
-const emergencyOpen = async(data) => {
-    const door = await Door.findOne({where: { doorId:data.doorId }});
-    door.isOpen = data.isOpen;
-    // socket 통신
-    await door.save();
-    return door;
+//POST : 비상 도어 개방 함수
+// 관리자로부터 받은 도어 정보를 받아 즉시 열어주는 함수
+// 도어ID, 개방여부
+const emergencyOpen = async(doorOpen) => {
+    console.log(doorOpen);
+    const doorResult = await Promise.all(doorOpen.map(async door =>{
+        const exDoor = await Door.findOne({where: { doorId:door.doorId },attributes:['doorId','isOpen']});
+        if(exDoor){
+            exDoor.isOpen = door.isOpen;
+            await exDoor.save();
+        }
+        return exDoor;
+    }));
+    return doorResult;
 }
 
 module.exports = {
