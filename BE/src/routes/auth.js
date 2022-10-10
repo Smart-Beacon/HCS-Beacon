@@ -29,7 +29,9 @@ router.post('/login', async(req,res,next) =>{
                     httpOnly: true,
                     secure:false,
                 });
-                const encrypted = CryptoJS.AES.encrypt(JSON.stringify(exSuperAdmin.superName), process.env.PRIVATEKEY).toString();
+                const str = exSuperAdmin.superName;
+                const encrypted = CryptoJS.AES.encrypt(JSON.stringify({str}), process.env.PRIVATEKEY).toString();
+                console.log(encrypted);
                 console.log(res.getHeader('set-cookie'));
                 return res.status(200).send(encrypted);
             }else{
@@ -53,7 +55,8 @@ router.post('/login', async(req,res,next) =>{
                         httpOnly: true,
                         secure:false
                     });
-                    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(exAdmin.adminName), process.env.PRIVATEKEY).toString();
+                    const strName = exAdmin.adminName
+                    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(strName), process.env.PRIVATEKEY).toString();
                     console.log(res.getHeader('set-cookie'),0);
                     return res.status(200).send(encrypted);
                 }else{

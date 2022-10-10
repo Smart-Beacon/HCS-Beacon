@@ -7,33 +7,9 @@ const Token = require('../db/models/token');
 const AccessRecord = require('../db/models/accessRecord');
 const uuid = require('./createUUID');
 const time = require('./time');
+const { Op } = require("sequelize");
 const {sendSMS} = require('./sms');
 
-
-// 최고관리자용 출입자 리스트 함수
-// 사용 API : 출입자 관리 리스트 API
-// 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
-// const getSuperEntrantList = async() => {
-//     const userIds = await User.findAll();
-
-//     const SuperUserAllows = await Promise.all(
-//         userIds.map(async userId => {
-//             const userAllow = await UserAllow.findAll({
-//                 where:{
-//                     userId:userId.userId,
-//                     isAllowed:true,
-//                 },
-//                 attributes:['userId','userFlag','doorId']
-//             });
-//             getEntrantList2(userAllow.flatMap(data => data));
-//             return userAllow;
-//         })
-//     );
-//     const UserAllows = SuperUserAllows.flatMap(data => data);
-//     const entrantList = await getEntrantList(UserAllows);
-
-//     return entrantList;
-// }
 
 const getSuperEntrantList = async() => {
     const userIds = await User.findAll();
@@ -62,32 +38,6 @@ const getSuperEntrantList = async() => {
 // 관리자용 출입자 리스트 함수
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
-// const getAdminEntrantList = async(adminId) => {
-//     console.log(adminId);
-//     const doorIds = await AdminDoor.findAll({
-//         where:{ adminId },
-//         attributes:['doorId'],
-//     });
-
-//     const AdminUserAllows = await Promise.all(
-//         doorIds.map(async oneDoorId => {
-//             const userAllow = await UserAllow.findAll({
-//                 where:{ 
-//                     doorId:oneDoorId.doorId,
-//                     isAllowed:true,
-//                 }
-//             });
-//             return userAllow;
-//         })
-//     );
-
-//     const UserAllows = await AdminUserAllows.flatMap(data => data);
-//     console.log(UserAllows);
-//     const entrantList = await getEntrantList(UserAllows);
-
-//     return entrantList;
-// }
-
 const getAdminEntrantList = async(adminId) => {
     console.log(adminId);
     const doorIds = await AdminDoor.findAll({
@@ -95,35 +45,37 @@ const getAdminEntrantList = async(adminId) => {
         attributes:['doorId'],
     });
 
-    const AdminUserAllows = await Promise.all(
-        doorIds.map(async oneDoorId => {
-            const userAllow = await UserAllow.findAll({
-                where:{ 
-                    doorId:oneDoorId.doorId,
-                    isAllowed:true,
-                }
-            });
-            return userAllow;
-            
-        })
-    );
-    
-    const userAllowsData = AdminUserAllows.flatMap(data => data);
-    const userIds = Array.from(new Set(userAllowsData.flatMap(data => data.userId)));
+    const doorIdArray = doorIds.flatMap(data=>data.doorId);
+    //console.log(doorIdArray);
+
+    const userAllow = await UserAllow.findAll({
+        where:{ 
+            isAllowed:true,
+            doorId:doorIdArray,
+        },
+        attributes:['userId']
+    });
+    const userIds = Array.from(new Set(userAllow.flatMap(data => data.userId)));
+
+    console.log(userIds);
 
     const SuperUser = await Promise.all(
         userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({
                 where:{
-                    userId:userId.userId,
+                    userId:userId,
                     isAllowed:true,
                 },
                 attributes:['userId','userFlag','doorId']
             });
+            const userInfo = await User.findOne({
+                where:{userId}
+            })
             const userArray = userAllow.flatMap(data => data);
+            console.log(userArray);
             if(userArray.length){
                 console.log(userArray);
-                const result = await getEntrantList2(userId,userArray);
+                const result = await getEntrantList2(userInfo,userArray);
                 return result;
             }
         })
