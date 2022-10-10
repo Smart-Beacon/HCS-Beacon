@@ -266,6 +266,7 @@ const getAdminEmergency = async(adminId) => {
 const emergencyOpen = async(data) => {
     const door = await Door.findOne({where: { doorId:data.doorId }});
     door.isOpen = data.isOpen;
+    // socket 통신
     await door.save();
     return door;
 }
