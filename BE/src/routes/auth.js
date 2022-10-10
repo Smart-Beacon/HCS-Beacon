@@ -7,6 +7,8 @@ const User = require('../db/models/user');
 const CryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
 
+const checkAdmin = require('../service/check.js');
+
 const router = express.Router();
 
 router.post('/login', async(req,res,next) =>{
@@ -56,6 +58,8 @@ router.post('/login', async(req,res,next) =>{
                         secure:false
                     });
                     const strName = exAdmin.adminName
+                    exAdmin.isLogin = true;
+                    await exAdmin.save();
                     const encrypted = CryptoJS.AES.encrypt(JSON.stringify(strName), process.env.PRIVATEKEY).toString();
                     console.log(res.getHeader('set-cookie'),0);
                     return res.status(200).send(encrypted);
@@ -73,8 +77,17 @@ router.post('/login', async(req,res,next) =>{
     }
 });
 
-router.post('/logout', (req,res)=>{
+router.post('/logout', async(req,res)=>{
     try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const exAdmin = await Admin.findOne({where:{adminId:id}});
+        if(exAdmin){
+            console.log(`${exAdmin.adminName} logout`);
+            exAdmin.isLogin = false;
+            await exAdmin.save();
+        }
         console.log('로그아웃');
         res.clearCookie('accessToken');
         res.clearCookie('isSuper');
