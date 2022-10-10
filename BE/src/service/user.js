@@ -7,31 +7,32 @@ const Token = require('../db/models/token');
 const AccessRecord = require('../db/models/accessRecord');
 const uuid = require('./createUUID');
 const time = require('./time');
+const { Op } = require("sequelize");
 const {sendSMS} = require('./sms');
 
 
-// 최고관리자용 출입자 리스트 함수
-// 사용 API : 출입자 관리 리스트 API
-// 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
 const getSuperEntrantList = async() => {
     const userIds = await User.findAll();
 
-    const SuperUserAllows = await Promise.all(
+    const SuperUser = await Promise.all(
         userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({
-                where:{ 
+                where:{
                     userId:userId.userId,
-                    userFlag:{[Op.ne]:2}
-                }
+                    isAllowed:true,
+                },
+                attributes:['userId','userFlag','doorId']
             });
-            return userAllow;
+            const userArray = userAllow.flatMap(data => data);
+            if(userArray.length){
+                console.log(userArray);
+                const result = await getEntrantList2(userId,userArray);
+                return result;
+            }
         })
     );
-
-    const UserAllows = SuperUserAllows.flatMap(data => data);
-    const entrantList = await getEntrantList(UserAllows);
-
-    return entrantList;
+    const allUserData = SuperUser.filter(data => !!data);
+    return allUserData;
 }
 
 // 관리자용 출입자 리스트 함수
@@ -44,23 +45,43 @@ const getAdminEntrantList = async(adminId) => {
         attributes:['doorId'],
     });
 
-    const AdminUserAllows = await Promise.all(
-        doorIds.map(async oneDoorId => {
+    const doorIdArray = doorIds.flatMap(data=>data.doorId);
+    //console.log(doorIdArray);
+
+    const userAllow = await UserAllow.findAll({
+        where:{ 
+            isAllowed:true,
+            doorId:doorIdArray,
+        },
+        attributes:['userId']
+    });
+    const userIds = Array.from(new Set(userAllow.flatMap(data => data.userId)));
+
+    console.log(userIds);
+
+    const SuperUser = await Promise.all(
+        userIds.map(async userId => {
             const userAllow = await UserAllow.findAll({
-                where:{ 
-                    doorId:oneDoorId.doorId,
-                    userFlag:{[Op.ne]:2}
-                }
+                where:{
+                    userId:userId,
+                    isAllowed:true,
+                },
+                attributes:['userId','userFlag','doorId']
             });
-            return userAllow;
+            const userInfo = await User.findOne({
+                where:{userId}
+            })
+            const userArray = userAllow.flatMap(data => data);
+            console.log(userArray);
+            if(userArray.length){
+                console.log(userArray);
+                const result = await getEntrantList2(userInfo,userArray);
+                return result;
+            }
         })
     );
-
-    const UserAllows = await AdminUserAllows.flatMap(data => data);
-    console.log(UserAllows);
-    const entrantList = await getEntrantList(UserAllows);
-
-    return entrantList;
+    const allUserData = SuperUser.filter(data => !!data);
+    return allUserData;
 }
 
 // 출입자(상시) 등록 함수
@@ -186,7 +207,6 @@ const getEntrantList = async(allows) => {
                         enterTime: userData.enterTime,
                         exitTime: userData.exitTime,
                         reason: userData.reason,
-                        isAllowed: allowData.isAllowed,
                     }
                     return setData;
                 }));
@@ -195,6 +215,37 @@ const getEntrantList = async(allows) => {
         })
     )
     const result = await entrantList.flatMap(data => data);
+    return result;
+}
+
+const getEntrantList2 = async(userId,allows) => {
+    const doorInfo = await Promise.all(allows.map(async allowData =>{
+        return await Door.findOne({
+            where:{doorId:allowData.doorId},
+            attributes:['doorName', 'staId']
+        });
+    }));
+
+    const stateData = await Promise.all(doorInfo.map(async door =>{
+        return await Statement.findOne({
+            where:{staId:door.staId},
+            attributes:['staName']
+        });
+    }));
+    
+    const result = {
+        userFlag: allows[0].userFlag,
+        userName: userId.userName,
+        company: userId.company,
+        position: userId.position,
+        phoneNum: userId.phoneNum,
+        door: doorInfo.flatMap(data=>data.doorName),
+        statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
+        enterTime: userId.enterTime,
+        exitTime: userId.exitTime,
+        reason: userId.reason
+    };
+
     return result;
 }
 
@@ -222,7 +273,7 @@ const getVisitorList = async(allows) => {
 
                     const stateData = await Statement.findOne({
                         where: {staId:doorData.staId}
-                    })
+                    });
 
                     const setData = {
                         allowId: allowData.allowId,
@@ -298,7 +349,7 @@ const registUser = async(userInfo) => {
         });
         await UserAllow.create({
             allowId: await uuid.uuid(),
-            userFlag:3,
+            userFlag:2,
             userId: user.userId,
             doorId: userInfo.doorId
         });
@@ -318,8 +369,11 @@ const findUserId = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        createToken(exUser.userId);
-        return exUser.userId;
+        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        if(statusCode == 202){
+            return exUser.userId;
+        }
+        return null;
     }else{
         return null;
     }
@@ -338,8 +392,12 @@ const findUserPw = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        createToken(exUser.userId,exUser.phoneNum);
-        return exUser.userId;
+        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        if(statusCode == 202){
+            return exUser.userId;
+        }
+        return null;
+        
     }else{
         return null;
     }
@@ -352,17 +410,17 @@ const createToken = async(userId,phoneNum) =>{
     const exToken = await Token.findOne({
         where:{userId:userId}
     });
-    const token = Math.floor(100000 + Math.random() * 900000);
+    var token = Math.floor(100000 + Math.random() * 900000);
     if(exToken){
-        await Token.update({
-            token,
-            createdAt: new Date()
-        },{where:{
-            userId:userId,
-        }});
-        // exToken.token = token;
-        // exToken.createAt = new Date();
-        // await exToken.save();
+        // await Token.update({
+        //     token,
+        //     createdAt: new Date()
+        // },{where:{
+        //     userId:userId,
+        // }});
+        exToken.token = token;
+        exToken.createAt = new Date();
+        await exToken.save();
     }else{
         await Token.create({
             token,
@@ -370,7 +428,9 @@ const createToken = async(userId,phoneNum) =>{
             userId:userId
         });
     }
-    sendSMS(phoneNum,token);
+    var message = `[(주) 명품시스템] 인증번호 [${token}]를 입력해주세요.`
+    const result = await sendSMS(phoneNum,message);
+    return result;
     //문자발생 함수 token 값 인수
 }
 
@@ -485,6 +545,7 @@ const openDoorUser = async(userId, doorId, vendorId) =>{
                         userId: userId,
                     });
                 }
+                //도어 Open socket Io
                 return 200;
             }else{
                 console.log(`isAllowed : ${exUserAllow.isAllowed}`);

@@ -13,16 +13,16 @@ router.get('/', async (req,res,next) =>{
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if (check === 0){
             const alertData = await getWarning.getAlertSuperDatas();
-            res.json(alertData);
+            res.status(200).json(alertData);
         }else if(check === 1){
             const alertData = await getWarning.getAlertDatas(id);
-            res.json(alertData);
+            res.status(200).json(alertData);
         }
         else{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
