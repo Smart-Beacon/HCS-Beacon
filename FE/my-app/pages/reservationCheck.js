@@ -58,6 +58,7 @@ const style = css`
     .MainHeader{
         display: flex;
         justify-content: space-between;
+        align-items: center;
         border-top: solid 4px gray;
         border-bottom: solid 4px gray;
     }
@@ -118,7 +119,7 @@ const style = css`
         border-bottom: solid 4px gray;
         display: flex;
         flex-direction: row;
-        height: 17%;
+        height: 13%;
         font-weight: bold;
     }
 
@@ -186,8 +187,10 @@ function reservationCheck(){
     const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
 
     const [Data, setData] = useState([]);
+    const [DataClone, setDataClone] = useState(Data);
     const [serverData, setserverData] = useState([
         {
+            "allowId" : "Dejong1706",
             "userName": "박병근",
             "phoneNum": "010-3152-1297",
             "latestDate": "2022/08/05",
@@ -262,38 +265,51 @@ function reservationCheck(){
     const StartDaySearch = (date) => {
         const Month = date.getMonth()+1;
         const Day = date.getDate();
-        const startDayresult = serverDataClone.filter(e => 
+        const startDayresult = DataClone.filter(e => 
             new Date(e.latestDate).getMonth()+1 === Month && 
             new Date(e.latestDate).getDate() === Day);
-        setserverData(startDayresult);
+        setData(startDayresult);
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
         startDate.setDate(startDate.getDate()-1);
-        const endDayresult = serverDataClone.filter(e => 
+        const endDayresult = DataClone.filter(e => 
             new Date(e.latestDate).getTime() >= startDate.getTime() &&
             new Date(e.latestDate).getTime() <= date.getTime());
-        setserverData(endDayresult);
+        setData(endDayresult);
     }
 
     const haddleButtonTrue = (e) => {
         setAllow(true);
         e.preventDefault();
         e.currentTarget.disabled = true;
+        e.currentTarget.style.color = "white";
+        e.currentTarget.style.backgroundColor = "green";
         const disabledClone = [...disabled];
         disabledClone[number] = true;
         setDisabled(disabledClone); 
         setNumber(number+1);
+        console.log(allow);
     }
 
     const haddleButtonFalse = (e) => {
         setAllow(false);
         e.preventDefault();
         e.currentTarget.disabled = true;
+        e.currentTarget.style.color = "white";
+        e.currentTarget.style.backgroundColor = "red";
         const disabledClone = [...disabled];
         disabledClone[number] = true;
         setDisabled(disabledClone); 
         setNumber(number+1);
+    }
+
+    const postInfo = (e) => {
+        const trueInfo = {
+            "allowId" : e,
+            "isAllowed" : allow
+        }
+        postAllowInfo(trueInfo);
     }
 
     const getDoorInfo = async () =>{
@@ -310,12 +326,19 @@ function reservationCheck(){
      });
     }
 
-    const onSelect = (time) => {
-        setStartTime(time);
-        setIsSelected(true);
-        setEndTime(null);
-    };
-
+    const postAllowInfo = async (item) =>{
+        const URL = "http://localhost:5000/user/visitor"
+        axios.defaults.withCredentials = true;
+            await axios.post(URL, item)
+            .then(res => {
+                console.log(res);
+                if(res.status === 200){
+                    console.log("======================", "데이터 전송 성공");
+                }else{
+                    console.log("false");
+                }
+            });
+    }
     return(
         <div>
             <Header/>
@@ -387,7 +410,7 @@ function reservationCheck(){
                         <div className = "tableTbody">
                             <table>
                                 <tbody>
-                                {serverData.map((item, index)=>{
+                                {Data.map((item, index)=>{
                                             return(
                                                 <tr>
                                                     <td>{index+1}</td>
@@ -395,18 +418,20 @@ function reservationCheck(){
                                                     <td>{item.phoneNum}</td>
                                                     <td>{item.latestDate}</td>
                                                     <td>{item.enterTime}</td>
-                                                    <td>{item.exitDate}</td>
+                                                    <td>{item.exitTime}</td>
                                                     <td>{item.reason}</td>
                                                     <td>{item.isAllowed}</td>
                                                     <td>
-                                                        <fieldset disabled = {disabled[index]}>
-                                                            <Button colorScheme='teal' variant='solid' 
+                                                        <fieldset disabled = {disabled[index]} onChange = {postInfo(item.allowId)}>
+                                                            <Button variant='solid' 
                                                         onClick={haddleButtonTrue}
-                                                        style = {{marginRight:"7%"}}>
+                                                        style = {{marginRight:"7%", backgroundColor: "white", color: "green",
+                                                        border: "solid 2px green"}}>
                                                             Y
                                                             </Button>
-                                                            <Button colorScheme='orange' variant='solid'
-                                                            onClick={haddleButtonFalse}>
+                                                            <Button variant='solid' style={{backgroundColor: "white", color: "red",
+                                                            border: "solid 2px red"}}
+                                                           onClick={haddleButtonFalse}>
                                                                 N
                                                             </Button>
                                                         </fieldset></td>
