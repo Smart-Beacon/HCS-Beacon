@@ -287,6 +287,21 @@ function visitorManagement(){
                 </div>
                 </FormControl>
             </div>
+            <FormControl mt={4} style = {{width: '85%', margin: "auto", marginBottom: "3%"}}>
+                    <div style={{display: "flex"}}>
+                        <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦문자 수신 여부</FormLabel>
+                        <RadioGroup defaultValue='2'>
+                            <Stack spacing={5} direction='row'>
+                                <Radio colorScheme='green' value = "1">
+                                Y
+                                </Radio>
+                                <Radio colorScheme='red' value = "0">
+                                N
+                                </Radio>
+                            </Stack>
+                            </RadioGroup>
+                    </div>
+                </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦 관리도어 선택</FormLabel>
                 <Select placeholder='' width="100%">

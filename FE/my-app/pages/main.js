@@ -344,7 +344,7 @@ function Main(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
@@ -353,7 +353,7 @@ function Main(){
                                                 <td>{Number(item.isOpen)}</td>
                                                 <td style = {{color: "blue"}}>{item.openTime}</td>
                                                 <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{Number(item.warnning)}</td>
+                                                <td>{Number(item.warning)}</td>
                                             </tr>
                                         )
                                     })}

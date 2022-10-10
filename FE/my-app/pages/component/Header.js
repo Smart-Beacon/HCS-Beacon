@@ -57,11 +57,11 @@ const style = css`
 function Header() {
   
   const Logout = (e) => {
-    localStorage.clear();
     const request = axios.post('http://localhost:3000/auth/logout', null)
             .then(res => {
                 console.log(res);
                 if(res.status === 200){
+                    localStorage.clear();
                     console.log("======================", "로그아웃 성공");
                 }else{
                     alert(res.data);
@@ -75,15 +75,14 @@ function Header() {
   const [time, setTime] = useState(moment());
   
   useEffect(() => {
-    /** 
     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
-    console.log(key);
-    const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
-    const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+    const getName = localStorage.getItem('name').slice(1,-1);
+    console.log(getName);
+    const bytes = crypto.AES.decrypt(getName, key).toString(crypto.enc.Utf8);
+    console.log({bytes});
+    const originalText = JSON.parse(bytes);
     console.log(originalText);
-    setData(originalText);
-    **/
-
+    setData(originalText); 
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
@@ -91,6 +90,15 @@ function Header() {
       clearInterval(timer);
     };
   }, []);
+
+  const getName = async () =>{
+    const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
+    console.log(key);
+    const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
+    const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
+    console.log(originalText);
+    setData(originalText);  
+ };
 
   return (
     <div>

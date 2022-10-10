@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
@@ -77,6 +77,8 @@ const style = css`
     .Table{
         font-weight: bold;
         font-size: 20px;
+        overflow: auto;
+        
     }
 
     .TableHeader{
@@ -153,13 +155,18 @@ const style = css`
         width: 11.1%;
     }
 
+    .TableContainer{
+        display: flex;
+        height: 75%;
+    }
+
     .TableThead{
         border-bottom: solid 2px gray;
         margin-bottom: 1%;
     }
 
     .TableTbody{
-        height: 65%;
+        height: 80%;
         overflow: auto;
         text-align: center;
     }
@@ -173,147 +180,75 @@ const style = css`
 function emergencyDoorOpen(){
 
     useEffect(() => {
-        getDoorInfo();
+        getInfo();
+        getStaInfo();
       }, [])
 
 
     const header = ["No.", "시설명", "도어명", "개방여부"]
     
-    const [serverData, setserverData] = useState([
-        {
-            "staName" : "공과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "이과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "공과대학",
-            "doorName" : "3층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "공과대학",
-            "doorName" : "4층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "법정대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "의과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        
-    ])
 
-    const [serverDataClone, setserverDataClone] = useState([
-        {
-            "staName" : "공과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "이과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "공과대학",
-            "doorName" : "3층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "공과대학",
-            "doorName" : "4층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "법정대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        {
-            "staName" : "의과대학",
-            "doorName" : "1층 사무실",
-            "doorId" : "A001",
-            "isOpen" : "Open"
-        },
-        
-    ])
-
-    const [staDoorData, setStaDoorData] = useState({
-        "staData":[       
-        {
-            "staId" : 1,
-            "staName": "공과대학"
-        },
-        {
-            "staId" : 2,
-            "staName": "이과대학"
-        },
-        {
-            "staId" : 3,
-            "staName": "의과대학"
-        },
-        {
-            "staId" : 4,
-            "staName": "문과대학"
-        },
-    ],
-    "doorData":[    
-        {
-            "doorId": "A1",
-            "doorName": "사무실",
-            "staId": 1
-        },
-        {
-            "doorId": "A1",
-            "doorName": "PC실A",
-            "staId": 2
-        },
-        {
-            "doorId": "A1",
-            "doorName": "PC실B",
-            "staId": 3
-        },
-        {
-            "doorId": "A1",
-            "doorName": "사무실",
-            "staId": 4
-        },
-        {
-            "doorId": "A1",
-            "doorName": "창고",
-            "staId": 4
-        },
-    ]});
     
     const [Data, setData] = useState([]);
-    const [Selected, setSelected] = useState("");
+    const [DataClone, setDataClone] = useState([]);
+    const [staDoorData, setStaDoorData] = useState([]);
+    const [DoorData, setDoorData] = useState([]);
+    const [filterData, setFilterData] = useState([]);
+    const [checkedList, setCheckedLists] = useState([]);
 
 
-    const handleFilter = async (e) => {
-        setSelected(e.target.value);
-        const result =  serverDataClone.filter(e => Selected === e.staName);
-        setserverData(result);
+    const onCheckedAll = useCallback(
+        (checked) => {
+          if (checked) {
+            console.log('1');
+    
+            const checkedListArray = DoorData.map(list => list.doorId);
+            setCheckedLists(checkedListArray);
+          } else {
+            setCheckedLists([]);
+          }
+        },
+        [DoorData]
+      );
+
+      console.log(checkedList);
+
+      /**const onCheckedFilterAll = useCallback(
+        (checked) => {
+        const checkedListArray = [];
+        if (checked) {
+            console.log(filterData);
+            filterData.forEach((list) => checkedListArray.push(list.doorId));
+            console.log(checkedListArray);
+            setCheckedLists([...checkedList, checkedListArray]);
+        } else{
+            setCheckedLists(checkedList.filter((el) => el !== checkedListArray));
+            }
+        },
+        [checkedList]
+      ); **/
+
+      const onCheckedElement = useCallback(
+        (checked, list) => {
+         if (checked) {
+            setCheckedLists([...checkedList, list]);
+          } else {
+            setCheckedLists(checkedList.filter((el) => el !== list));
+          }
+        },
+        [checkedList]
+      );
+
+
+    const handleFilter = (e) => {
+        const select = e.target.value;
+        if(select === ""){
+            setData(DataClone);
+        }else{
+            const result = DataClone.filter(e => select === e.staName);
+            setData(result);
+            setFilterData(result);
+        }
     };
 
     const getInfo = async () =>{
@@ -323,23 +258,28 @@ function emergencyDoorOpen(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setData(res.data);           
+                console.log("가져오기 성공");
+                setData(res.data);  
+                setDataClone(res.data);         
             }else{
+                console.log("가져오기 실패");
                 alert(res.data);
             }
      });
     }
 
-    const getDoorInfo = async () =>{
+    const getStaInfo = async () =>{
         const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
-        axios.get(URL)
+        axios.post(URL)
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setData(res.data);           
+                console.log("데이터 받아오기 성공");
+                setStaDoorData(res.data.staData);    
+                setDoorData(res.data.doorData);       
             }else{
-                alert(res.data);
+                console.log("데이터 받아오기 실패");
             }
      });
     }
@@ -374,46 +314,95 @@ function emergencyDoorOpen(){
                         <div className = "daySelect">
                             <div className = "timeSelect">
                                 <p>▶ 전체도어 개방</p>
-                                <Checkbox></Checkbox>
+                                <input type = "checkbox" onChange={(e) => onCheckedAll(e.target.checked)}
+                                checked={
+                                  checkedList.length === 0
+                                    ? false
+                                    : checkedList.length === DoorData.length
+                                    ? true
+                                    : false
+                                }></input>
                                 <p>▶ 관리 시설 선택</p>
-                                <Select placeholder='Select Gate' 
-                                onChange={(e) => {
+                                <Select placeholder='Select Gate'
+                                onChange = {(e) => {
                                     handleFilter(e)
-                                }}
-                                value={Selected} width="20%">
-                                    {staDoorData.staData.map((item) => (
+                                }}width="20%">
+                                    {staDoorData.map((item) => (
                                         <option value={item.staName} key={item.staId}>
                                         {item.staName}
                                         </option>
                                     ))}
                                 </Select>
-                                <Checkbox style = {{marginLeft: "1%"}}></Checkbox>
+                                <input type = "checkbox" style = {{marginLeft: "1%"}} onChange={(e) => onCheckedFilterAll(e.target.checked)}></input>
                             </div>
                         </div>
-                        <div className = "TableThead">
-                            <table>
-                                <thead>
-                                    <tr>{header.map((item)=>{
-                                        return <th>{item}</th>
-                                    })}</tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div className = "TableTbody">
-                            <table>
-                                <tbody>
-                                {serverData.map((item, index)=>{
-                                            return(
-                                                <tr>
-                                                    <td>{index+1}</td>
-                                                    <td>{item.staName}</td>
-                                                    <td>{item.doorName}</td>
-                                                    <td><Checkbox></Checkbox></td>
-                                                </tr>
-                                            )
-                                        })}
-                                </tbody>
-                            </table>
+                        <div className = "TableContainer">
+                            <div className = "Table" style={{width: "50%"}}>
+                                <div className = "TableThead">
+                                    <table>
+                                        <thead>
+                                            <tr>{header.map((item)=>{
+                                                return <th>{item}</th>
+                                            })}</tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div className = "TableTbody">
+                                    <table>
+                                        <tbody>
+                                        {
+                                                Data.map((item, index)=>{
+                                                    if(index%2==0){
+                                                        return(
+                                                            <tr>
+                                                                <td>{index+1}</td>
+                                                                <td>{item.staName}</td>
+                                                                <td>{item.doorName}</td>
+                                                                <td><input type = "checkbox"
+                                                                onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
+                                                                checked={checkedList.includes(item.doorId) ? true : false}></input></td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                    })
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div classNmae = "Table" style={{width: "50%"}}>
+                                <div className = "TableThead">
+                                    <table>
+                                        <thead>
+                                            <tr>{header.map((item)=>{
+                                                return <th>{item}</th>
+                                            })}</tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div className = "TableTbody">
+                                    <table>
+                                        <tbody>
+                                        {
+                                                Data.map((item, index)=>{
+                                                    if(index%2==1){
+                                                        return(
+                                                            <tr>
+                                                                <td>{index+1}</td>
+                                                                <td>{item.staName}</td>
+                                                                <td>{item.doorName}</td>
+                                                                <td><input type = "checkbox"
+                                                                onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
+                                                                checked={checkedList.includes(item.doorId) ? true : false}></input></td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                    })
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <UserModal/>

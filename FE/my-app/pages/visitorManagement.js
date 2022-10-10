@@ -6,6 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import {
     Button,
+    Checkbox,
     Select,
     Input,
     FormControl,
@@ -17,10 +18,7 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
-    Stack,
-    Radio, 
-    RadioGroup
+    useDisclosure
   } from '@chakra-ui/react'
 
 const style = css`
@@ -134,114 +132,18 @@ const style = css`
 function visitorManagement(){
 
      useEffect(() => {
-        getDoorInfo();
+        getInfo();
       }, [])
 
     
     const header = ["구분", "성명", "전화번호", "직장명", "직책", "건물명", "출입문명", "방문일시", "방문허가"]
 
-    useEffect(() => {
-        getDoorInfo();
-      }, [])
 
-    const [serverData, setserverData] = useState([
-        {
-            "userFlag": "상시",
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-            "userFlag": "상시",
-            "userName": "최재훈",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-            "userFlag": "상시",
-            "userName": "김민성",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-
-            "userFlag": "상시",
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        }
-
-    ])
-    const [serverDataClone, setserverDataClone] = useState([
-        {
-            "userFlag": "상시",
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-            "userFlag": "상시",
-            "userName": "최재훈",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-            "userFlag": "상시",
-            "userName": "김민성",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        },
-        {
-
-            "userFlag": "상시",
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "company": "명품시스템",
-            "position": "사원",
-            "staName": "본관",
-            "doorName": "3층사무실",
-            "enterTime": "2022-07-25 06:00~18:00",
-            "isAllowed" : "Yes"
-        }
-
-    ]);
     const [Data, setData] = useState([]);
-    const [staData, setStaData] = useState([]);
+    const [DataClone, setDataClone] = useState([]);
+
+    const [doorInfoData, setDoorInfoData] = useState([]);
+    const [doorInfoDataClone, setDoorInfoDataClone] = useState([]);
     const [userName, setUserName] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
     const [company, setCompany] = useState("");
@@ -249,6 +151,7 @@ function visitorManagement(){
     const [userId, setUserId] = useState("");
     const [userPw, setUserPw] = useState("");
     const [guestName, setGuestName] = useState("");
+    const [staDoorData, setStaDoorData] = useState([]);
 
     const handleUserName = (e) => setUserName(e.target.value);
     const handlePhoneNum = (e) => setPhoneNum(e.target.value);
@@ -260,10 +163,10 @@ function visitorManagement(){
 
     const SearchName = () => {
         if(guestName !== ""){
-            const search = serverDataClone.filter(e => e.userName === guestName);
-            setserverData(search);
+            const search = DataClone.filter(e => e.userName === guestName);
+            setData(search);
         }else{
-            setserverData(serverDataClone);
+            setData(DataClone);
         }
     }
 
@@ -276,44 +179,74 @@ function visitorManagement(){
             "company": company,
             "position": position,
             "staName": "공과대학",
-            "doorName": "3층사무실",
+            "doorName": "3층사무실, 2층사무실, 3층 과학실, 2",
             "enterTime": "0",
             "isAllowed" : "Yes"
         }
-
-        setserverData = serverData.push(info);
         setData = Data.push(info);
         onClose();
 
     }
 
-    const getDoorInfo = async () =>{
+    const handleDoorList = (e) => {
+        const selectId = e.target.value;
+        console.log(selectId);
+        if(selectId !== ""){
+            const result = doorInfoDataClone.filter(e => selectId === e.staId);
+            setDoorInfoData(result);
+        }else{
+            setDoorInfoData(doorInfoDataClone);
+        }
+    }
+
+    const getInfo = async () =>{
         const URL = 'http://localhost:5000/user/enterant';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
             console.log(res);
-            if(res.status === 200){
-                setData(res.data);           
+            if(res.status === 201){
+                setData(res.data);
+                setDataClone(res.data);            
             }else{
                 alert(res.data);
             }
      });
     }
 
-    const StaDoorInfo = async () => {
+    const getStaDoorInfo = async () =>{
         const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
-        axios.get(URL)
+        axios.post(URL)
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setStaData(res.data);           
+                console.log("데이터를 불러오는데 성공했습니다");
+                setStaDoorData(res.data.staData);
+                setDoorInfoData(res.data.doorData);
+                setDoorInfoDataClone(res.data.doorData);           
             }else{
-                alert(res.data);
+                console.log("데이터를 불러오지 못했습니다");
             }
      });
+     onOpen();
     }
+
+    console.log(Data);
+
+    /**const postInfo = async (item) =>{
+        const URL = "http://localhost:5000/user/enterant"
+        axios.defaults.withCredentials = true;
+            await axios.post(URL, item)
+            .then(res => {
+                console.log(res);
+                if(res.status === 201){
+                    console.log("======================", "데이터 전송 성공");
+                }else{
+                    console.log("false");
+                }
+            });
+    }**/
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
@@ -374,19 +307,21 @@ function visitorManagement(){
             </div>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
-                <Select placeholder='' width="100%">
-                    <option value='option1'>Option 1</option>
-                    <option value='option2'>Option 2</option>
-                    <option value='option3'>Option 3</option>
-                </Select>
+              <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"}}>
+                                    {staDoorData.map((item) => (
+                                        <option value={item.staId} key={item.staId}>
+                                        {item.staName}
+                                        </option>
+                                    ))}
+                                </Select>
             </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
-                <Select placeholder='' width="100%">
-                    <option value='option1'>Option 1</option>
-                    <option value='option2'>Option 2</option>
-                    <option value='option3'>Option 3</option>
-                </Select>
+                                    {doorInfoData.map((item) => (
+                                        <Checkbox value={item.staId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}>
+                                        {item.doorName}
+                                        </Checkbox>
+                                    ))}
             </FormControl>
           </ModalBody>
 
@@ -420,7 +355,7 @@ function visitorManagement(){
                             <Input placeholder= "Search Guest Name" style = {{width: "25%"}} onChange = {handleGuestName}/>
                             <Button style = {{marginLeft: "1%"}} onClick = {SearchName}>검색</Button>
                             <div className = "MainHeaderBtn" style = {{width: "70%"}}>
-                                <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>
                         </div>
@@ -436,7 +371,7 @@ function visitorManagement(){
                         <div className = "tableTbody">
                             <table>
                                 <tbody>
-                                {serverData.map((item)=>{
+                                {Data.map((item)=>{
                                             return(
                                                 <tr>
                                                     <td>{item.userFlag}</td>

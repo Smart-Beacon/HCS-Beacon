@@ -196,7 +196,7 @@ function ManagementSettings(){
             "closeTime": "00:00:00",
         }
     ])
-    const [serverDataInfo, setServerDataInfo] = useState([]);
+    const [serverDataInfo, setServerDataInfo] = useState();
     const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
@@ -259,11 +259,7 @@ function ManagementSettings(){
             "openTime": saveStartTime,
             "closeTime": saveEndTime
         }
-        setserverData = serverData.push(info);
-        setData = Data.push(info);
-        console.log(serverinfo);
-        setServerDataInfo = serverDataInfo.push(serverinfo);
-        postDoorInfo();
+        postDoorInfo(serverinfo);
         onClose();
 
     }
@@ -284,10 +280,10 @@ function ManagementSettings(){
      });
     }
 
-    const postDoorInfo = async () =>{
+    const postDoorInfo = async (item) =>{
         const URL = "http://localhost:5000/door/register"
         axios.defaults.withCredentials = true;
-            await axios.post(URL, serverDataInfo)
+            await axios.post(URL, item)
             .then(res => {
                 console.log(res);
                 if(res.status === 201){

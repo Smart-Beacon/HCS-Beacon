@@ -423,7 +423,6 @@ function ExitHistory(){
                                             MonthSearch(date);
                                         }}
                                         dateFormat="yyyy년 MM월"
-                                        disabled = {MonthView}
                                         showMonthYearPicker
                                         showFullMonthYearPicker
                                         showFourColumnMonthYearPicker
@@ -440,7 +439,6 @@ function ExitHistory(){
                                         }}
                                         dateFormat="yyyy년 MM월 dd일"
                                         selectsStart
-                                        disabled = {DayView}
                                         startDate={startDate}
                                         endDate={endDate}
                                     />
@@ -453,7 +451,6 @@ function ExitHistory(){
                                             EndDaySearch(date)}}
                                         dateFormat="yyyy년 MM월 dd일"
                                         selectsEnd
-                                        disabled = {DayView}
                                         startDate={startDate}
                                         endDate={endDate}
                                         minDate={startDate}
