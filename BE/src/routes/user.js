@@ -212,7 +212,8 @@ router.post('/opendoor',async(req,res)=>{
         }
         const user = await jwt.verify(token,process.env.JWT_SECRET);
         console.log(user.userId);
-        const result = await getMainDatas.openDoorUser(user.userId,doorId,deviceId);
+        const io = req.app.get('io');
+        const result = await getMainDatas.openDoorUser(user.userId,doorId,deviceId,io);
         return res.status(result).end();
     }catch(err){
         console.log(err.message);

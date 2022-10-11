@@ -510,7 +510,7 @@ const getUserInfo = async(userId) => {
     return result;
 }
 
-const openDoorUser = async(userId, doorId, vendorId) =>{
+const openDoorUser = async(userId, doorId, vendorId, io) =>{
     const exUser = await User.findOne({where:{userId,vendorId}});
     console.log(doorId)
     if(!exUser){
@@ -545,6 +545,8 @@ const openDoorUser = async(userId, doorId, vendorId) =>{
                         userId: userId,
                     });
                 }
+                const exDoor = await Door.findOne({where:{doorId}});
+                io.to(exDoor.socketId).emit('open','test');
                 //도어 Open socket Io
                 return 200;
             }else{
