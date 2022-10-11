@@ -9,7 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios";
 import {
-    Button
+    Accordion,
+    Button,
+    Box,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
   } from '@chakra-ui/react'
 
 const style = css`
@@ -158,7 +164,7 @@ const style = css`
     }
 
     table tr td{
-        width: 11.1%;
+        width: 11.53%;
     }
 
     .TableThead{
@@ -184,71 +190,10 @@ function reservationCheck(){
       }, [])
 
 
-    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "자주방문여부", "승인여부"]
+    const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "승인여부", "상세정보"];
 
     const [Data, setData] = useState([]);
     const [DataClone, setDataClone] = useState(Data);
-    const [serverData, setserverData] = useState([
-        {
-            "allowId" : "Dejong1706",
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "latestDate": "2022/08/05",
-            "enterTime": "07:00",
-            "exitDate": "19:00",
-            "reason": "출근을 해야합니다",
-            "isAllowed": "Yes",
-        },
-        {
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "latestDate": "2022/08/15",
-            "enterTime": "07:00",
-            "exitDate": "19:00",
-            "reason": "출근을 해야합니다",
-            "isAllowed": "Yes",
-        },
-        {
-            "userName": "최재훈",
-            "phoneNum": "010-1234-2342",
-            "latestDate": "2022/09/01",
-            "enterTime": "08:00",
-            "exitDate": "20:00",
-            "reason": "퇴근을 해야합니다",
-            "isAllowed": "Yes",
-        }
-
-    ]);
-    const [serverDataClone, setserverDataClone] = useState([
-        {
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "latestDate": "2022/08/05",
-            "enterTime": "07:00",
-            "exitDate": "19:00",
-            "reason": "출근을 해야합니다",
-            "isAllowed": "Yes",
-        },
-        {
-            "userName": "박병근",
-            "phoneNum": "010-3152-1297",
-            "latestDate": "2022/08/15",
-            "enterTime": "07:00",
-            "exitDate": "19:00",
-            "reason": "출근을 해야합니다",
-            "isAllowed": "Yes",
-        },
-        {
-            "userName": "최재훈",
-            "phoneNum": "010-1234-2342",
-            "latestDate": "2022/09/01",
-            "enterTime": "08:00",
-            "exitDate": "20:00",
-            "reason": "퇴근을 해야합니다",
-            "isAllowed": "Yes",
-        }
-
-    ])
     const [number, setNumber] = useState(0);
     const [isSelected, setIsSelected] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
@@ -256,7 +201,7 @@ function reservationCheck(){
     const [allow, setAllow] = useState(false);
 
     const DataLen = [];
-    for(let i = 0; i < serverData.length; i++){
+    for(let i = 0; i < Data.length; i++){
         DataLen.push(false);
     }
     const [disabled, setDisabled] = useState(DataLen);
@@ -266,16 +211,16 @@ function reservationCheck(){
         const Month = date.getMonth()+1;
         const Day = date.getDate();
         const startDayresult = DataClone.filter(e => 
-            new Date(e.latestDate).getMonth()+1 === Month && 
-            new Date(e.latestDate).getDate() === Day);
+            new Date(e.enterTime).getMonth()+1 === Month && 
+            new Date(e.enterTime).getDate() === Day);
         setData(startDayresult);
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
         startDate.setDate(startDate.getDate()-1);
         const endDayresult = DataClone.filter(e => 
-            new Date(e.latestDate).getTime() >= startDate.getTime() &&
-            new Date(e.latestDate).getTime() <= date.getTime());
+            new Date(e.enterTime).getTime() >= startDate.getTime() &&
+            new Date(e.enterTime).getTime() <= date.getTime());
         setData(endDayresult);
     }
 
@@ -289,7 +234,6 @@ function reservationCheck(){
         disabledClone[number] = true;
         setDisabled(disabledClone); 
         setNumber(number+1);
-        console.log(allow);
     }
 
     const haddleButtonFalse = (e) => {
@@ -304,6 +248,23 @@ function reservationCheck(){
         setNumber(number+1);
     }
 
+    const getDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/user/visitor';
+        axios.defaults.withCredentials = true;
+        axios.get(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                setData(res.data);
+                setDataClone(res.data);           
+            }else{
+                alert(res.data);
+            }
+     });
+    }
+
+    console.log(Data);
+
     const postInfo = (e) => {
         const trueInfo = {
             "allowId" : e,
@@ -312,33 +273,21 @@ function reservationCheck(){
         postAllowInfo(trueInfo);
     }
 
-    const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/user/visitor';
-        axios.defaults.withCredentials = true;
-        axios.get(URL)
-        .then(res => {
-            console.log(res);
-            if(res.status === 200){
-                setData(res.data);           
-            }else{
-                alert(res.data);
-            }
-     });
-    }
-
     const postAllowInfo = async (item) =>{
         const URL = "http://localhost:5000/user/visitor"
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
-                console.log(res);
-                if(res.status === 200){
+                if(res.status === 201){
+                    console.log(item);
                     console.log("======================", "데이터 전송 성공");
                 }else{
-                    console.log("false");
+                    console.log(item);
+                    console.log("데이터전송 실패");
                 }
             });
     }
+    
     return(
         <div>
             <Header/>
@@ -411,30 +360,61 @@ function reservationCheck(){
                             <table>
                                 <tbody>
                                 {Data.map((item, index)=>{
+                                    const enterDay = item.enterTime;
+                                    const exitDay = item.exitTime;
+                                    const DataDate = new Date(enterDay).getFullYear() + "-" + String(new Date(enterDay).getMonth()+1).padStart(2, "0") 
+                                    + "-" + String(new Date(enterDay).getDate()).padStart(2, "0");
+                                    const EnterTime = String((new Date(enterDay).getHours())-9).padStart(2, "0") + ":" + 
+                                    String(new Date(enterDay).getMinutes()).padStart(2, "0") + ":" + String(new Date(enterDay).getSeconds()).padStart(2, "0");
+                                    const ExitTime = String((new Date(exitDay).getHours())-9).padStart(2, "0") + ":" + 
+                                    String(new Date(exitDay).getMinutes()).padStart(2, "0") + ":" + String(new Date(exitDay).getSeconds()).padStart(2, "0");
                                             return(
                                                 <tr>
+                                                    <Accordion allowToggle>
+                                                    <AccordionItem>
                                                     <td>{index+1}</td>
                                                     <td>{item.userName}</td>
                                                     <td>{item.phoneNum}</td>
-                                                    <td>{item.latestDate}</td>
-                                                    <td>{item.enterTime}</td>
-                                                    <td>{item.exitTime}</td>
+                                                    <td>{DataDate}</td>
+                                                    <td>{EnterTime}</td>
+                                                    <td>{ExitTime}</td>
                                                     <td>{item.reason}</td>
-                                                    <td>{item.isAllowed}</td>
                                                     <td>
-                                                        <fieldset disabled = {disabled[index]} onChange = {postInfo(item.allowId)}>
+                                                        <fieldset disabled = {disabled[index]}>
                                                             <Button variant='solid' 
-                                                        onClick={haddleButtonTrue}
+                                                        onClick={(e) => {
+                                                            haddleButtonTrue(e);
+                                                            postInfo(item.allowId)
+                                                        }}    
                                                         style = {{marginRight:"7%", backgroundColor: "white", color: "green",
                                                         border: "solid 2px green"}}>
                                                             Y
                                                             </Button>
                                                             <Button variant='solid' style={{backgroundColor: "white", color: "red",
                                                             border: "solid 2px red"}}
-                                                           onClick={haddleButtonFalse}>
+                                                            onClick={(e) => {
+                                                                haddleButtonFalse(e);
+                                                                postInfo(item.allowId)
+                                                            }}>
                                                                 N
                                                             </Button>
                                                         </fieldset></td>
+                                                        <td>
+                                                        <AccordionButton style = {{marginLeft: "30%"}}>
+                                                            <Box flex='1' textAlign='center'>
+                                                            상세 정보
+                                                            </Box>
+                                                            <AccordionIcon />
+                                                        </AccordionButton></td>
+                                                        <AccordionPanel pb={4}>
+                                                            <td>출입허용ID : {item.allowId}</td>
+                                                            <td>소속 : {item.company}</td>
+                                                            <td>직책 : {item.position}</td>
+                                                            <td>건물명 : {item.staName}</td>
+                                                            <td>도어명 : {item.doorName}</td>
+                                                        </AccordionPanel>
+                                                        </AccordionItem>
+                                                        </Accordion>
                                                 </tr>
                                             )
                                         })}

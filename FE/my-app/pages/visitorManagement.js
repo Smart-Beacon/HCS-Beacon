@@ -5,6 +5,12 @@ import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
 import {
+    Accordion,
+    Box,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
     Button,
     Checkbox,
     Select,
@@ -106,11 +112,11 @@ const style = css`
 
     table tr th{
         font-size: 25px;
-        width: 11.1%;
+        width: 14.2%;
     }
 
     table tr td{
-        width: 11.1%;
+        width: 15.33%;
     }
 
     .TableThead{
@@ -136,7 +142,7 @@ function visitorManagement(){
       }, [])
 
     
-    const header = ["구분", "성명", "전화번호", "직장명", "직책", "건물명", "출입문명", "방문일시", "방문허가"]
+    const header = ["구분", "성명", "전화번호", "직장명", "직책", "방문일시", "상세정보"]
 
 
     const [Data, setData] = useState([]);
@@ -205,7 +211,7 @@ function visitorManagement(){
         axios.get(URL)
         .then(res => {
             console.log(res);
-            if(res.status === 201){
+            if(res.status === 200){
                 setData(res.data);
                 setDataClone(res.data);            
             }else{
@@ -372,17 +378,39 @@ function visitorManagement(){
                             <table>
                                 <tbody>
                                 {Data.map((item)=>{
+                                    let Flag = "";
+                                    if(item.userFlag === 0){
+                                        Flag = "상시";
+                                    } else if(item.userFlag === 1){
+                                        Flag = "방문";
+                                    } else{
+                                        Flag = "자주";
+                                    }
+                                    const statement = item.statement;
+                                    const door = item.door;
                                             return(
                                                 <tr>
-                                                    <td>{item.userFlag}</td>
+                                                    <Accordion allowToggle>
+                                                    <AccordionItem>
+                                                    <td>{Flag}</td>
                                                     <td>{item.userName}</td>
                                                     <td>{item.phoneNum}</td>
                                                     <td>{item.company}</td>
                                                     <td>{item.position}</td>
-                                                    <td>{item.staName}</td>
-                                                    <td>{item.doorName}</td>
-                                                    <td>{item.enterTime}</td>
-                                                    <td>{item.isAllowed}</td>
+                                                    <td>방문일시</td>
+                                                    <td>
+                                                        <AccordionButton style = {{marginLeft: "52%"}}>
+                                                            <Box flex='1' textAlign='center'>
+                                                            상세 정보
+                                                            </Box>
+                                                            <AccordionIcon />
+                                                        </AccordionButton></td>
+                                                        <AccordionPanel pb={4}>
+                                                            <td>건물명 : {statement.toString()}</td>
+                                                            <td>도어명 : {door.toString()}</td>
+                                                        </AccordionPanel>
+                                                        </AccordionItem>
+                                                        </Accordion>
                                                 </tr>
                                             )
                                         })}

@@ -210,9 +210,6 @@ function emergencyDoorOpen(){
         },
         [DoorData]
       );
-
-      console.log(checkedList);
-
       /**const onCheckedFilterAll = useCallback(
         (checked) => {
         const checkedListArray = [];
@@ -267,7 +264,7 @@ function emergencyDoorOpen(){
             }
      });
     }
-
+    
     const getStaInfo = async () =>{
         const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
