@@ -17,6 +17,7 @@ const smsRouter = require('./routes/sms');
 const statementRouter = require('./routes/statement');
 const userRouter = require('./routes/user');
 const accessRecordRouter = require('./routes/accessRecord');
+const webSocket = require('./socket');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -72,6 +73,8 @@ app.use((err, req, res, next) => {
 });
 
 // 서버 실행
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
 });
+
+webSocket(server,app);

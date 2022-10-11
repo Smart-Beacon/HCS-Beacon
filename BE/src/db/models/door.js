@@ -51,6 +51,10 @@ class door extends Sequelize.Model {
                     allowNull: true,
                     defaultValue: null,
                 },
+                socketId: {
+                    type: Sequelize.STRING,
+                    allowNull: true,
+                },
             },{
                 sequelize,
                 timestamps: false,

@@ -32,7 +32,7 @@ router.post('/login', async(req,res,next) =>{
                     secure:false,
                 });
                 const str = exSuperAdmin.superName;
-                const encrypted = CryptoJS.AES.encrypt(JSON.stringify({str}), process.env.PRIVATEKEY).toString();
+                const encrypted = CryptoJS.AES.encrypt(JSON.stringify(str), process.env.PRIVATEKEY).toString();
                 console.log(encrypted);
                 console.log(res.getHeader('set-cookie'));
                 return res.status(200).send(encrypted);
@@ -61,7 +61,7 @@ router.post('/login', async(req,res,next) =>{
                     exAdmin.isLogin = true;
                     await exAdmin.save();
                     const encrypted = CryptoJS.AES.encrypt(JSON.stringify(strName), process.env.PRIVATEKEY).toString();
-                    console.log(res.getHeader('set-cookie'),0);
+                    console.log(res.getHeader('set-cookie'));
                     return res.status(200).send(encrypted);
                 }else{
                     return res.status(202).send('비밀번호가 일치하지 않습니다.');
