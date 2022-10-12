@@ -18,7 +18,9 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
   TextEditingController phoneNum = TextEditingController();
   TextEditingController company = TextEditingController();
   TextEditingController position = TextEditingController();
+  TextEditingController loginPw = TextEditingController();
   TextEditingController reason = TextEditingController();
+
   DateTime? selectedDate;
   DateTime? selectedStartTime;
   DateTime? selectedEndTime;
@@ -213,6 +215,21 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
+                  child: TextField(
+                    controller: loginPw,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                        labelText: '고유 패스워드',
+                        labelStyle: TextStyle(color: Colors.black),
+                        hintText: 'Enter your password'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 0),
                   child: SizedBox(
                     height: 60,
                     width: 350,
@@ -372,6 +389,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   phoneNum: phoneNum.text,
                   company: company.text,
                   position: position.text,
+                  loginPw: loginPw.text,
                   reason: reason.text,
                   selectedDate: selectedDate,
                   selectedStartTime: selectedStartTime,
@@ -394,6 +412,7 @@ class RegisterButton extends StatefulWidget {
       required this.phoneNum,
       required this.company,
       required this.position,
+      required this.loginPw,
       required this.reason,
       required this.selectedDate,
       required this.selectedStartTime,
@@ -404,6 +423,7 @@ class RegisterButton extends StatefulWidget {
   final String phoneNum;
   final String? company;
   final String? position;
+  final String? loginPw;
   final String? reason;
   final String? doorId;
   final DateTime? selectedDate;
@@ -431,6 +451,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           'phoneNum': widget.phoneNum,
           'company': widget.company,
           'position': widget.position,
+          'loginPw':widget.loginPw,
           'reason': widget.reason,
           'enterTime': enterTime,
           'exitTime': exitTime,
@@ -479,6 +500,9 @@ class _RegisterButtonState extends State<RegisterButton> {
       return false;
     } else if (widget.position == "") {
       showSnackBar(context, '직책을 기입해주세요.');
+      return false;
+    }else if (widget.loginPw == "") {
+      showSnackBar(context, '비밀번호를 입력해주세요.');
       return false;
     } else if (widget.reason == "") {
       showSnackBar(context, '방문 사유를 입력해주세요.');

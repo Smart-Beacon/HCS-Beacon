@@ -102,8 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: userId,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'ID',
-                        hintText: 'Enter Your ID'),
+                        labelText: '전화번호( - 없이 기입)',
+                        hintText: 'Enter Your PhoneNum'),
                   ),
                 ),
                 Padding(
@@ -115,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Password',
-                        hintText: 'Enter secure password'),
+                        labelText: '고유 패스워드',
+                        hintText: 'Enter your verify code'),
                   ),
                 ),
                 Container(

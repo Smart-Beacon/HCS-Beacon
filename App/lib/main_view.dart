@@ -48,29 +48,10 @@ class InOutButton extends StatefulWidget {
 class _InOutButtonState extends State<InOutButton> {
 
   void checkUser(result) {
-    if (result == 200) {
-      // 통신 완료
-      showSnackBar(context, '인증 성공하였습니다. Door is open');
-    } else if (result == 202) {
-      showSnackBar(context, '방문 인증이 되지 않았습니다.');
-    } else if (result == 204) {
-      showSnackBar(context, '방문 시간이 일치하지 않습니다.');
-    } else if (result == 400) {
-      // doorId 등록 x
-      showSnackBar(context, '해당 출입문에는 접근이 불가합니다.');
-    } else if (result == 401) {
-      // deviceId 일치 x
-      showSnackBar(context, 'deviceId값이 잘못되었습니다.');
-    } else if (result == 403) {
-      // token 일치 x
-      showSnackBar(context, '사용자 인증이 안되었습니다.');
-    } else {
-      log(result.toString());
-      showSnackBar(context, '서버 오류');
-    }
+      showSnackBar(context, result);
   }
 
-  Future<int?> isOpen() async {
+  Future<String?> isOpen() async {
     try {
       String? deviceId = await PlatformDeviceId.getDeviceId;
       const storage = FlutterSecureStorage();
@@ -83,14 +64,15 @@ class _InOutButtonState extends State<InOutButton> {
         dio.options.headers['token'] = token;
         String url = "http://10.0.2.2:5000/user/opendoor";
         var res = await dio.post(url, data: {'doorId': doorId, 'deviceId': deviceId});
-        return res.statusCode;
+        log(res.data);
+        return res.data;
       }
-      return 404;
+      return "서버 오류";
       
     } catch (err) {
-      showSnackBar(context, err.toString());
+      log(err.toString());
+      return "어플 오류";
     }
-    return null;
   }
 
 
