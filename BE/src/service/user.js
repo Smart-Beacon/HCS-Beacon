@@ -7,7 +7,6 @@ const Token = require('../db/models/token');
 const AccessRecord = require('../db/models/accessRecord');
 const uuid = require('./createUUID');
 const time = require('./time');
-const { Op } = require("sequelize");
 const {sendSMS} = require('./sms');
 
 
@@ -90,7 +89,7 @@ const createRegularUserData = async(data) => {
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
     if(!exUser){
         const userData = await User.create({
-            userId: uuid.uuid(),
+            userId: await uuid.uuid(),
             userName: data.userName,
             company: data.company,
             position: data.position,
@@ -105,7 +104,7 @@ const createRegularUserData = async(data) => {
         await Promise.all(
             data.doorList.map(async doorId =>{
                 await UserAllow.create({
-                    allowId: uuid.uuid(),
+                    allowId: await uuid.uuid(),
                     userId: userData.userId,
                     doorId: doorId,
                     isAllowed: 1,
@@ -162,12 +161,14 @@ const getAdminVisitorList = async(adminId) => {
 // 방문자 예약 승인 변경
 // 사용 API : 방문자 예약 승인여부 변경 API
 const changeVisitorAllow = async(data) => {
-    const allow = await UserAllow.findOne({
+    const exAllow = await UserAllow.findOne({
         where: {allowId: data.allowId}
     });
-    allow.isAllowed = data.isAllowed;
-    await allow.save();
-    return allow;
+    if(exAllow.isAllowed === null){
+        exAllow.isAllowed = data.isAllowed;
+        await exAllow.save();
+    }
+    return exAllow;
 }
 
 // 출입자 리스트 함수
@@ -306,7 +307,6 @@ const registUser = async(userInfo) => {
     const exUser = await User.findOne({
         where:{
             phoneNum:userInfo.phoneNum,
-            userName:userInfo.name
         }
     });
 
@@ -335,22 +335,28 @@ const registUser = async(userInfo) => {
     }else{
         console.log('유저 없음');
         console.log(userInfo);
-        const user = await User.create({
+        console.log(userInfo.enterTime);
+        console.log(typeof(userInfo.enterTime));
+        console.log(Date(userInfo.enterTime));
+        console.log(typeof(Date(String(userInfo.enterTime))));
+
+        const newUser = await User.create({
             userId: await uuid.uuid(),
             userName: userInfo.name,
             company: userInfo.company,
             position: userInfo.position,
             phoneNum: userInfo.phoneNum,
             userLoginId: userInfo.phoneNum.replace(/-/g,''),
-            userLoginPw: '1234',//userInfo.name,
+            userLoginPw: userInfo.loginPw,
             reason: userInfo.reason,
             enterTime: Date.parse(userInfo.enterTime),
-            exitTime: Date.parse(userInfo.exitTime)
+            exitTime: Date.parse(userInfo.exitTime),
         });
+        
         await UserAllow.create({
             allowId: await uuid.uuid(),
             userFlag:2,
-            userId: user.userId,
+            userId: newUser.userId,
             doorId: userInfo.doorId
         });
         return 201
@@ -516,7 +522,7 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
     if(!exUser){
         // vendorId 잘못됨
         console.log(`unRegist vendorId : ${vendorId}`);
-        return 401;
+        return "등록된 기기가 아닙니다.";
     }else{
         const exUserAllow = await UserAllow.findOne({where:{userId,doorId}});
         if(exUserAllow){
@@ -527,7 +533,7 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
                 if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime || exUser.exitTime < nowTime)){
                     //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
                     console.log(`time range out: ${nowTime}`);
-                    return 204;
+                    return "방문시간이 일치하지 않습니다.";
                 }
                 //상시 출입자 and 일일 방문자, 자주 방문자들
                 const exAccessRecord = await AccessRecord.findOne({where:{userId, doorId, exitTime:null}});
@@ -546,21 +552,36 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
                     });
                 }
                 const exDoor = await Door.findOne({where:{doorId}});
-                io.to(exDoor.socketId).emit('open',{isOpen:true, duration:4000});   // 4000ms 4s간 문 열림
+                if(!exDoor.isOpen){
+                    io.to(exDoor.socketId).emit('open',{duration:4000});   // 4000ms 4s간 문 열림
+                }else{
+                    return "현재 문이 열려있습니다.";
+                }
                 //도어 Open socket Io
-                return 200;
+                return "인증 성공! 문이 열렸습니다.";
             }else{
                 console.log(`isAllowed : ${exUserAllow.isAllowed}`);
-                return 202;
+                return "방문 인증이 되지 않았습니다.";
                 //수락이 안된경우 대기 or 거절
             }
         }else{
             console.log(`unRegist doorId : ${doorId}`);
-            return 400;
+            return "BeaconId가 잘못되었습니다.";
             // doorId 값이 잘못됨
         }
     }
+}
 
+const changePassword = async(user) =>{
+    const exUser = await User.findOne({where:{userLoginId:user.userLoginId}});
+    if(exUser){
+        console.log(exUser.userName);
+        exUser.userLoginPw = user.password;
+        await exUser.save();
+        return "비밀번호 변경 완료";
+    }else{
+        return "유저가 존재하지 않습니다.";
+    }
 }
 
 
@@ -578,5 +599,6 @@ module.exports = {
     returnId,
     returnPw,
     getUserInfo,
-    openDoorUser
+    openDoorUser,
+    changePassword
 }
