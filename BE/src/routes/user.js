@@ -214,11 +214,20 @@ router.post('/opendoor',async(req,res)=>{
         console.log(user.userId);
         const io = req.app.get('io');
         const result = await getMainDatas.openDoorUser(user.userId,doorId,deviceId,io);
-        return res.status(result).end();
+        return res.status(200).send(result);
     }catch(err){
         console.log(err.message);
         res.status(404).send(err.message);
     }
 });
+
+router.post('/changepassword',async(req,res)=>{
+    try{
+        const result = await getMainDatas.changePassword(req.body);
+        res.status(200).send(result);
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+})
 
 module.exports = router;
