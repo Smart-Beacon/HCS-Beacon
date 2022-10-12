@@ -546,7 +546,7 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
                     });
                 }
                 const exDoor = await Door.findOne({where:{doorId}});
-                io.to(exDoor.socketId).emit('open','test');
+                io.to(exDoor.socketId).emit('open',{isOpen:true, duration:4000});   // 4000ms 4s간 문 열림
                 //도어 Open socket Io
                 return 200;
             }else{

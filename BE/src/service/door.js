@@ -265,11 +265,16 @@ const getAdminEmergency = async(adminId) => {
 //POST : 비상 도어 개방 함수
 // 관리자로부터 받은 도어 정보를 받아 즉시 열어주는 함수
 // 도어ID, 개방여부
-const emergencyOpen = async(doorOpen) => {
+const emergencyOpen = async(doorOpen, io) => {
     console.log(doorOpen);
     const doorResult = await Promise.all(doorOpen.map(async door =>{
-        const exDoor = await Door.findOne({where: { doorId:door.doorId },attributes:['doorId','isOpen']});
+        const exDoor = await Door.findOne({where: { doorId:door.doorId },attributes:['doorId','isOpen','socketId']});
         if(exDoor){
+            if(door.isOpen){
+                io.to(exDoor.socketId).emit("open",{isOpen:true, duration:1000*60*60*24});  //ms단위로 24시간 열림
+            }else{
+                io.to(exDoor.socketId).emit("close",{isOpen:false}); // 도어 닫음
+            }
             exDoor.isOpen = door.isOpen;
             await exDoor.save();
         }

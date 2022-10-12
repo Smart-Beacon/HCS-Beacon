@@ -79,15 +79,15 @@ router.get('/adminemergency', async(req,res,next) => {
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check === 0){
             const data = await getMainDatas.getSuperEmergency();
-            res.json(data);
+            res.status(200).json(data);
         }else if(check === 1){
             const data = await getMainDatas.getAdminEmergency(id);
-            res.json(data);
+            res.status(200).json(data);
         }else{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
@@ -99,17 +99,18 @@ router.post('/adminemergency', async(req,res,next) => {
         console.log(id, isSuper);
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check !== 2){
-            const data = await getMainDatas.emergencyOpen(req.body);
+            const io = req.app.get('io');
+            const data = await getMainDatas.emergencyOpen(req.body,io);
             if(data){
-                //res.status(200).end();
-                // console.log(data);
                 res.status(200).json(data);
+            }else{
+                res.status(204).end();
             }
         }else{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
