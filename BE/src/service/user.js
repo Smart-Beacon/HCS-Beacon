@@ -375,7 +375,8 @@ const findUserId = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        const statusCode = await createToken(exUser.userId,exUser.phoneNum);
+        console.log(statusCode);
         if(statusCode == 202){
             return exUser.userId;
         }
@@ -398,12 +399,12 @@ const findUserPw = async(user) => {
 
     if(exUser){
         //인증번호 만들기
-        var statusCode = createToken(exUser.userId,exUser.phoneNum);
+        const statusCode = await createToken(exUser.userId,exUser.phoneNum);
+        console.log(statusCode);
         if(statusCode == 202){
             return exUser.userId;
         }
         return null;
-        
     }else{
         return null;
     }
@@ -418,19 +419,13 @@ const createToken = async(userId,phoneNum) =>{
     });
     var token = Math.floor(100000 + Math.random() * 900000);
     if(exToken){
-        // await Token.update({
-        //     token,
-        //     createdAt: new Date()
-        // },{where:{
-        //     userId:userId,
-        // }});
         exToken.token = token;
-        exToken.createAt = new Date();
+        exToken.createdAt = Date.now();
         await exToken.save();
     }else{
         await Token.create({
             token,
-            createAt: new Date(),
+            createAt: new Date().now(),
             userId:userId
         });
     }
