@@ -9,6 +9,6 @@ void showSnackBar(BuildContext context, String text) {
       CustomSnackBar.success(
           icon: const Icon(null),
           backgroundColor: const Color(0xff81a4ff),
-          textStyle: const TextStyle(color: Colors.white),
+          textStyle: const TextStyle(color: Colors.white, fontSize: 17.0),
           message: text));
 }

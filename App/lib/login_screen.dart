@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smart_beacon_customer_app/snackbar.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,18 +15,23 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userId = TextEditingController();
   TextEditingController userPw = TextEditingController();
 
-  void callAPI(BuildContext context) async {
+  Future<void> callAPI(BuildContext context) async {
     try {
+      String? venderId = await PlatformDeviceId.getDeviceId;
       var dio = Dio();
       String url = "http://10.0.2.2:5000/auth/user/login";
-      var res = await dio
-          .post(url, data: {'userId': userId.text, 'userPw': userPw.text});
+      var res = await dio.post(url, data: {
+        'userId': userId.text,
+        'userPw': userPw.text,
+        'venderId': venderId
+      });
       switch (res.statusCode) {
         case 200:
-          // 1. 정보저장
+          // 1. 정보저장(토큰 저장 할거야?? 토큰 활용할거지?)
+          saveToken(res.data['token']);
           // 2. 페이지 이동
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, '/main');
+          Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
           //onSuccess();
           break;
         case 202:
@@ -36,6 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (err) {
       showSnackBar(context, err.toString());
     }
+  }
+
+  void saveToken(jwt) async {
+    const storage = FlutterSecureStorage();
+    String token = jwt;
+    await storage.write(key: "BeaconToken", value: token);
   }
 
   dynamic isEnterInfo() {
@@ -89,8 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: userId,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'ID',
-                        hintText: 'Enter Your ID'),
+                        labelText: '전화번호( - 없이 기입)',
+                        hintText: 'Enter Your PhoneNum'),
                   ),
                 ),
                 Padding(
@@ -102,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Password',
-                        hintText: 'Enter secure password'),
+                        labelText: '고유 패스워드',
+                        hintText: 'Enter your verify code'),
                   ),
                 ),
                 Container(
@@ -115,9 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)),
                         backgroundColor: const Color(0xff81a4ff)),
-                    onPressed: () {
+                    onPressed: () async {
                       if (isEnterInfo()) {
-                        callAPI(context);
+                        await callAPI(context);
                       }
                     },
                     child: const Text(

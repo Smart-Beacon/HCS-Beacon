@@ -18,11 +18,12 @@ class AccountFindingPage extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
           elevation: 0.0,
-          ),
+        ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: const <Widget>[FindIdButton(), FindPwButton()],
           ),
         ),
@@ -38,7 +39,7 @@ class FindIdButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 200),
+      margin: const EdgeInsets.only(top: 30),
       width: 250,
       height: 60,
       child: ElevatedButton(
@@ -66,7 +67,7 @@ class FindPwButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(bottom: 30),
       width: 250,
       height: 60,
       child: ElevatedButton(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -35,27 +36,36 @@ class NavBar extends StatelessWidget {
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
             onTap: () {
-                  _makePhoneCall('tel:04212345678');//고객센터 번호 넣기!!
-              },
+              _makePhoneCall('tel:04212345678'); //고객센터 번호 넣기!!
+            },
           ),
           SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 child: const Text('로그아웃'),
-                onPressed: () {}, // 로그아웃
+                onPressed: () {
+                  logOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/middle', (_) => false);
+                }, // 로그아웃
               ))
         ],
       ),
     );
   }
-  
-  Future<void> _makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+
+  logOut() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "BeaconToken");
+  }
+
+  Future<void> _makePhoneCall(String callNum) async {
+    final Uri url = Uri.parse(callNum);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
   }
-
 }
