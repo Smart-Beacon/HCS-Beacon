@@ -175,7 +175,6 @@ function ExitHistory(){
 
     useEffect(() => {
         getDoorInfo();
-        setserverDataClone(serverData);
       }, [])
 
     const [serverData, setserverData] = useState([
@@ -338,7 +337,8 @@ function ExitHistory(){
         setEndTime(null);
     };
 
-    const [Data, setData] = useState([])
+    const [Data, setData] = useState([]);
+    const [DataClone, setDataClone] = useState([]);
 
     const getDoorInfo = async () =>{
         const URL = 'http://localhost:5000/accessrecord';
@@ -347,7 +347,8 @@ function ExitHistory(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setData(res.data);           
+                setData(res.data);
+                setDataClone(res.data);           
             }else{
                 alert(res.data);
             }
@@ -360,28 +361,28 @@ function ExitHistory(){
     const MonthSearch = (date) => {
         let year = startMonth.getFullYear();
         let Month = date.getMonth();
-        const Monthresult = serverDataClone.filter(e => 
-            new Date(e.latestDate).getFullYear() === year && new Date(e.latestDate).getMonth() === Month);
-        setserverData(Monthresult);
+        const Monthresult = DataClone.filter(e => 
+            new Date(e.enterDate).getFullYear() === year && new Date(e.enterDate).getMonth() === Month);
+        setData(Monthresult);
     }
     //시작일 선택시 시작일별 필터링 함수
     const StartDaySearch = (date) => {
         const year = date.getFullYear();
         const Month = date.getMonth()+1;
         const Day = date.getDate();
-        const startDayresult = serverDataClone.filter(e => 
-            new Date(e.latestDate).getFullYear() === year && 
-            new Date(e.latestDate).getMonth()+1 === Month && 
-            new Date(e.latestDate).getDate() === Day);
-        setserverData(startDayresult);
+        const startDayresult = DataClone.filter(e => 
+            new Date(e.enterDate).getFullYear() === year && 
+            new Date(e.enterDate).getMonth()+1 === Month && 
+            new Date(e.enterDate).getDate() === Day);
+        setData(startDayresult);
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
         startDate.setDate(startDate.getDate()-1);
-        const endDayresult = serverDataClone.filter(e => 
-            new Date(e.latestDate).getTime() <= date.getTime() &&
-            new Date(e.latestDate).getTime() >= startDate.getTime());
-        setserverData(endDayresult);
+        const endDayresult = DataClone.filter(e => 
+            new Date(e.enterDate).getTime() <= date.getTime() &&
+            new Date(e.enterDate).getTime() >= startDate.getTime());
+        setData(endDayresult);
         }
 
     return(
@@ -409,7 +410,7 @@ function ExitHistory(){
                         </div>
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 입출 이력</h1>
-                            <ExportExcel excelData={serverData} fileName={"Excel Export"}/>
+                            <ExportExcel excelData={Data} fileName={"Excel Export"}/>
                         </div>
                         <div className = "daySelect">                                      
                             <div className = "calenderSelect">
@@ -467,14 +468,14 @@ function ExitHistory(){
                         </div>
                         <div className = "TableTbody">
                             <table>
-                                    {serverData.map((item)=>{
+                                    {Data.map((item)=>{
                                         return(
                                             <tr>
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>
                                                 <td>{item.userName}</td>
-                                                <td>{item.latestDate}</td>
+                                                <td>{item.enterDate}</td>
                                                 <td style = {{color: "red"}}>{item.enterTime}</td>
                                                 <td style = {{color: "blue"}}>{item.exitTime}</td>
                                                 <td>{item.reason}</td>

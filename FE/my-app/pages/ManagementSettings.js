@@ -7,8 +7,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
 import {
     Button,
@@ -22,6 +20,7 @@ import {
     ModalFooter,
     ModalBody,
     useDisclosure,
+    Select,
     Stack,
     Radio, 
     RadioGroup
@@ -40,18 +39,15 @@ const style = css`
         display: flex;
         height: 100%;
     }
-
     .SideBar{
         width: 15%;
         height: 100%;
     }
-
     .SideBar ul{
         padding: 0;
         list-style: none;
         text-align: center;
     }
-
     .SideBar ul li{
         font-size: 30px;
         width: 90%;
@@ -59,7 +55,6 @@ const style = css`
         border-bottom: solid 2px gray;
         font-weight: bold;
     }
-
     .SideBar ul li:hover{
         color: blue;
     }
@@ -69,45 +64,36 @@ const style = css`
         border-left: solid 5px gray;
         height: 100%;
     }
-
     .MainHeader{
         height: 15%;
         margin-top: 1%;
         display: flex;
         justify-content: space-between;
     }
-
     .MainHeaderTitle{
         font-size: 40px;
         font-weight: bold;
     }
-
     .siren{
         margin: 0;
         font-size: 80px;
     }
-
     .MainHeaderTitle{
         margin-left: 30px;
     }
-
     .Select{
         color: blue;
     }
-
     .ModalBody{
         width: 500px;
     }
-
     .a{
         width: 50%;
     }
-
     .DateSelect{
         display: flex;
         flex-direction: column;
     }
-
     table{
         width: 100%;
         font-weight: bold;
@@ -116,87 +102,38 @@ const style = css`
         margin: 0;
         text-align: center;
     }
-
     table tr th{
         font-size: 25px;
         width: 12.5%;
     }
-
     table tr td{
         width: 12.5%;
     }
-
     .TableThead{
         border-bottom: solid 2px gray;
         margin-bottom: 1%;
     }
-
     .TableTbody{
         height: 65%;
         overflow: auto;
         text-align: center;
     }
-
     .TableTbody table tr{
         height: 50px;
     }
-
-
 `;
 
 function ManagementSettings(){
 
     useEffect(() => {
         getDoorInfo();
+        getStaInfo();
       }, [])
 
 
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
 
     const [Data, setData] = useState([]);
-    const [serverData, setserverData] = useState([
-        {
-            "staName": "본관",
-            "doorName": "전기실",
-            "doorId": "A010101010",
-            "isOpen": "0",
-            "isMonitoring": "0",
-            "latestDate": "08/01",
-            "openTime": "06:00:00",
-            "closeTime": "00:00:00",
-        },
-        {
-            "staName": "본관",
-            "doorName": "통신실",
-            "doorId": "B010101010",
-            "isOpen": "0",
-            "isMonitoring": "0",
-            "latestDate": "08/01",
-            "openTime": "06:00:00",
-            "closeTime": "00:00:00",
-        },
-        {
-            "staName": "본관",
-            "doorName": "통신실",
-            "doorId": "B010101010",
-            "isOpen": "0",
-            "isMonitoring": "0",
-            "latestDate": "08/01",
-            "openTime": "06:00:00",
-            "closeTime": "00:00:00",
-        },
-        {
-            "staName": "본관",
-            "doorName": "통신실",
-            "doorId": "B010101010",
-            "isOpen": "0",
-            "isMonitoring": "0",
-            "latestDate": "08/01",
-            "openTime": "06:00:00",
-            "closeTime": "00:00:00",
-        }
-    ])
-    const [serverDataInfo, setServerDataInfo] = useState();
     const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
@@ -208,6 +145,7 @@ function ManagementSettings(){
     const [weekCheck, setweekCheck] = useState("");
     const [isSelected, setIsSelected] = useState(false);
     const [checkedList, setCheckedList] = useState([]);
+    const [staDoorData, setStaDoorData] = useState([]);
 
     const onSelect = (time) => {
         setStartTime(time);
@@ -231,7 +169,6 @@ function ManagementSettings(){
 
     const addInfo = () => {
 
-        const saveDate = startDate.getMonth()+1 + "/" + startDate.getDate();
         const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
@@ -260,10 +197,18 @@ function ManagementSettings(){
             "closeTime": saveEndTime
         }
         postDoorInfo(serverinfo);
+        clearData();
         onClose();
 
     }
 
+    const clearData = () => {
+        setIsMonitoring("");
+        setCheckedList([]);
+        setStartDate(new Date());
+        setStartTime(null);
+        setEndTime(null);
+    }
 
     const getDoorInfo = async () =>{
         console.log('management start');
@@ -294,6 +239,21 @@ function ManagementSettings(){
             });
     }
 
+    const getStaInfo = async () =>{
+        const URL = 'http://localhost:5000/statement';
+        axios.defaults.withCredentials = true;
+        axios.post(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                console.log("데이터 받아오기 성공");
+                setStaDoorData(res.data.staData);          
+            }else{
+                console.log("데이터 받아오기 실패");
+            }
+     });
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
@@ -319,13 +279,31 @@ function ManagementSettings(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlestaName}/>
+                    <Select placeholder='Select Gate'
+                                onChange = {(e) => {
+                                    handlestaName(e)
+                                }}width="70%">
+                                    {staDoorData.map((item) => (
+                                        <option value={item.staName} key={item.staName}>
+                                        {item.staName}
+                                        </option>
+                                    ))}
+                    </Select>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlestaId}/>
+                    <Select placeholder='Select Gate'
+                                onChange = {(e) => {
+                                    handlestaId(e)
+                                }}width="70%">
+                                    {staDoorData.map((item) => (
+                                        <option value={item.staId} key={item.staId}>
+                                        {item.staId}
+                                        </option>
+                                    ))}
+                    </Select>
                 </div>
                 </FormControl>
             </div>

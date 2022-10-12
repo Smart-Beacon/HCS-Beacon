@@ -79,10 +79,9 @@ function Header() {
     const getName = localStorage.getItem('name').slice(1,-1);
     console.log(getName);
     const bytes = crypto.AES.decrypt(getName, key).toString(crypto.enc.Utf8);
-    console.log({bytes});
     const originalText = JSON.parse(bytes);
     console.log(originalText);
-    setData(originalText); 
+    setData(originalText);
     timer = setInterval(() => {
       setTime(moment());
     }, 1000);
