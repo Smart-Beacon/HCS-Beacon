@@ -271,9 +271,9 @@ const emergencyOpen = async(doorOpen, io) => {
         const exDoor = await Door.findOne({where: { doorId:door.doorId },attributes:['doorId','isOpen','socketId']});
         if(exDoor){
             if(door.isOpen){
-                io.to(exDoor.socketId).emit("open",{isOpen:true, duration:1000*60*60*24});  //ms단위로 24시간 열림
+                io.to(exDoor.socketId).emit("open",{ duration:1000*60*60*24,emergency:true});  //ms단위로 24시간 열림
             }else{
-                io.to(exDoor.socketId).emit("close",{isOpen:false}); // 도어 닫음
+                io.to(exDoor.socketId).emit("close","close door"); // 도어 닫음
             }
             exDoor.isOpen = door.isOpen;
             await exDoor.save();
