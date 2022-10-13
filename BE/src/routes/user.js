@@ -44,13 +44,13 @@ router.post('/enterant', async(req,res,next) =>{
                 // res.status(201).json(userData);
             }else{
                 console.log('존재하는 사용자 ID입니다.');
-                res.status(406).json('존재하는 사용자 ID입니다.');
+                res.status(204).send('존재하는 사용자 ID입니다.');
             }
         }else{
             res.status(403).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 

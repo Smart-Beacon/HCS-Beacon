@@ -44,31 +44,5 @@ module.exports = (server, app) =>{
             }
             console.log(data.beaconId, data.isOpen);
         });
-
-        // socket.on('open',async (data)=>{
-        //     const exDoor = await Door.findOne({where:{doorId:data.beaconId}});
-        //     if(exDoor){
-        //         exDoor.isOpen = data.isOpen;
-        //         //exDoor.isOpen = true;
-        //         exDoor.socketId = socket.id;
-        //         await exDoor.save();
-        //     }else{
-        //         console.log('error');
-        //     }
-        //     console.log(data.beaconId, data.isOpen);
-        // });
-
-        // socket.on('close',async (data)=>{
-        //     const exDoor = await Door.findOne({where:{doorId:data.beaconId}});
-        //     if(exDoor){
-        //         exDoor.isOpen = data.isOpen;
-        //         //exDoor.isOpen = false;
-        //         exDoor.socketId = socket.id;
-        //         await exDoor.save();
-        //     }else{
-        //         console.log('error');
-        //     }
-        //     console.log(data.beaconId, data.isOpen);
-        // });
     });
 };
