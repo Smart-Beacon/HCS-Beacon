@@ -71,6 +71,7 @@ const style = css`
         justify-content: space-between;
     }
     .MainHeaderTitle{
+        width: 95%;
         font-size: 40px;
         font-weight: bold;
     }
@@ -134,6 +135,7 @@ function ManagementSettings(){
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
 
     const [Data, setData] = useState([]);
+    const [addData, setAddData] = useState([]);
     const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
@@ -233,11 +235,14 @@ function ManagementSettings(){
                 console.log(res);
                 if(res.status === 201){
                     console.log("======================", "데이터 전송 성공");
+                    setAddData(res.data);
                 }else{
                     alert(res.data);
                 }
             });
     }
+
+    console.log(addData);
 
     const getStaInfo = async () =>{
         const URL = 'http://localhost:5000/statement';

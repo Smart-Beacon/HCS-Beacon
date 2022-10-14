@@ -5,6 +5,7 @@ import css from "styled-jsx/css";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ExportExcel from "./component/Excelexport";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios";
@@ -225,7 +226,7 @@ function reservationCheck(){
     }
 
     const haddleButtonTrue = (e) => {
-        setAllow(true);
+        // setAllow(true);
         e.preventDefault();
         e.currentTarget.disabled = true;
         e.currentTarget.style.color = "white";
@@ -237,7 +238,7 @@ function reservationCheck(){
     }
 
     const haddleButtonFalse = (e) => {
-        setAllow(false);
+        // setAllow(false);
         e.preventDefault();
         e.currentTarget.disabled = true;
         e.currentTarget.style.color = "white";
@@ -263,12 +264,18 @@ function reservationCheck(){
      });
     }
 
-    console.log(Data);
-
-    const postInfo = (e) => {
+    const postInfoTrue = (e) => {
         const trueInfo = {
             "allowId" : e,
-            "isAllowed" : allow
+            "isAllowed" : true
+        }
+        postAllowInfo(trueInfo);
+    }
+
+    const postInfoFalse = (e) => {
+        const trueInfo = {
+            "allowId" : e,
+            "isAllowed" : false
         }
         postAllowInfo(trueInfo);
     }
@@ -276,9 +283,10 @@ function reservationCheck(){
     const postAllowInfo = async (item) =>{
         const URL = "http://localhost:5000/user/visitor"
         axios.defaults.withCredentials = true;
+        console.log(item);
             await axios.post(URL, item)
             .then(res => {
-                if(res.status === 201){
+                if(res.status === 200){
                     console.log(item);
                     console.log("======================", "데이터 전송 성공");
                 }else{
@@ -313,7 +321,7 @@ function reservationCheck(){
                         </div>
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 방문자 예약승인</h1>
-                            <h1 className = "icon"><FontAwesomeIcon icon={faFileExcel}/></h1>
+                            <ExportExcel excelData={Data} fileName={"Excel Export"}/>
                         </div>
                         <div className = "daySelect">
                             <div className = "timeSelect">
@@ -384,7 +392,7 @@ function reservationCheck(){
                                                             <Button variant='solid' 
                                                         onClick={(e) => {
                                                             haddleButtonTrue(e);
-                                                            postInfo(item.allowId)
+                                                            postInfoTrue(item.allowId);
                                                         }}    
                                                         style = {{marginRight:"7%", backgroundColor: "white", color: "green",
                                                         border: "solid 2px green"}}>
@@ -394,7 +402,7 @@ function reservationCheck(){
                                                             border: "solid 2px red"}}
                                                             onClick={(e) => {
                                                                 haddleButtonFalse(e);
-                                                                postInfo(item.allowId)
+                                                                postInfoFalse(item.allowId);
                                                             }}>
                                                                 N
                                                             </Button>
@@ -407,7 +415,6 @@ function reservationCheck(){
                                                             <AccordionIcon />
                                                         </AccordionButton></td>
                                                         <AccordionPanel pb={4}>
-                                                            <td>출입허용ID : {item.allowId}</td>
                                                             <td>소속 : {item.company}</td>
                                                             <td>직책 : {item.position}</td>
                                                             <td>건물명 : {item.staName}</td>

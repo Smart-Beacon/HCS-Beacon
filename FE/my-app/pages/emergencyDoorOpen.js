@@ -5,7 +5,6 @@ import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
 import {
-    Checkbox,
     Select
   } from '@chakra-ui/react'
 
@@ -195,6 +194,8 @@ function emergencyDoorOpen(){
     const [DoorData, setDoorData] = useState([]);
     const [filterData, setFilterData] = useState([]);
     const [checkedList, setCheckedLists] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectStaName, setSelectStaName] = useState("");
 
 
     const onCheckedAll = useCallback(
@@ -210,20 +211,28 @@ function emergencyDoorOpen(){
         },
         [DoorData]
       );
-      /**const onCheckedFilterAll = useCallback(
-        (checked) => {
-        const checkedListArray = [];
-        if (checked) {
-            console.log(filterData);
-            filterData.forEach((list) => checkedListArray.push(list.doorId));
-            console.log(checkedListArray);
-            setCheckedLists([...checkedList, checkedListArray]);
-        } else{
-            setCheckedLists(checkedList.filter((el) => el !== checkedListArray));
-            }
-        },
-        [checkedList]
-      ); **/
+
+    //   const [checkedListArray, setCheckedListArray] = useState([]);
+    //   const onCheckedFilterAll = useCallback(
+    //     (checked) => {
+    //         const tmpArray = [];
+    //         if (checked) {
+    //             filterData.forEach((list) => tmpArray.push(list.doorId));
+    //             setCheckedListArray(tmpArray);
+    //             console.log("checkedListArray : ",checkedListArray);
+    //             checkedListArray.map((item) => setCheckedLists([...checkedList, item]));
+    //             // setCheckedLists([...checkedList, checkedListArray]);
+    //             console.log("checkedList : ",checkedList);
+    //         } 
+    //         // else{
+    //         //     setCheckedLists(checkedList.filter((el) => el !== checkedListArray));
+    //         // }
+    //         checkedListArray.map((item) => setCheckedLists([...checkedList, item]));
+    //         console.log("checkedList : ",checkedList);
+    //     },
+    //     [checkedList]
+    //   );
+
 
       const onCheckedElement = useCallback(
         (checked, list) => {
@@ -280,6 +289,11 @@ function emergencyDoorOpen(){
             }
      });
     }
+    // console.log("Data : ", Data);
+    // console.log("DataClone : ", DataClone);
+    // console.log("FilterData : ", filterData);
+    // console.log("selectStaName : ", selectStaName);
+    // console.log("checkedList : ", checkedList);
 
 
     return(
@@ -322,7 +336,8 @@ function emergencyDoorOpen(){
                                 <p>▶ 관리 시설 선택</p>
                                 <Select placeholder='Select Gate'
                                 onChange = {(e) => {
-                                    handleFilter(e)
+                                    handleFilter(e);
+                                    setSelectStaName(e.target.value);
                                 }}width="20%">
                                     {staDoorData.map((item) => (
                                         <option value={item.staName} key={item.staId}>
@@ -330,7 +345,6 @@ function emergencyDoorOpen(){
                                         </option>
                                     ))}
                                 </Select>
-                                <input type = "checkbox" style = {{marginLeft: "1%"}} onChange={(e) => onCheckedFilterAll(e.target.checked)}></input>
                             </div>
                         </div>
                         <div className = "TableContainer">
@@ -347,8 +361,7 @@ function emergencyDoorOpen(){
                                 <div className = "TableTbody">
                                     <table>
                                         <tbody>
-                                        {
-                                                Data.map((item, index)=>{
+                                        {Data.map((item, index)=>{
                                                     if(index%2==0){
                                                         return(
                                                             <tr>

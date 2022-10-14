@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback, useRef} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
 import {
+    Checkbox,
     Button,
     Select,
     Input,
@@ -13,7 +14,6 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalFooter,
     ModalBody,
     ModalCloseButton,
@@ -143,7 +143,12 @@ function visitorManagement(){
         getDoorInfo();
       }, [])
 
-    const [Data, setData] = useState([])
+    const [Data, setData] = useState([]);
+    const [DataClone, setDataClone] = useState([]);
+    const [doorInfoData, setDoorInfoData] = useState([]);
+    const [doorInfoDataClone, setDoorInfoDataClone] = useState([]);
+    const [staDoorData, setStaDoorData] = useState([]);
+
 
     const getDoorInfo = async () =>{
         const URL = 'http://localhost:5000/super/admins';
@@ -152,48 +157,40 @@ function visitorManagement(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setData(res.data);           
+                setData(res.data);
+                setDataClone(res.data);           
             }else{
                 alert(res.data);
             }
      });
     }
 
-    const [serverData, setserverData] = useState([
-        {
-            "company": "명품시스템",
-            "adminName": "박병근",
-            "adminLoginId": "Dejong1706",
-            "phoneNum": "010-3152-1297",
-            "createdAt": "2022.02.02",
-            "isLogin": "Y",
-            "sms": "Y"
-        },
-        {
-            "company": "명품시스템",
-            "adminName": "김민성",
-            "adminLoginId": "MinSung",
-            "phoneNum": "010-1234-1234",
-            "createdAt": "2022.03.12",
-            "isLogin": "Y",
-            "sms": "N"
-        }
-
-    ])
     const [company, setCompany] = useState("");
     const [adminName, setAdminName] = useState("");
     const [adminLoginId, setAdminLoginId] = useState("");
-    const [phoneNum, setPhoneNum] = useState("");
     const [adminLoginPw, setAdminLoginPw] = useState("");
     const [position , setPosition ] = useState("");
+    const [isMonitoring, setIsMonitoring] = useState(false);
+    
+    const [checkedList, setCheckedLists] = useState([]);
+    const onCheckedElement = useCallback(
+        (checked, list) => {
+         if (checked) {
+            setCheckedLists([...checkedList, list]);
+          } else {
+            setCheckedLists(checkedList.filter((el) => el !== list));
+          }
+        },
+        [checkedList]
+      );
 
     const handlecompany = (e) => setCompany(e.target.value);
     const handleadminName = (e) => setAdminName(e.target.value);
     const handleadminLoginId = (e) => setAdminLoginId(e.target.value);
-    const handlephoneNum = (e) => setPhoneNum(e.target.value);
     const handleadminLoginPw = (e) => setAdminLoginPw(e.target.value);
-    const handleposition = (e) => setPosition(e.target.value);   
-
+    const handleposition = (e) => setPosition(e.target.value);
+    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);
+    
     const addInfo = () => {
 
         const nowDate = new Date();
@@ -207,7 +204,7 @@ function visitorManagement(){
             "company": company,
             "position": position,
             "adminName": adminName,
-            "phoneNum" : phoneNum,
+            "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
             "createdAt" : now
@@ -217,17 +214,82 @@ function visitorManagement(){
             "company": company,
             "position": position,
             "adminName": adminName,
-            "phoneNum" : phoneNum,
+            "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
-            "createdAt" : now
+            "staId" : now,
+            "sms": isMonitoring,
+            "doorlist": checkedList
         }
-
-
-        setserverData = serverData.push(info);
-        setData = Data.push(serverinfo);
+        console.log(serverinfo);
+        // getamdinInfo(serverinfo);
         onClose();
 
+    }
+
+    const [num, setNum] = useState('');
+    const phoneRef = useRef();
+    const handlePhone = (e) => {
+        const value = phoneRef.current.value.replace(/\D+/g, "");
+        const numberLength = 11;
+        let result;
+        result = "";  
+        for (let i = 0; i < value.length && i < numberLength; i++) {
+          switch (i) {
+            case 3:
+              result += "-";
+              break;
+            case 7:
+              result += "-";
+              break;
+    
+            default:
+              break;
+          }
+          result += value[i];
+        }
+        phoneRef.current.value = result;
+        setNum(e.target.value); 
+      };
+
+    const handleDoorList = (e) => {
+        const selectId = e.target.value;
+        if(selectId !== ""){
+            const result = doorInfoDataClone.filter(e => selectId === e.staId);
+            setDoorInfoData(result);
+        }
+    }
+
+    const getStaDoorInfo = async () =>{
+        const URL = 'http://localhost:5000/statement';
+        axios.defaults.withCredentials = true;
+        axios.post(URL)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                console.log("데이터를 불러오는데 성공했습니다");
+                setDoorInfoData([]);
+                setStaDoorData(res.data.staData);
+                setDoorInfoDataClone(res.data.doorData);         
+            }else{
+                console.log("데이터를 불러오지 못했습니다");
+            }
+     });
+     onOpen();
+    }
+
+    const getamdinInfo = async (item) =>{
+        const URL = 'http://localhost:5000/super/admin/register';
+        axios.defaults.withCredentials = true;
+        axios.post(URL, item)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                console.log("데이터를 불러오는데 성공했습니다");      
+            }else{
+                console.log("데이터를 불러오지 못했습니다");
+            }
+     });
     }
 
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -246,33 +308,40 @@ function visitorManagement(){
           <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
-                    <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
-                    <div style={{display: "flex"}}>
-                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦소속</FormLabel>
-                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlecompany}/>
-                    </div>
-                    </FormControl>
-                    <FormControl mt={4} style={{width: '40%'}}>
-                    <div style={{display: "flex"}}>
-                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
-                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleposition}/>
-                    </div>
-                    </FormControl>
-                </div>
-            <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminName}/>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦소속</FormLabel>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlecompany}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlephoneNum}/>
+                    <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleposition}/>
                 </div>
                 </FormControl>
             </div>
+            <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
+                <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
+                    <div style={{display: "flex"}}>
+                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
+                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminName}/>
+                    </div>
+                    </FormControl>
+                    <FormControl mt={4} style={{width: '40%'}}>
+                    <div style={{display: "flex"}}>
+                        <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
+                        <Input 
+                                name="user-num"
+                                style = {{borderWidth: "2px", borderColor: "black"}} 
+                                value={num} 
+                                ref={phoneRef}
+                                onChange={handlePhone}
+                                type="tel"
+                                />
+                    </div>
+                    </FormControl>
+                </div>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "3%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
@@ -292,10 +361,10 @@ function visitorManagement(){
                         <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦문자 수신 여부</FormLabel>
                         <RadioGroup defaultValue='2'>
                             <Stack spacing={5} direction='row'>
-                                <Radio colorScheme='green' value = "1">
+                                <Radio colorScheme='green' value = "1" onChange = {handleisMonitoring}>
                                 Y
                                 </Radio>
-                                <Radio colorScheme='red' value = "0">
+                                <Radio colorScheme='red' value = "0" onChange = {handleisMonitoring}>
                                 N
                                 </Radio>
                             </Stack>
@@ -304,11 +373,23 @@ function visitorManagement(){
                 </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦 관리도어 선택</FormLabel>
-                <Select placeholder='' width="100%">
-                    <option value='공과대학'>공과대학</option>
-                    <option value='이과대학'>이과대학</option>
-                    <option value='문과대학'>문과대학</option>
-                </Select>
+              <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"
+            , marginBottom: "3%"}}>
+                                    {staDoorData.map((item) => (
+                                        <option value={item.staId} key={item.staId}>
+                                        {item.staName}
+                                        </option>
+                                    ))}
+                                </Select>
+            </FormControl>
+            <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
+              <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
+              {doorInfoData.map((item) => (
+                                        <Checkbox value={item.doorId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}
+                                        onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}>
+                                        {item.doorName}
+                                        </Checkbox>
+                                    ))}
             </FormControl>
           </ModalBody>
 
@@ -340,7 +421,7 @@ function visitorManagement(){
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
                             <div className = "MainHeaderBtn" style = {{width: "70%"}}>
-                                <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>
                         </div>
@@ -356,7 +437,21 @@ function visitorManagement(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                {serverData.map((item, index)=>{
+                                {Data.map((item, index)=>{
+                                    const IsLogin = Number(item.isLogin);
+                                    let IsLoginValue = "";
+                                    const IsSms = Number(item.sms);
+                                    let IsSmsValue = "";
+                                    if(IsLogin === 1){
+                                        IsLoginValue = "Y";
+                                    }else{
+                                        IsLoginValue = "N";
+                                    }
+                                    if(IsSms === 1){
+                                        IsSmsValue = "Y";
+                                    }else{
+                                        IsSmsValue = "N";
+                                    }
                                             return(
                                                 <tr>
                                                     <td>{index+1}</td>
@@ -365,8 +460,8 @@ function visitorManagement(){
                                                     <td>{item.adminLoginId}</td>
                                                     <td>{item.phoneNum}</td>
                                                     <td>{item.createdAt}</td>
-                                                    <td>{item.isLogin}</td>
-                                                    <td>{item.sms}</td>
+                                                    <td>{IsLoginValue}</td>
+                                                    <td>{IsSmsValue}</td>
                                                 </tr>
                                             )
                                         })}

@@ -118,183 +118,20 @@ function Main(){
 
     useEffect(() => {
         getDoorInfo();
+        WarningSiren();
       }, [])
 
 
-    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"]
-    
-    const serverData = [
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "통신실",
-                "doorId" : "A1010102",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "기계실",
-                "doorId" : "A1010103",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "통신실",
-                "doorId" : "A1010102",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "기계실",
-                "doorId" : "A1010103",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            },
-            {
-                "staName" : "본관",
-                "doorName" : "전기실",
-                "doorId" : "A1010101",
-                "isOpen" : "0",
-                "openTime" : "08:00:00",
-                "closeTime" : "08:00:00",
-                "warnning" : "0"
-            }
-    ]
+    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"];
 
-    let ColorValue = 0;
+    const [warningCnt, setWarningCnt] = useState([]);
 
-    serverData.map((item)=>{
-        if(Number(item.warnning) === 1){
-            return ColorValue = 1
-        }
-    })
+
+    const WarningSiren = () => {
+        const warningArray = Data.map(list => list.warning)
+        // console.log(warningArray);
+        setWarningCnt(warningArray);
+    }
 
     const [Data, setData] = useState([])
 
@@ -330,7 +167,7 @@ function Main(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
-                            <h1 className = "siren"><FontAwesomeIcon style = {(ColorValue === 1) ? {color : "red"} : {color : "green"}} icon={faTriangleExclamation}/></h1>
+                            <h1 className = "siren"><FontAwesomeIcon style = {warningCnt.includes(true) ? {color : "red"} : {color : "green"}} icon={faTriangleExclamation}/></h1>
                         </div>
                     <div className = "TableThead">
                         <table>
