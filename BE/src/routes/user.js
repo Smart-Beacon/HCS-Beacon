@@ -99,7 +99,6 @@ router.post('/visitor', async (req,res,next) => {
     }
 });
 
-
 // 출입자(방문) 등록API
 // POST : http://localhost:5000/user/register
 router.post('/register',async(req,res)=>{
@@ -182,6 +181,8 @@ router.post('/find/pw',async(req,res)=>{
     }
 });
 
+// 출입자 정보 가져오는 API
+// POST : http://localhost:5000/user/info
 router.post('/info',async(req,res)=>{
     //token사용할건지??
     //사용자 인지 확인되면 그대로 값 반환
@@ -201,6 +202,8 @@ router.post('/info',async(req,res)=>{
     }
 });
 
+// 출입자 문 Open 
+// POST : http://localhost:5000/user/opendoor
 router.post('/opendoor',async(req,res)=>{
     try{
         const token = req.headers.token;
@@ -221,6 +224,8 @@ router.post('/opendoor',async(req,res)=>{
     }
 });
 
+// 출입자 어플 비밀번호 변경 API
+// POST : http://localhost:5000/user/changepassword
 router.post('/changepassword',async(req,res)=>{
     try{
         const result = await getMainDatas.changePassword(req.body);

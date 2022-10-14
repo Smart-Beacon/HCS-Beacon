@@ -11,28 +11,106 @@ const {sendSMS} = require('./sms');
 
 
 const getSuperEntrantList = async() => {
-    const userIds = await User.findAll();
+    const userInfoList = await User.findAll();
 
     const SuperUser = await Promise.all(
-        userIds.map(async userId => {
-            const userAllow = await UserAllow.findAll({
+        userInfoList.map(async userInfo => {
+
+            const userAllows = await UserAllow.findAll({
                 where:{
-                    userId:userId.userId,
+                    userId:userInfo.userId,
                     isAllowed:true,
                 },
-                attributes:['userId','userFlag','doorId']
+                attributes:['userFlag','doorId']
             });
-            const userArray = userAllow.flatMap(data => data);
-            if(userArray.length){
-                console.log(userArray);
-                const result = await getEntrantList2(userId,userArray);
+            
+            const doorIds = userAllows.flatMap(data=>data.doorId);
+            
+            if(doorIds != [] && doorIds.length){
+    
+                const doorInfo = await Statement.findAll({
+                    attributes:['staName'],
+                    include:[{
+                        model:Door,
+                        where:{doorId:doorIds},
+                        attributes:['doorName']
+                    }]
+                });
+    
+                const doorInfos = doorInfo.flatMap(data=>data.dataValues);
+    
+                const filterDoorInfos = await Promise.all(
+                    doorInfos.map(async doors => {
+                        const doorNames = doors.doors.flatMap(data=>data);
+    
+                        const doorList = await Promise.all(doorNames.map(async doorName =>{
+                            return doorName.doorName
+                        }));
+    
+                        return {
+                            staName: doors.staName,
+                            doorNameList: doorList,
+                        };
+                }));
+    
+                const result = {
+                    userFlag: userAllows[0].userFlag,
+                    userName: userInfo.userName,
+                    company : userInfo.company,
+                    position: userInfo.position,
+                    phoneNum: userInfo.phoneNum,
+                    doorInfo: filterDoorInfos.flatMap(data=>data),
+                    enterTime: userInfo.enterTime,
+                    exitTime:userInfo.exitTime,
+                    reason: userInfo.reason
+                };
+                console.log(result);
                 return result;
             }
+           return null;
         })
     );
     const allUserData = SuperUser.filter(data => !!data);
     return allUserData;
 }
+
+ 
+
+
+// const getEntrantList2 = async(userId,allows) => {
+//     const doorInfo = await Promise.all(allows.map(async allowData =>{
+//         return await Door.findOne({
+//             where:{doorId:allowData.doorId},
+//             attributes:['doorName', 'staId'],
+//             include:[{
+//                 model:Statement,
+//                 attributes:['staName']
+//             }]
+//         });
+//     }));
+
+//     const stateData = await Promise.all(doorInfo.map(async door =>{
+//         return await Statement.findOne({
+//             where:{staId:door.staId},
+//             attributes:['staName']
+//         });
+//     }));
+    
+//     const result = {
+//         userFlag: allows[0].userFlag,
+//         userName: userId.userName,
+//         company: userId.company,
+//         position: userId.position,
+//         phoneNum: userId.phoneNum,
+//         door: doorInfo.flatMap(data=>data.doorName),
+//         statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
+//         enterTime: userId.enterTime,
+//         exitTime: userId.exitTime,
+//         reason: userId.reason
+//     };
+
+//     return result;
+// }
 
 // 관리자용 출입자 리스트 함수
 // 사용 API : 출입자 관리 리스트 API
@@ -45,7 +123,6 @@ const getAdminEntrantList = async(adminId) => {
     });
 
     const doorIdArray = doorIds.flatMap(data=>data.doorId);
-    //console.log(doorIdArray);
 
     const userAllow = await UserAllow.findAll({
         where:{ 
@@ -54,29 +131,62 @@ const getAdminEntrantList = async(adminId) => {
         },
         attributes:['userId']
     });
-    const userIds = Array.from(new Set(userAllow.flatMap(data => data.userId)));
 
-    console.log(userIds);
+    const userIds = Array.from(new Set(userAllow.flatMap(data => data.userId)));
 
     const SuperUser = await Promise.all(
         userIds.map(async userId => {
-            const userAllow = await UserAllow.findAll({
-                where:{
-                    userId:userId,
-                    isAllowed:true,
-                },
-                attributes:['userId','userFlag','doorId']
+            const userInfo = await User.findAll({
+                where:{userId},
+                include:[{
+                    model: UserAllow,
+                    where:{isAllowed:true},
+                    attributes:['userFlag','doorId']
+                }]
             });
-            const userInfo = await User.findOne({
-                where:{userId}
-            })
-            const userArray = userAllow.flatMap(data => data);
-            console.log(userArray);
-            if(userArray.length){
-                console.log(userArray);
-                const result = await getEntrantList2(userInfo,userArray);
-                return result;
-            }
+
+            const user = userInfo.flatMap(data=>data.userAllows);
+            const doorIds = user.flatMap(data=>data.doorId);
+
+
+            const doorInfo = await Statement.findAll({
+                attributes:['staName'],
+                include:[{
+                    model:Door,
+                    where:{doorId:doorIds},
+                    attributes:['doorName']
+                }]
+            });
+
+            const doorInfos = doorInfo.flatMap(data=>data.dataValues);
+
+            const filterDoorInfos = await Promise.all(
+                doorInfos.map(async doors => {
+                    console.log(doors.staName);
+                    const doorNames = doors.doors.flatMap(data=>data);
+
+                    const doorList = await Promise.all(doorNames.map(async doorName =>{
+                        return doorName.doorName
+                    }));
+                    console.log(doorList);
+                    return {
+                        staName: doors.staName,
+                        doorList: doorList,
+                    };
+            }));
+
+            const result = {
+                userFlag: user[0].userFlag,
+                userName: userInfo[0].userName,
+                company : userInfo[0].company,
+                position: userInfo[0].position,
+                phoneNum: userInfo[0].phoneNum,
+                doorList: filterDoorInfos.flatMap(data=>data),
+                enterTime: userInfo[0].enterTime,
+                exitTime:userInfo[0].exitTime,
+                reason: userInfo[0].reason
+            };
+            return result;
         })
     );
     const allUserData = SuperUser.filter(data => !!data);
@@ -177,77 +287,88 @@ const changeVisitorAllow = async(data) => {
 // 사용함수
 //  getSuperEntrantList
 //  getAdminEntrantList
-const getEntrantList = async(allows) => {
-    const entrantList = await Promise.all(
-        allows.map(async allowData => {
-            const userDatas = await User.findAll({
-                where: {userId:allowData.userId},
-                attributes: ['userId','userName','company','position','phoneNum','reason','enterTime','exitTime']
-            });
+// const getEntrantList = async(allows) => {
+//     const entrantList = await Promise.all(
+//         allows.map(async allowData => {
+//             const userDatas = await User.findAll({
+//                 where: {userId:allowData.userId},
+//                 attributes: ['userId','userName','company','position','phoneNum','reason','enterTime','exitTime']
+//             });
 
-            const setUserData = await Promise.all(
-                userDatas.map(async userData => {
+//             const setUserData = await Promise.all(
+//                 userDatas.map(async userData => {
 
-                    const doorData = await Door.findOne({
-                        where: {doorId:allowData.doorId},
-                        attributes:['doorName', 'staId']
-                    });
+//                     const doorData = await Door.findOne({
+//                         where: {doorId:allowData.doorId},
+//                         attributes:['doorName', 'staId']
+//                     });
 
-                    const stateData = await Statement.findOne({
-                        where: {staId:doorData.staId}
-                    })
+//                     const stateData = await Statement.findOne({
+//                         where: {staId:doorData.staId}
+//                     })
 
-                    const setData = {
-                        userFlag: allowData.userFlag,
-                        userName: userData.userName,
-                        company: userData.company,
-                        position: userData.position,
-                        phoneNum: userData.phoneNum,
-                        staName: stateData.staName,
-                        doorName: doorData.doorName,
-                        enterTime: userData.enterTime,
-                        exitTime: userData.exitTime,
-                        reason: userData.reason,
-                    }
-                    return setData;
-                }));
+//                     const setData = {
+//                         userFlag: allowData.userFlag,
+//                         userName: userData.userName,
+//                         company: userData.company,
+//                         position: userData.position,
+//                         phoneNum: userData.phoneNum,
+//                         staName: stateData.staName,
+//                         doorName: doorData.doorName,
+//                         enterTime: userData.enterTime,
+//                         exitTime: userData.exitTime,
+//                         reason: userData.reason,
+//                     }
+//                     return setData;
+//                 }));
 
-            return setUserData;
-        })
-    )
-    const result = await entrantList.flatMap(data => data);
-    return result;
-}
+//             return setUserData;
+//         })
+//     )
+//     const result = await entrantList.flatMap(data => data);
+//     return result;
+// }
 
-const getEntrantList2 = async(userId,allows) => {
-    const doorInfo = await Promise.all(allows.map(async allowData =>{
+
+
+const getEntrantList3 = async(userInfo) => {
+    const allowDatas = userInfo.userAllows;
+    console.log(allowDatas);
+    const doorInfo = await Promise.all(allowDatas.map(async allowData =>{
         return await Door.findOne({
             where:{doorId:allowData.doorId},
-            attributes:['doorName', 'staId']
+            attributes:['doorName', 'staId'],
+            include:[{
+                model:Statement,
+                attributes:['staName']
+            }]
         });
     }));
 
-    const stateData = await Promise.all(doorInfo.map(async door =>{
-        return await Statement.findOne({
-            where:{staId:door.staId},
-            attributes:['staName']
-        });
-    }));
+    console.log(doorInfo.flatMap(data=>data));
+
+    // const stateData = await Promise.all(doorInfo.map(async door =>{
+    //     return await Statement.findOne({
+    //         where:{staId:door.staId},
+    //         attributes:['staName']
+    //     });
+    // }));
     
-    const result = {
-        userFlag: allows[0].userFlag,
-        userName: userId.userName,
-        company: userId.company,
-        position: userId.position,
-        phoneNum: userId.phoneNum,
-        door: doorInfo.flatMap(data=>data.doorName),
-        statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
-        enterTime: userId.enterTime,
-        exitTime: userId.exitTime,
-        reason: userId.reason
-    };
+    // const result = {
+    //     userFlag: allows[0].userFlag,
+    //     userName: userId.userName,
+    //     company: userId.company,
+    //     position: userId.position,
+    //     phoneNum: userId.phoneNum,
+    //     door: doorInfo.flatMap(data=>data.doorName),
+    //     statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
+    //     enterTime: userId.enterTime,
+    //     exitTime: userId.exitTime,
+    //     reason: userId.reason
+    // };
 
-    return result;
+    // return result;
+    return null;
 }
 
 // 방문자 리스트 함수
