@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback, useRef } from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import Phone from "./component/Phone";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -24,7 +25,8 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure
+    useDisclosure,
+    shouldForwardProp
   } from '@chakra-ui/react'
 
 const style = css`
@@ -151,20 +153,18 @@ function visitorManagement(){
     const [doorInfoData, setDoorInfoData] = useState([]);
     const [doorInfoDataClone, setDoorInfoDataClone] = useState([]);
     const [userName, setUserName] = useState("");
-    const [phoneNum, setPhoneNum] = useState("");
     const [company, setCompany] = useState("");
     const [position, setPosition] = useState("");
-    const [userId, setUserId] = useState("");
-    const [userPw, setUserPw] = useState("");
+    const [userLoginId, setUserLoginId] = useState("");
+    const [userLoginPw, setUserLoginPw] = useState("");
     const [guestName, setGuestName] = useState("");
     const [staDoorData, setStaDoorData] = useState([]);
 
     const handleUserName = (e) => setUserName(e.target.value);
-    const handlePhoneNum = (e) => setPhoneNum(e.target.value);
     const handleCompany = (e) => setCompany(e.target.value);
     const handlePosition = (e) => setPosition(e.target.value);
-    const handleUserId = (e) => setUserId(e.target.value);
-    const handleUserPw = (e) => setUserPw(e.target.value);
+    const handleUserLoginId = (e) => setUserLoginId(e.target.value);
+    const handleUserLoginPw = (e) => setUserLoginPw(e.target.value);
     const handleGuestName = (e) => setGuestName(e.target.value);
 
     const SearchName = () => {
@@ -179,31 +179,65 @@ function visitorManagement(){
     const addInfo = () => {
 
         const info = {
-            "userFlag": "상시",
             "userName": userName,
-            "phoneNum": phoneNum,
             "company": company,
             "position": position,
-            "staName": "공과대학",
-            "doorName": "3층사무실, 2층사무실, 3층 과학실, 2",
-            "enterTime": "0",
-            "isAllowed" : "Yes"
+            "phoneNum": num,
+            "userLoginId" : userLoginId,
+            "userLoginPw": userLoginPw,
+            "doorList": checkedList
         }
-        setData = Data.push(info);
+        console.log(info);
+        postInfo(info);
         onClose();
 
     }
 
     const handleDoorList = (e) => {
         const selectId = e.target.value;
-        console.log(selectId);
         if(selectId !== ""){
             const result = doorInfoDataClone.filter(e => selectId === e.staId);
             setDoorInfoData(result);
-        }else{
-            setDoorInfoData(doorInfoDataClone);
         }
     }
+
+
+    const [checkedList, setCheckedLists] = useState([]);
+    const onCheckedElement = useCallback(
+        (checked, list) => {
+         if (checked) {
+            setCheckedLists([...checkedList, list.doorId]);
+          } else {
+            setCheckedLists(checkedList.filter((el) => el !== list.doorId));
+          }
+        },
+        [checkedList]
+      );
+
+    const [num, setNum] = useState('');
+    const phoneRef = useRef();
+    const handlePhone = (e) => {
+        const value = phoneRef.current.value.replace(/\D+/g, "");
+        const numberLength = 11;
+        let result;
+        result = "";  
+        for (let i = 0; i < value.length && i < numberLength; i++) {
+          switch (i) {
+            case 3:
+              result += "-";
+              break;
+            case 7:
+              result += "-";
+              break;
+    
+            default:
+              break;
+          }
+          result += value[i];
+        }
+        phoneRef.current.value = result;
+        setNum(e.target.value); 
+      };
 
     const getInfo = async () =>{
         const URL = 'http://localhost:5000/user/enterant';
@@ -228,8 +262,8 @@ function visitorManagement(){
             console.log(res);
             if(res.status === 200){
                 console.log("데이터를 불러오는데 성공했습니다");
+                setDoorInfoData([]);
                 setStaDoorData(res.data.staData);
-                setDoorInfoData(res.data.doorData);
                 setDoorInfoDataClone(res.data.doorData);           
             }else{
                 console.log("데이터를 불러오지 못했습니다");
@@ -238,21 +272,19 @@ function visitorManagement(){
      onOpen();
     }
 
-    console.log(Data);
-
-    /**const postInfo = async (item) =>{
+    const postInfo = async (item) =>{
         const URL = "http://localhost:5000/user/enterant"
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
-                console.log(res);
                 if(res.status === 201){
+                    console.log(1);
                     console.log("======================", "데이터 전송 성공");
                 }else{
                     console.log("false");
                 }
             });
-    }**/
+    }
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
@@ -279,7 +311,14 @@ function visitorManagement(){
                     <FormControl mt={4} style={{width: '40%'}}>
                     <div style={{display: "flex"}}>
                         <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦전화번호</FormLabel>
-                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlePhoneNum}/>
+                        <Input 
+                                name="user-num"
+                                style = {{borderWidth: "2px", borderColor: "black"}} 
+                                value={num} 
+                                ref={phoneRef}
+                                onChange={handlePhone}
+                                type="tel"
+                                />
                     </div>
                     </FormControl>
                 </div>
@@ -301,19 +340,20 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserId}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginId}/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserPw}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw}/>
                 </div>
                 </FormControl>
             </div>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
-              <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"}}>
+              <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"
+            , marginBottom: "3%"}}>
                                     {staDoorData.map((item) => (
                                         <option value={item.staId} key={item.staId}>
                                         {item.staName}
@@ -324,7 +364,8 @@ function visitorManagement(){
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
                                     {doorInfoData.map((item) => (
-                                        <Checkbox value={item.staId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}>
+                                        <Checkbox value={item.staId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}
+                                        onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}>
                                         {item.doorName}
                                         </Checkbox>
                                     ))}
