@@ -233,7 +233,10 @@ const createRegularUserData = async(data) => {
 // 사용 API : 방문자 예약승인 리스트 API
 const getSuperVisitorList = async() => {
     const SuperUserAllows = await UserAllow.findAll({
-        where:{ userFlag:2 }
+        where:{ 
+            userFlag:2,
+            isAllowed:null,
+        }
     });
 
     const UserAllows = SuperUserAllows.flatMap(data => data);
@@ -255,7 +258,8 @@ const getAdminVisitorList = async(adminId) => {
             const userAllow = await UserAllow.findAll({
                 where:{ 
                     doorId:oneDoorId.doorId,
-                    userFlag:2
+                    userFlag:2,
+                    isAllowed: null
                 }
             });
             return userAllow;
@@ -410,7 +414,8 @@ const getVisitorList = async(allows) => {
                         exitTime: userData.exitTime,
                         reason: userData.reason,
                         isAllowed: allowData.isAllowed,
-                    }
+                    };
+                    console.log(setData);
                     return setData;
                 }));
 
@@ -447,7 +452,7 @@ const registUser = async(userInfo) => {
         await exUser.save();
         await UserAllow.create({
             allowId: await uuid.uuid(),
-            userFlag:3,
+            userFlag:2,
             userId: exUser.userId,
             doorId: userInfo.doorId
         });
@@ -643,16 +648,21 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
         const exUserAllow = await UserAllow.findOne({where:{userId,doorId}});
         if(exUserAllow){
             if(exUserAllow.isAllowed){
+                const exDoor = await Door.findOne({where:{doorId}});
                 var nowTime = new Date();
                 nowTime.setHours(nowTime.getHours()+9);
                 console.log(nowTime);
-                if(exUserAllow.userFlag !== 1 && (exUser.enterTime > nowTime || exUser.exitTime < nowTime)){
+                let userEnterTime = exUser.enterTime.setHours(exUser.enterTime.getHours()+9);
+                let userExitTime = exUser.exitTime.setHours(exUser.exitTime.getHours()+9);
+                if(exUserAllow.userFlag !== 0 && (userEnterTime  > nowTime || userExitTime < nowTime)){
                     //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
                     console.log(`time range out: ${nowTime}`);
                     return "방문시간이 일치하지 않습니다.";
                 }
-                //상시 출입자 and 일일 방문자, 자주 방문자들
-                const exAccessRecord = await AccessRecord.findOne({where:{userId, doorId, exitTime:null}});
+                console.log(time.getTimeSecond(nowTime));
+                let nowTimeHMS = time.getTimeSecond(nowTime)
+                if(exDoor.openTime <= nowTimeHMS  && exDoor.closeTime >= nowTimeHMS){
+                    const exAccessRecord = await AccessRecord.findOne({where:{userId, doorId, exitTime:null}});
                 if(exAccessRecord){
                     exAccessRecord.exitDate = time.getDateHipon(nowTime);
                     exAccessRecord.exitTime = time.getTimeSecond(nowTime),
@@ -667,14 +677,19 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
                         userId: userId,
                     });
                 }
-                const exDoor = await Door.findOne({where:{doorId}});
                 if(!exDoor.isOpen){
                     io.to(exDoor.socketId).emit('open',{duration:4000});   // 4000ms 4s간 문 열림
+                    exDoor.latestDate = time.getDateHipon(nowTime);
+                    exDoor.isOpen = true;
+                    await exDoor.save();
                 }else{
                     return "현재 문이 열려있습니다.";
                 }
                 //도어 Open socket Io
                 return "인증 성공! 문이 열렸습니다.";
+                }else{
+                    return "현재 도어는 접근 시간이 아닙니다."
+                }
             }else{
                 console.log(`isAllowed : ${exUserAllow.isAllowed}`);
                 return "방문 인증이 되지 않았습니다.";

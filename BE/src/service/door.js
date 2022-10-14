@@ -275,6 +275,7 @@ const emergencyOpen = async(doorOpen, io) => {
             }else{
                 io.to(exDoor.socketId).emit("emergencyClose","close door"); // 도어 닫음
             }
+            exDoor.latestDate = time.getDateHipon(new Date());
             exDoor.isOpen = door.isOpen;
             await exDoor.save();
         }
