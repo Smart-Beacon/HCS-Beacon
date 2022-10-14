@@ -29,14 +29,18 @@ const getAdminData = async() =>{
 const createAdminData = async(data) => {
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});
     if (!exAdmin){
+        let nowTime = new Date();
+        nowTime.setHours(nowTime.getHours()+9);
+
         const adminData = await Admin.create({
-            adminId: uuid.uuid(),
+            adminId: await uuid.uuid(),
             company: data.company,
             position: data.position,
             adminName: data.adminName,
             phoneNum: data.phoneNum,
             adminLoginId: data.adminLoginId,
             adminLoginPw: data.adminLoginPw,
+            createdAt: time.getDateHipon(nowTime),
             sms: data.sms,
         });
         
@@ -57,8 +61,19 @@ const createAdminData = async(data) => {
                 });
             })
         );
-        adminData.createdAt = time.getDateHipon(adminData.createdAt);
-        return adminData;
+
+        const result = {
+            company: adminData.company,
+            position: adminData.position,
+            adminName: adminData.adminName,
+            phoneNum: adminData.phoneNum,
+            adminLoginId: adminData.adminLoginId,
+            createdAt: adminData.createdAt,
+            sms: adminData.sms,
+            isLogin: adminData.isLogin,
+        }
+
+        return result;
     }else{
         return null;
     }

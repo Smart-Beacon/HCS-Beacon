@@ -44,13 +44,13 @@ router.post('/enterant', async(req,res,next) =>{
                 // res.status(201).json(userData);
             }else{
                 console.log('존재하는 사용자 ID입니다.');
-                res.status(406).json('존재하는 사용자 ID입니다.');
+                res.status(204).send('존재하는 사용자 ID입니다.');
             }
         }else{
             res.status(403).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
@@ -98,7 +98,6 @@ router.post('/visitor', async (req,res,next) => {
         res.status(400).send(err.message);
     }
 });
-
 
 // 출입자(방문) 등록API
 // POST : http://localhost:5000/user/register
@@ -182,6 +181,8 @@ router.post('/find/pw',async(req,res)=>{
     }
 });
 
+// 출입자 정보 가져오는 API
+// POST : http://localhost:5000/user/info
 router.post('/info',async(req,res)=>{
     //token사용할건지??
     //사용자 인지 확인되면 그대로 값 반환
@@ -201,6 +202,8 @@ router.post('/info',async(req,res)=>{
     }
 });
 
+// 출입자 문 Open 
+// POST : http://localhost:5000/user/opendoor
 router.post('/opendoor',async(req,res)=>{
     try{
         const token = req.headers.token;
@@ -221,6 +224,8 @@ router.post('/opendoor',async(req,res)=>{
     }
 });
 
+// 출입자 어플 비밀번호 변경 API
+// POST : http://localhost:5000/user/changepassword
 router.post('/changepassword',async(req,res)=>{
     try{
         const result = await getMainDatas.changePassword(req.body);

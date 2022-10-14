@@ -5,7 +5,7 @@ const Statement = require('../db/models/statement');
 const Admin = require('../db/models/admin');
 const { getDate, getTime } = require('./time');
 
-const request = require('request');
+const axios = require('axios');
 const CryptoJS = require("crypto-js");
 const SHA256 = require("crypto-js/sha256");
 const Base64 = require("crypto-js/enc-base64");
@@ -120,16 +120,15 @@ const sendSMS = async (phoneNum, msg) =>{
     var newPhoneNum = phoneNum.replace(/\-/g,'');
     console.log(newPhoneNum);
     const option = {
-        uri: url,
+        url: url,
         method: method,
-        json:true,
         headers:{
             "Content-Type": "application/json; charset=utf-8",
             "x-ncp-apigw-timestamp": `${timestamp}`,
             "x-ncp-iam-access-key": `${accessKey}`,
             "x-ncp-apigw-signature-v2": `${signature}`,
         },
-        body:{
+        data:{
             "type":"SMS",
             "contentType":"COMM",
             "countryCode":"82",
@@ -144,13 +143,15 @@ const sendSMS = async (phoneNum, msg) =>{
         },
     };
 
-    request(option,function (err, res, body) {
-        if (err) console.log(err);
-        else {
-            console.log(body);
-            return body.statusCode;
-        }
-    });
+    const smsRes = await axios(option);
+    return smsRes.data.statusCode;
+    // request(option,function (err, res, body) {
+    //     if (err) console.log(err);
+    //     else {
+    //         console.log(body.statusCode);
+    //         return body.statusCode;
+    //     }
+    // });
 }
 
 module.exports = {
