@@ -198,10 +198,14 @@ function ManagementSettings(){
             "openTime": saveStartTime,
             "closeTime": saveEndTime
         }
-        postDoorInfo(serverinfo);
-        clearData();
-        onClose();
 
+        if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName){
+            postDoorInfo(serverinfo);
+            clearData();
+            onClose();
+        }else{
+            alert("빈 칸을 작성해주세요");            
+        }
     }
 
     const clearData = () => {
