@@ -221,10 +221,13 @@ function visitorManagement(){
             "sms": isMonitoring,
             "doorlist": checkedList
         }
-        console.log(serverinfo);
-        // getamdinInfo(serverinfo);
-        onClose();
-
+        if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
+        && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
+            getamdinInfo(serverinfo);
+            onClose();
+        }else{
+            alert("빈 칸을 작성해주세요");            
+        }
     }
 
     const [num, setNum] = useState('');
@@ -311,13 +314,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦소속</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlecompany}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlecompany} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleposition}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleposition} required/>
                 </div>
                 </FormControl>
             </div>
@@ -325,7 +328,7 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                     <div style={{display: "flex"}}>
                         <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
-                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminName}/>
+                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminName} required/>
                     </div>
                     </FormControl>
                     <FormControl mt={4} style={{width: '40%'}}>
@@ -338,6 +341,7 @@ function visitorManagement(){
                                 ref={phoneRef}
                                 onChange={handlePhone}
                                 type="tel"
+                                required
                                 />
                     </div>
                     </FormControl>
@@ -346,13 +350,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
                 </div>
                 </FormControl>
             </div>

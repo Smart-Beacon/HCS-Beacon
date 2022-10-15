@@ -124,27 +124,6 @@ function visitorManagement(){
     
     const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"]
 
-    const serverData = [
-        {
-            "staName": "본관",
-            "doorName": "통신실",
-            "doorId": "A010101",
-            "alertDate": "2022.08.01",
-            "alertTime": "10:03/14:04",
-            "adminName": "김철수"
-        },
-        {
-            "staName": "본관",
-            "doorName": "통신실",
-            "doorId": "A010101",
-            "alertDate": "2022.08.01",
-            "alertTime": "10:03/14:04",
-            "adminName": "김철수"
-        }
-
-    ]
-
-
     useEffect(() => {
         getDoorInfo();
       }, [])
@@ -182,7 +161,7 @@ function visitorManagement(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 경보 이력</h1>
-                            <ExportExcel excelData={serverData} fileName={"Excel Export"}/>
+                            <ExportExcel excelData={Data} fileName={"Excel Export"}/>
                         </div>
                         <div className = "TableThead">
                             <table>
@@ -196,7 +175,7 @@ function visitorManagement(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                {serverData.map((item, index)=>{
+                                {Data.map((item, index)=>{
                                             return(
                                                 <tr>
                                                     <td>{index+1}</td>

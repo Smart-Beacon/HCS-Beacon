@@ -4,6 +4,7 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
+import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
@@ -118,20 +119,21 @@ function Main(){
 
     useEffect(() => {
         getDoorInfo();
-        WarningSiren();
-      }, [])
+    }, []);
 
 
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"];
 
     const [warningCnt, setWarningCnt] = useState([]);
 
+    
+    const  [ cookies ,  setCookie ,  removeCookie ]  =  useCookies ( [ ' isSuper ' ] ) ;
 
-    const WarningSiren = () => {
-        const warningArray = Data.map(list => list.warning)
-        // console.log(warningArray);
-        setWarningCnt(warningArray);
-    }
+    // const WarningSiren = () => {
+    //     const warningArray = Data.map(e => e.warning);
+    //     console.log(warningArray);
+    //     setWarningCnt(warningArray);
+    // }
 
     const [Data, setData] = useState([])
 
@@ -142,7 +144,9 @@ function Main(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                setData(res.data);           
+                setData(res.data);
+                const warningArray = res.data.map(e => e.warning);
+                setWarningCnt(warningArray);           
             }else{
                 alert(res.data);
             }

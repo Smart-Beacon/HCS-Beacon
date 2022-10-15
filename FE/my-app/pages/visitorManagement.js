@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useCallback, useRef } from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
-import Phone from "./component/Phone";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -187,8 +186,13 @@ function visitorManagement(){
             "userLoginPw": userLoginPw,
             "doorList": checkedList
         }
-        console.log(info);
-        postInfo(info);
+        if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
+        && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
+            postInfo(info);
+            onClose();
+        }else{
+            alert("빈 칸을 작성해주세요");            
+        }
         onClose();
 
     }
@@ -305,7 +309,7 @@ function visitorManagement(){
                     <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                     <div style={{display: "flex"}}>
                         <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦성명</FormLabel>
-                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserName}/>
+                        <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserName} required/>
                     </div>
                     </FormControl>
                     <FormControl mt={4} style={{width: '40%'}}>
@@ -318,6 +322,7 @@ function visitorManagement(){
                                 ref={phoneRef}
                                 onChange={handlePhone}
                                 type="tel"
+                                required
                                 />
                     </div>
                     </FormControl>
@@ -326,13 +331,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직장명</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleCompany}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleCompany} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦직책</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlePosition}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handlePosition} required/>
                 </div>
                 </FormControl>
             </div>
@@ -340,13 +345,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginId}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginId} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw}/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw} required/>
                 </div>
                 </FormControl>
             </div>
