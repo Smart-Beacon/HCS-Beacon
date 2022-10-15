@@ -239,7 +239,6 @@ function ManagementSettings(){
                 console.log(res);
                 if(res.status === 201){
                     console.log("======================", "데이터 전송 성공");
-                    setAddData(res.data);
                 }else{
                     alert(res.data);
                 }

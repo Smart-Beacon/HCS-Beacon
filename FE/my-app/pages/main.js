@@ -7,6 +7,7 @@ import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import Cookies from 'js-cookie';
 
 const style = css`
     .container{
@@ -119,6 +120,7 @@ function Main(){
 
     useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
     }, []);
 
 
@@ -126,8 +128,16 @@ function Main(){
 
     const [warningCnt, setWarningCnt] = useState([]);
 
+    const [cookies, setCookie, removeCookie] = useCookies(['isSuper']);
+    const [text, setText] = useState('');
     
-    const  [ cookies ,  setCookie ,  removeCookie ]  =  useCookies ( [ ' isSuper ' ] ) ;
+    const getCookieFunc = (param) => {
+        let result = "getCookie : " + cookies.isSuper;
+        setText(result);
+      }
+    console.log(text);
+
+    //console.log(Cookies.get("isSuper"));
 
     // const WarningSiren = () => {
     //     const warningArray = Data.map(e => e.warning);
