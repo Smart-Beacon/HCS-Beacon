@@ -22,13 +22,13 @@ router.post('/login', async(req,res,next) =>{
             if(checkPassword){
                 res.cookie('accessToken',exSuperAdmin.superId,{
                     expires: new Date(Date.now() + 1000*60*60*24*7),
-                    httpOnly: true,
+                    httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                     signed:true,
                 });
                 res.cookie('isSuper',1,{
                     expires: new Date(Date.now() + 1000*60*60*24*7),
-                    httpOnly: true,
+                    httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                 });
                 const str = exSuperAdmin.superName;
@@ -48,13 +48,13 @@ router.post('/login', async(req,res,next) =>{
                 if(checkPassword){
                     res.cookie('accessToken',exAdmin.adminId,{
                         expires: new Date(Date.now() + 1000*60*60*24*7),
-                        httpOnly: true,
+                        httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false,
                         signed:true,
                     });
                     res.cookie('isSuper',0,{
                         expires: new Date(Date.now() + 1000*60*60*24*7),
-                        httpOnly: true,
+                        httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false
                     });
                     const strName = exAdmin.adminName
