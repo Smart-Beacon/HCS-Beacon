@@ -58,7 +58,7 @@ router.post('/register',async(req,res,next)=>{
         if(check !== 2){
             const result = await getMainDatas.createDoorData(req.body);
             if(result){
-                res.status(201).end();
+                res.status(201).json(result);
             }else{
                 res.status(400).send('Unregistered Admin or registered Door');    
             }

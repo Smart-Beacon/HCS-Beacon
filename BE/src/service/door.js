@@ -166,7 +166,7 @@ const createDoorData = async(data) =>{
             return WEEKDAY[day];
         }));
         //exist Admin and Unregisted Door Id
-        await Door.create({
+        const newDoor = await Door.create({
             doorId: data.doorId,
             doorName: data.doorName,
             isMonitoring: data.isMonitoring,
@@ -190,9 +190,9 @@ const createDoorData = async(data) =>{
             }
         });
 
-        return true;
+        return newDoor;
     }else{
-        return false;
+        return null;
     }
 }
 
