@@ -27,6 +27,7 @@ const getAdminData = async() =>{
 };
 
 const createAdminData = async(data) => {
+    console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});
     if (!exAdmin){
         let nowTime = new Date();

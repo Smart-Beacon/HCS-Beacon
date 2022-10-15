@@ -16,29 +16,33 @@ const doorWarning = async(socketId) =>{
         }]
     });
     if(exDoor){
-        exDoor.warning = true;
-        await exDoor.save();
-        // 주석 처리 부분은 메시지 전송 기능(나중에 테스트)
-        // await Promise(   
-        //     exDoor.adminDoors.map(async admin =>{
-        //         const exAdmin = await Admin.findOne({where:{adminId:admin.adminId}});
-        //         if(exAdmin){
-        //             let msg = `${exDoor.doorName}의 문이 이상이 생겼습니다.`;
-        //             const smsResult = await sendSMS(exAdmin.phoneNum,msg);
-        //             console.log(smsResult);
-        //         }   
-        //         else{
-        //             console.log(`${admin.adminId}는 존재하지 않습니다.`);
-        //         }
-        //     })
-        // );
+        //주석 처리 부분은 메시지 전송 기능(나중에 테스트)
+        const adminDoorList = exDoor.flatMap(data => data.adminDoors);
+        const filterAdminList = adminDoorList.flatMap(data=>data.dataValues);
+        await Promise.all(   
+            filterAdminList.map(async admin =>{
+                const exAdmin = await Admin.findOne({where:{adminId:admin.adminId}});
+                if(exAdmin){
+                    let msg = `${exDoor[0].doorName}의 문이 이상이 생겼습니다.`;
+                    //const smsResult = await sendSMS(exAdmin.phoneNum,msg);
+                    //console.log(smsResult);
+                    console.log(msg);
+                }   
+                else{
+                    console.log(`${admin.adminId}는 존재하지 않습니다.`);
+                }
+            })
+        );
         let nowTime = new Date();
-        nowTime.setHours(nowTime.getHours()+9);
+        //nowTime.setHours(nowTime.getHours()+9);
+        console.log(exDoor[0].doorId);
+        console.log(nowTime);
         await AlertRecord.create({
-            recordId: await uuid.uuid(),
+            recordId: await uuid(),
             startTime: nowTime,
-            doorId: exDoor.doorId
+            doorId: exDoor[0].doorId
         });
+        await Door.update({warning:true},{where:{socketId}});
     }else{
         console.log("존재하지 않는 socket Id입니다.")
     }
