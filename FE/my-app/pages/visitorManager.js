@@ -217,17 +217,21 @@ function visitorManagement(){
             "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
-            "staId" : now,
             "sms": isMonitoring,
             "doorlist": checkedList
         }
         if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
         && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
             getamdinInfo(serverinfo);
+            clearData();
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
+    }
+
+    const clearData = () => {
+        setNum("");
     }
 
     const [num, setNum] = useState('');
@@ -356,7 +360,7 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
+                    <Input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
                 </div>
                 </FormControl>
             </div>

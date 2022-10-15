@@ -4,6 +4,7 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 import {
     Accordion,
     Box,
@@ -20,12 +21,10 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalFooter,
     ModalBody,
     ModalCloseButton,
     useDisclosure,
-    shouldForwardProp
   } from '@chakra-ui/react'
 
 const style = css`
@@ -136,11 +135,24 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function visitorManagement(){
 
      useEffect(() => {
         getInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
     
     const header = ["구분", "성명", "전화번호", "직장명", "직책", "방문일시", "상세정보"]
@@ -386,7 +398,6 @@ function visitorManagement(){
         </ModalContent>
       </Modal>
 
-    console.log(Data);
     return(
         <div>
             <Header/>
@@ -398,7 +409,7 @@ function visitorManagement(){
                             <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li className = "Select"><Link href = "#">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>
@@ -433,7 +444,7 @@ function visitorManagement(){
                                     } else{
                                         Flag = "자주";
                                     }
-                                    let DoorInfo = item.doorInfo; 
+                                    console.log(item.doorInfo);
                                             return(
                                                 <tr>
                                                     <Accordion allowToggle>
@@ -452,14 +463,14 @@ function visitorManagement(){
                                                             <AccordionIcon />
                                                         </AccordionButton></td>
                                                         <AccordionPanel pb={4}>
-                                                            {DoorInfo.map((e) => {
+                                                            {/* {DoorInfo.map((e) => {
                                                                 return(
                                                                 <tr>
                                                                     <td>건물명 : {e.staName}</td>
                                                                     <td>도어명 : {e.doorNameList.toString()}</td> 
                                                                 </tr>
                                                                 )
-                                                            })}
+                                                            })} */}
                                                          </AccordionPanel>
                                                         </AccordionItem>
                                                         </Accordion>
