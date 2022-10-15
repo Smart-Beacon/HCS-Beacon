@@ -386,6 +386,7 @@ function visitorManagement(){
         </ModalContent>
       </Modal>
 
+    console.log(Data);
     return(
         <div>
             <Header/>
@@ -432,8 +433,7 @@ function visitorManagement(){
                                     } else{
                                         Flag = "자주";
                                     }
-                                    const statement = item.statement;
-                                    const door = item.door;
+                                    let DoorInfo = item.doorInfo; 
                                             return(
                                                 <tr>
                                                     <Accordion allowToggle>
@@ -452,9 +452,15 @@ function visitorManagement(){
                                                             <AccordionIcon />
                                                         </AccordionButton></td>
                                                         <AccordionPanel pb={4}>
-                                                            <td>건물명 : {statement.toString()}</td>
-                                                            <td>도어명 : {door.toString()}</td>
-                                                        </AccordionPanel>
+                                                            {DoorInfo.map((e) => {
+                                                                return(
+                                                                <tr>
+                                                                    <td>건물명 : {e.staName}</td>
+                                                                    <td>도어명 : {e.doorNameList.toString()}</td> 
+                                                                </tr>
+                                                                )
+                                                            })}
+                                                         </AccordionPanel>
                                                         </AccordionItem>
                                                         </Accordion>
                                                 </tr>
