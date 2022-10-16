@@ -6,9 +6,8 @@ import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ExportExcel from "./component/Excelexport";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios";
+import { Cookies } from "react-cookie";
 import {
     Accordion,
     Button,
@@ -184,11 +183,24 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function reservationCheck(){
 
     useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
 
     const header = ["No.", "이름", "전화번호", "날짜", "입실", "퇴실", "출입사유", "승인여부", "상세정보"];
@@ -307,7 +319,7 @@ function reservationCheck(){
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li className = "Select"><Link href = "#">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>

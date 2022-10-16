@@ -5,11 +5,9 @@ import css from "styled-jsx/css";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {setHours, setMinutes} from "date-fns";
 import ExportExcel from "./component/Excelexport";
+import { Cookies } from "react-cookie";
 
 const style = css`
     .container{
@@ -171,11 +169,25 @@ const style = css`
 
 `;
 
+const cookies = new Cookies();
+
+
 function ExitHistory(){
 
     useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
     const [startMonth, setStartMonth] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
@@ -184,11 +196,11 @@ function ExitHistory(){
     const [MonthView , setMonthView] = useState(false);
     const [DayView , setDayView] = useState(false);
 
-    const onSelect = (time) => {
-        setStartTime(time);
-        setIsSelected(true);
-        setEndTime(null);
-    };
+    // const onSelect = (time) => {
+    //     setStartTime(time);
+    //     setIsSelected(true);
+    //     setEndTime(null);
+    // };
 
     const [Data, setData] = useState([]);
     const [DataClone, setDataClone] = useState([]);
@@ -249,7 +261,7 @@ function ExitHistory(){
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li className = "Select"><Link href = "#">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>

@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useDisclosure,
     Button,
@@ -119,7 +119,7 @@ function UserModal() {
   return (
     <div>
         <div onClick={onOpen} style = {{position: "absolute", right: "50px", bottom: "50px" , fontSize: "50px",
-                                            color: "#ffecb3"}}><FontAwesomeIcon icon={faMessage}/>
+                                            color: "#ffecb3"}}><FontAwesomeIcon icon={faPaperPlane}/>
         {modal}
         </div>
     </div>

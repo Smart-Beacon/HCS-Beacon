@@ -4,10 +4,9 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import Cookies from 'js-cookie';
+import { Cookies } from "react-cookie";
 
 const style = css`
     .container{
@@ -115,6 +114,7 @@ const style = css`
 
 `;
 
+const cookies = new Cookies();
 
 function Main(){
 
@@ -128,22 +128,15 @@ function Main(){
 
     const [warningCnt, setWarningCnt] = useState([]);
 
-    const [cookies, setCookie, removeCookie] = useCookies(['isSuper']);
-    const [text, setText] = useState('');
+    const [isSuper, setIsSuper] = useState(false);
     
-    const getCookieFunc = (param) => {
-        let result = "getCookie : " + cookies.isSuper;
-        setText(result);
+    const getCookieFunc = () => {
+        if(cookies.get("isSuper") === "1"){
+            setIsSuper(true);
+        }else{
+            setIsSuper(false);
+        }
       }
-    console.log(text);
-
-    //console.log(Cookies.get("isSuper"));
-
-    // const WarningSiren = () => {
-    //     const warningArray = Data.map(e => e.warning);
-    //     console.log(warningArray);
-    //     setWarningCnt(warningArray);
-    // }
 
     const [Data, setData] = useState([])
 
@@ -174,7 +167,7 @@ function Main(){
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>

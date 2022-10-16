@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 
 import {
     Button,
@@ -124,12 +125,26 @@ const style = css`
     }
 `;
 
+
+const cookies = new Cookies();
+
 function ManagementSettings(){
 
     useEffect(() => {
         getDoorInfo();
         getStaInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+        if(cookies.get("isSuper") === "1"){
+            setIsSuper(true);
+        }else{
+            setIsSuper(false);
+        }
+      }
 
 
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
@@ -437,7 +452,7 @@ function ManagementSettings(){
                             <li className = "Select"><Link href = "#">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>

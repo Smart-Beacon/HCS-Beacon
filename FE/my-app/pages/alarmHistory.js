@@ -5,6 +5,7 @@ import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
 import ExportExcel from "./component/Excelexport";
+import { Cookies } from "react-cookie";
 
 const style = css`
     .container{
@@ -115,11 +116,24 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function visitorManagement(){
 
      useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
     
     const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"]
@@ -154,7 +168,7 @@ function visitorManagement(){
                             <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li className = "Select"><Link href = "#">경보 이력</Link></li>
                         </ul>
                     </div>
