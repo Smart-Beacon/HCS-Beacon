@@ -189,6 +189,9 @@ function visitorManagement(){
 
     const addInfo = () => {
 
+        const doorListLen = checkedList.length;
+        console.log(doorListLen);
+
         const info = {
             "userName": userName,
             "company": company,
@@ -198,15 +201,15 @@ function visitorManagement(){
             "userLoginPw": userLoginPw,
             "doorList": checkedList
         }
-        if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
-        && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
-            postInfo(info);
+        if(info.company !== "" && info.position !== "" && info.adminName !== ""
+        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
+            console.log(info);
+            // postInfo(info);
+            setCheckedLists([]);
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
-        onClose();
-
     }
 
     const handleDoorList = (e) => {
@@ -214,6 +217,8 @@ function visitorManagement(){
         if(selectId !== ""){
             const result = doorInfoDataClone.filter(e => selectId === e.staId);
             setDoorInfoData(result);
+        }else{
+            setDoorInfoData([]);
         }
     }
 
@@ -444,7 +449,7 @@ function visitorManagement(){
                                     } else{
                                         Flag = "자주";
                                     }
-                                    console.log(item.doorInfo);
+                                    let DoorInfo = item.doorInfo;
                                             return(
                                                 <tr>
                                                     <Accordion allowToggle>
@@ -463,14 +468,14 @@ function visitorManagement(){
                                                             <AccordionIcon />
                                                         </AccordionButton></td>
                                                         <AccordionPanel pb={4}>
-                                                            {/* {DoorInfo.map((e) => {
+                                                            {DoorInfo.map((e) => {
                                                                 return(
                                                                 <tr>
                                                                     <td>건물명 : {e.staName}</td>
                                                                     <td>도어명 : {e.doorNameList.toString()}</td> 
                                                                 </tr>
                                                                 )
-                                                            })} */}
+                                                            })}
                                                          </AccordionPanel>
                                                         </AccordionItem>
                                                         </Accordion>

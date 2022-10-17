@@ -165,10 +165,16 @@ function ManagementSettings(){
     const [staDoorData, setStaDoorData] = useState([]);
 
     const onSelect = (time) => {
-        setStartTime(time);
+        const saveStartTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
+        setStartTime(saveStartTime);
         setIsSelected(true);
         setEndTime(null);
     };
+
+    const onSelectEnd = (time) => {
+        const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
+        setEndTime(saveEndTime);
+    }
 
     const handleAdminId = (e) => setAdminId(e.target.value);
     const handledoorname = (e) => setDoorName(e.target.value);
@@ -186,8 +192,8 @@ function ManagementSettings(){
 
     const addInfo = () => {
 
-        const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
-        const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        // const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        // const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
 
         const info = {
@@ -197,8 +203,8 @@ function ManagementSettings(){
             "isOpen": "0",
             "isMonitoring": isMonitoring,
             "latestDate": "null",
-            "openTime": saveStartTime,
-            "closeTime": saveEndTime
+            "openTime": startTime,
+            "closeTime": endTime
         }
 
         const serverinfo = {
@@ -210,11 +216,12 @@ function ManagementSettings(){
             "isMonitoring": isMonitoringBoolean,
             "openWeeks": checkedList,
             "openDates": String(startDate),
-            "openTime": saveStartTime,
-            "closeTime": saveEndTime
+            "openTime": startTime,
+            "closeTime": endTime
         }
 
-        if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName){
+        if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
+        serverinfo.opentime  !== "" && serverinfo.closeTime !== ""){
             postDoorInfo(serverinfo);
             clearData();
             onClose();
@@ -392,7 +399,7 @@ function ManagementSettings(){
                             <li style = {{border: "solid 3px gray", marginLeft: "5%"}}> 
                                 <div><DatePicker
                                 selected={endTime}
-                                onChange={(time) => setEndTime(time)}
+                                onChange={onSelectEnd}
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={30}
