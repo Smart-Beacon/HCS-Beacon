@@ -22,18 +22,15 @@ const style = css`
         display: flex;
         height: 100%;
     }
-
     .SideBar{
         width: 15%;
         height: 100%;
     }
-
     .SideBar ul{
         padding: 0;
         list-style: none;
         text-align: center;
     }
-
     .SideBar ul li{
         font-size: 30px;
         width: 90%;
@@ -41,7 +38,6 @@ const style = css`
         border-bottom: solid 2px gray;
         font-weight: bold;
     }
-
     .SideBar ul li:hover{
         color: blue;
     }
@@ -51,7 +47,6 @@ const style = css`
         border-left: solid 5px gray;
         height: 100%;
     }
-
     .MainHeader{
         display: flex;
         justify-content: space-between;
@@ -59,38 +54,31 @@ const style = css`
         border-top: solid 4px gray;
         border-bottom: solid 4px gray;
     }
-
     .MainHeaderTitle{
         font-size: 40px;
         font-weight: bold;
     }
-
     .icon{
         margin: 0;
         font-size: 50px;
         color: green;
     }
-
     .MainHeaderTitle{
         margin-left: 30px;
     }
-
     .Table{
         font-weight: bold;
         font-size: 20px;
     }
-
     .TableHeader{
         font-size: 20px;
     }
     .Select{
         color: blue;
     }
-
     .MenuBar{
         height: 8%;
     }
-
     .MenuBarUl{
         list-style: none;
         height: 100%;
@@ -111,7 +99,6 @@ const style = css`
     .MenuBarUl li:hover{
         background-color: #448aff;
     }
-
     .daySelect{
         border-bottom: solid 4px gray;
         display: flex;
@@ -120,20 +107,15 @@ const style = css`
         height: 17%;
         font-weight: bold;
     }
-
     .calenderSelect{
         display: flex;
     }
-
     .calenderSelect p{
         margin-left: 2.5%;
     }
-
     .DatePicker{
         width: 11.5%;
     }
-
-
     table{
         width: 100%;
         font-weight: bold;
@@ -142,31 +124,25 @@ const style = css`
         margin: 0;
         text-align: center;
     }
-
     table tr th{
         font-size: 25px;
         width: 11.1%;
     }
-
     table tr td{
         width: 11.1%;
     }
-
     .TableThead{
         border-bottom: solid 2px gray;
         margin-bottom: 1%;
     }
-
     .TableTbody{
         height: 55%;
         overflow: auto;
         text-align: center;
     }
-
     .TableTbody table tr{
         height: 50px;
     }
-
 `;
 
 const cookies = new Cookies();
@@ -192,7 +168,7 @@ function ExitHistory(){
     const [startMonth, setStartMonth] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [isSelected, setIsSelected] = useState(false);
+    // const [isSelected, setIsSelected] = useState(false);
     const [MonthView , setMonthView] = useState(false);
     const [DayView , setDayView] = useState(false);
 
@@ -243,7 +219,7 @@ function ExitHistory(){
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
-        startDate.setDate(startDate.getDate()-1);
+        // startDate.setDate(startDate.getDate()-1);
         const endDayresult = DataClone.filter(e => 
             new Date(e.enterDate).getTime() <= date.getTime() &&
             new Date(e.enterDate).getTime() >= startDate.getTime());
