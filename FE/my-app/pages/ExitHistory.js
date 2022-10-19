@@ -302,13 +302,16 @@ function ExitHistory(){
                         </div>
                         <div className = "TableThead">
                             <table>
+                                <thead>
                                 <tr>{header.map((item)=>{
                                     return <th>{item}</th>
                                 })}</tr>
+                                </thead>
                             </table>
                         </div>
                         <div className = "TableTbody">
                             <table>
+                                <tbody>
                                     {Data.map((item)=>{
                                         return(
                                             <tr>
@@ -324,6 +327,7 @@ function ExitHistory(){
                                             </tr>
                                         )
                                     })}
+                                </tbody>
                             </table>
                         </div>
                     </div>
