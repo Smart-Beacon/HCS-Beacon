@@ -1,3 +1,8 @@
+/*
+*   client.js
+*   라즈베리 실행시 24시간 가동되는 (IP주소, 비콘ID)
+*/
+
 'use strict';
 require('dotenv').config();
 
