@@ -4,6 +4,7 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 import {
     Accordion,
     Box,
@@ -20,12 +21,10 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalFooter,
     ModalBody,
     ModalCloseButton,
     useDisclosure,
-    shouldForwardProp
   } from '@chakra-ui/react'
 
 const style = css`
@@ -136,11 +135,24 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function visitorManagement(){
 
      useEffect(() => {
         getInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
     
     const header = ["구분", "성명", "전화번호", "직장명", "직책", "방문일시", "상세정보"]
@@ -177,6 +189,9 @@ function visitorManagement(){
 
     const addInfo = () => {
 
+        const doorListLen = checkedList.length;
+        console.log(doorListLen);
+
         const info = {
             "userName": userName,
             "company": company,
@@ -186,15 +201,15 @@ function visitorManagement(){
             "userLoginPw": userLoginPw,
             "doorList": checkedList
         }
-        if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
-        && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
-            postInfo(info);
+        if(info.company !== "" && info.position !== "" && info.adminName !== ""
+        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
+            console.log(info);
+            // postInfo(info);
+            setCheckedLists([]);
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
-        onClose();
-
     }
 
     const handleDoorList = (e) => {
@@ -202,6 +217,8 @@ function visitorManagement(){
         if(selectId !== ""){
             const result = doorInfoDataClone.filter(e => selectId === e.staId);
             setDoorInfoData(result);
+        }else{
+            setDoorInfoData([]);
         }
     }
 
@@ -386,7 +403,6 @@ function visitorManagement(){
         </ModalContent>
       </Modal>
 
-    console.log(Data);
     return(
         <div>
             <Header/>
@@ -398,7 +414,7 @@ function visitorManagement(){
                             <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
                             <li className = "Select"><Link href = "#">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>
@@ -433,7 +449,7 @@ function visitorManagement(){
                                     } else{
                                         Flag = "자주";
                                     }
-                                    let DoorInfo = item.doorInfo; 
+                                    let DoorInfo = item.doorInfo;
                                             return(
                                                 <tr>
                                                     <Accordion allowToggle>

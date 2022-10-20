@@ -170,7 +170,7 @@ function visitorManagement(){
     const [adminLoginId, setAdminLoginId] = useState("");
     const [adminLoginPw, setAdminLoginPw] = useState("");
     const [position , setPosition ] = useState("");
-    const [isMonitoring, setIsMonitoring] = useState(false);
+    const [isMonitoring, setIsMonitoring] = useState("");
     
     const [checkedList, setCheckedLists] = useState([]);
     const onCheckedElement = useCallback(
@@ -194,11 +194,11 @@ function visitorManagement(){
     const addInfo = () => {
 
         const nowDate = new Date();
-        const year = nowDate.getFullYear();
-        const Month = String(nowDate.getMonth()+1).padStart(2, "0");
-        const Day = nowDate.getDate();
+        // const year = nowDate.getFullYear();
+        // const Month = String(nowDate.getMonth()+1).padStart(2, "0");
+        // const Day = nowDate.getDate();
 
-        const now = year + "." + Month + "." + Day;
+        const doorListLen = checkedList.length;
 
         const info = {
             "company": company,
@@ -207,27 +207,23 @@ function visitorManagement(){
             "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
-            "createdAt" : now
-        }
-
-        const serverinfo = {
-            "company": company,
-            "position": position,
-            "adminName": adminName,
-            "phoneNum" : num,
-            "adminLoginId": adminLoginId,
-            "adminLoginPw": adminLoginPw,
-            "staId" : now,
             "sms": isMonitoring,
             "doorlist": checkedList
         }
-        if(serverinfo.company !== "" && serverinfo.position !== "" && serverinfo.adminName
-        && serverinfo.num !== "" && serverinfo.adminLoginId !== "" && serverinfo.adminLoginPw !== ""){
+        if(info.company !== "" && info.position !== "" && info.adminName !== ""
+        && info.phoneNum !== "" && info.adminLoginId !== "" 
+        && info.adminLoginPw !== "" && doorListLen !== 0 && info.sms !== ""){
             getamdinInfo(serverinfo);
+            setCheckedLists([]);
+            clearData();
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
+    }
+
+    const clearData = () => {
+        setNum("");
     }
 
     const [num, setNum] = useState('');
@@ -260,6 +256,8 @@ function visitorManagement(){
         if(selectId !== ""){
             const result = doorInfoDataClone.filter(e => selectId === e.staId);
             setDoorInfoData(result);
+        }else{
+            setDoorInfoData([]);
         }
     }
 
@@ -350,13 +348,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
+                    <input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
+                    <input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
                 </div>
                 </FormControl>
             </div>

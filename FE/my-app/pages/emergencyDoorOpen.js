@@ -4,6 +4,7 @@ import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 import {
     Select
   } from '@chakra-ui/react'
@@ -176,13 +177,25 @@ const style = css`
 
 `;
 
+const cookies = new Cookies();
+
 function emergencyDoorOpen(){
 
     useEffect(() => {
         getInfo();
         getStaInfo();
-        NowCheck();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+
+    const getCookieFunc = () => {
+            if(cookies.get("isSuper") === "1"){
+                setIsSuper(true);
+            }else{
+                setIsSuper(false);
+            }
+        }
 
 
     const header = ["No.", "시설명", "도어명", "개방여부"]
@@ -298,16 +311,6 @@ function emergencyDoorOpen(){
         }
     };
 
-//-----------------------------------------------------------------------
-
-    const NowCheck = () => {
-        Data.map((e) => {
-            console.log(e);
-            if(e.isOpen === true){
-                setCheckedLists([...checkedList, e.doorId]);
-            }
-        })
-        }
 
 //----------------------------------------------------------------------- 서버에서 데이터 받아오는 axios 함수
     const getInfo = async () =>{    //도어 전체데이터
@@ -318,8 +321,10 @@ function emergencyDoorOpen(){
             console.log(res);
             if(res.status === 200){
                 console.log("가져오기 성공");
-                setData(res.data);
-                setDataClone(res.data);         
+                setData(res.data);  
+                setDataClone(res.data);
+                setDoorData(res.data);
+                NowCheck(res.data);      
             }else{
                 console.log("가져오기 실패");
                 alert(res.data);
@@ -336,7 +341,7 @@ function emergencyDoorOpen(){
             if(res.status === 200){
                 console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);    
-                setDoorData(res.data.doorData);       
+                // setDoorData(res.data.doorData);       
             }else{
                 console.log("데이터 받아오기 실패");
             }
@@ -356,7 +361,20 @@ function emergencyDoorOpen(){
             }
      });
     }
+
 //-----------------------------------------------------------------------
+
+    const NowCheck = (Data) => {
+        const checkedArray = [];
+        Data.forEach(e => {
+            if(e.isOpen === true){
+                checkedArray.push(e.doorId);
+            }
+        });
+        setCheckedLists(checkedArray);
+        }
+
+    console.log(checkedList);
 
     return(
         <div>
@@ -369,7 +387,7 @@ function emergencyDoorOpen(){
                             <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
                             <li className = "Select"><Link href = "#">출입문 입출이력</Link></li>
                             <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li><Link href = "./visitorManager">출입 관리자</Link></li>
+                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
                             <li><Link href = "./alarmHistory">경보 이력</Link></li>
                         </ul>
                     </div>
@@ -432,8 +450,7 @@ function emergencyDoorOpen(){
                                                                 <td>{item.doorName}</td>
                                                                 <td><input type = "checkbox"
                                                                 onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
-                                                                checked={
-                                                                    checkedList.includes(item.doorId) || item.isOpen === true ? true : false}></input></td>
+                                                                checked={checkedList.includes(item.doorId) === true ? true : false}></input></td>
                                                             </tr>
                                                         )
                                                     }
@@ -466,7 +483,7 @@ function emergencyDoorOpen(){
                                                                 <td>{item.doorName}</td>
                                                                 <td><input type = "checkbox"
                                                                 onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
-                                                                checked={checkedList.includes(item.doorId) || item.isOpen === true ? true : false}></input></td>
+                                                                checked={checkedList.includes(item.doorId) === true ? true : false}></input></td>
                                                             </tr>
                                                         )
                                                     }
