@@ -202,9 +202,10 @@ function emergencyDoorOpen(){
 //-----------------------------------------------------------------------
     // 전체 체크박스 체크 함수
     const onCheckedAll = useCallback(
-        (checked) => {
+        (checked) => { 
           if (checked) {
-            const checkedListArray = DoorData.map(list => list.doorId);
+            const checkedListArray = Data.map(list => list.doorId);
+            console.log(checkedListArray);
             setCheckedLists(checkedListArray);
             allTrue();
           } else {
@@ -216,16 +217,22 @@ function emergencyDoorOpen(){
       );
       
       const allTrue = () => { //전체 선택 체크시 모든 도어의 isOpen 값이 1로 변경
-        const arrayTrue = [];
-        const FilterData = DoorData.map(e => e.doorId);
+        const arrayTrue = Data.map(e =>{
+            console.log(e.doorId);
+            return {
+                "doorId": e.doorId,
+                "isOpen": true,
+            };
+        });
+        const FilterData = Data.map(e => e.doorId);
         const FliterDataLength = FilterData.length;
-        for(let i = 0; i <= FliterDataLength; i++){
-            const info = {
-                "doorId": FilterData[i],
-                "isOpen": true
-            }
-            arrayTrue.push(info);
-        }
+        // for(let i = 0; i <= FliterDataLength; i++){
+        //     const info = {
+        //         "doorId": FilterData[i],
+        //         "isOpen": true
+        //     }
+        //     arrayTrue.push(info);
+        // }
         getDoorInfo(arrayTrue);
       }
 
@@ -311,7 +318,7 @@ function emergencyDoorOpen(){
             console.log(res);
             if(res.status === 200){
                 console.log("가져오기 성공");
-                setData(res.data);  
+                setData(res.data);
                 setDataClone(res.data);         
             }else{
                 console.log("가져오기 실패");
