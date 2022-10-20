@@ -67,14 +67,14 @@ const getSuperEntrantList = async() => {
                 console.log(result);
                 return result;
             }
-           return null;
+        return null;
         })
     );
     const allUserData = SuperUser.filter(data => !!data);
     return allUserData;
 }
 
- 
+
 
 
 // const getEntrantList2 = async(userId,allows) => {
@@ -181,7 +181,7 @@ const getAdminEntrantList = async(adminId) => {
                 company : userInfo[0].company,
                 position: userInfo[0].position,
                 phoneNum: userInfo[0].phoneNum,
-                doorList: filterDoorInfos.flatMap(data=>data),
+                doorInfo: filterDoorInfos.flatMap(data=>data),
                 enterTime: userInfo[0].enterTime,
                 exitTime:userInfo[0].exitTime,
                 reason: userInfo[0].reason
