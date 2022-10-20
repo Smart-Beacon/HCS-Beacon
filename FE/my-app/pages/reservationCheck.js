@@ -230,7 +230,7 @@ function reservationCheck(){
     }
     //시작일 ~ 마지막일 선택시 필터링 함수
     const EndDaySearch = (date) => {
-        startDate.setDate(startDate.getDate()-1);
+        // startDate.setDate(startDate.getDate()-1);
         const endDayresult = DataClone.filter(e => 
             new Date(e.enterTime).getTime() >= startDate.getTime() &&
             new Date(e.enterTime).getTime() <= date.getTime());
@@ -268,6 +268,7 @@ function reservationCheck(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
+                console.log("데이터 받아옴")
                 setData(res.data);
                 setDataClone(res.data);           
             }else{
@@ -307,6 +308,7 @@ function reservationCheck(){
                 }
             });
     }
+
     
     return(
         <div>

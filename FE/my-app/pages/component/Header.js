@@ -19,7 +19,7 @@ const style = css`
     display: flex;
     width: 250px;
     height: 100px;
-    background-color: #e0e0e0;
+    background-color: #c5cae9;
     font-size: 70px;
     justify-content: center;
     align-items: center;
@@ -102,7 +102,7 @@ function Header() {
   return (
     <div>
       <div className="container">
-        <div className="MainLogo"><p><Link href = "../main">Logo</Link></p></div>
+        <div className="MainLogo"><p><Link href = "../main">OPNC</Link></p></div>
         <div className="NavBar">
           <ul>
             <li>
