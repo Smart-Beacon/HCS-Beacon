@@ -203,13 +203,16 @@ function visitorManagement(){
         }
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
         && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
-            console.log(info);
-            // postInfo(info);
+            postInfo(info);
             setCheckedLists([]);
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
+    }
+
+    const numClear = () => {
+        setNum("");
     }
 
     const handleDoorList = (e) => {
@@ -368,7 +371,7 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw} required/>
+                    <Input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw} required/>
                 </div>
                 </FormControl>
             </div>
@@ -398,7 +401,9 @@ function visitorManagement(){
             <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
-            <Button onClick={onClose} colorScheme='blue'>취소</Button>
+            <Button onClick={(e) => {
+                onClose(e)
+                numClear(e)}} colorScheme='blue'>취소</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -472,7 +477,7 @@ function visitorManagement(){
                                                                 return(
                                                                 <tr>
                                                                     <td>건물명 : {e.staName}</td>
-                                                                    <td>도어명 : {e.doorNameList.toString()}</td> 
+                                                                    <td>도어명 : {e.doorNameList}</td> 
                                                                 </tr>
                                                                 )
                                                             })}

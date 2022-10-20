@@ -215,14 +215,13 @@ function visitorManagement(){
         && info.adminLoginPw !== "" && doorListLen !== 0 && info.sms !== ""){
             getamdinInfo(serverinfo);
             setCheckedLists([]);
-            clearData();
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
     }
 
-    const clearData = () => {
+    const numClear = () => {
         setNum("");
     }
 
@@ -348,13 +347,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
+                    <Input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
                 </div>
                 </FormControl>
             </div>
@@ -399,7 +398,9 @@ function visitorManagement(){
             <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
-            <Button onClick={onClose} colorScheme='blue'>취소</Button>
+            <Button onClick={(e) => {
+                onClose(e)
+                numClear(e)}} colorScheme='blue'>취소</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

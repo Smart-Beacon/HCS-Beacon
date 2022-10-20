@@ -1,14 +1,13 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, {useState, useMemo, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { Cookies } from "react-cookie";
-
-const style = css`
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
+import {Cookies} from "react-cookie";
+const style = css `
     .container{
         width: 95%;
         height: 80vh;
@@ -113,104 +112,111 @@ const style = css`
     }
 
 `;
-
 const cookies = new Cookies();
-
-function Main(){
-
+function Main() {
     useEffect(() => {
         getDoorInfo();
         getCookieFunc();
     }, []);
-
-
-    const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "개방시간", "폐쇄시간", "경보상태"];
-
+    const header = [
+        "건물명",
+        "출입문명",
+        "ID(비콘)",
+        "현재상태",
+        "개방시간",
+        "폐쇄시간",
+        "경보상태"
+    ];
     const [warningCnt, setWarningCnt] = useState([]);
-
     const [isSuper, setIsSuper] = useState(false);
-    
     const getCookieFunc = () => {
-        if(cookies.get("isSuper") === "1"){
+        if (cookies.get("isSuper") === "1") {
             setIsSuper(true);
-        }else{
+        } else {
             setIsSuper(false);
         }
-      }
-
+    }
     const [Data, setData] = useState([])
-
-    const getDoorInfo = async () =>{
+    const getDoorInfo = async () => {
         const URL = 'http://localhost:5000/door/monitor';
         axios.defaults.withCredentials = true;
-        axios.get(URL)
-        .then(res => {
+        axios.get(URL).then(res => {
             console.log(res);
-            if(res.status === 200){
+            if (res.status === 200) {
                 setData(res.data);
                 const warningArray = res.data.map(e => e.warning);
-                setWarningCnt(warningArray);           
-            }else{
+                setWarningCnt(warningArray);
+            } else {
                 alert(res.data);
             }
-     });
+        });
     }
-
-    return(
-        <div>
-            <Header/>
-            <div className="container">
-                <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li className = "Select"><a href = "#">출입문 현황</a></li>
-                            <li><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
+    return (<div>
+        <Header/>
+        <div className="container">
+            <div className="containerBody">
+                <div className="SideBar">
+                    <ul>
+                        <li className="Select">
+                            <a href="#">출입문 현황</a>
+                        </li>
+                        <li>
+                            <Link href="./ManagementSettings">출입문 관리설정</Link>
+                        </li>
+                        <li>
+                            <Link href="./ExitHistory">출입문 입출이력</Link>
+                        </li>
+                        <li>
+                            <Link href="./visitorManagement">출입자 관리</Link>
+                        </li>
+                        {isSuper && <li>
+                            <Link href="./visitorManager">출입 관리자</Link>
+                        </li>}
+                        <li>
+                            <Link href="./alarmHistory">경보 이력</Link>
+                        </li>
+                    </ul>
+                </div>
+                <div className="Main">
+                    <div className="MainHeader">
+                        <h1 className="MainHeaderTitle">🟦 실시간 감시 현황</h1>
+                        <h1 className="siren"><FontAwesomeIcon style={warningCnt.includes(true) ? {color: "red"} : {color: "green"}}
+                                icon={faTriangleExclamation}/></h1>
                     </div>
-                    <div className = "Main">
-                        <div className = "MainHeader">
-                            <h1 className = "MainHeaderTitle">🟦 실시간 감시 현황</h1>
-                            <h1 className = "siren"><FontAwesomeIcon style = {warningCnt.includes(true) ? {color : "red"} : {color : "green"}} icon={faTriangleExclamation}/></h1>
-                        </div>
-                    <div className = "TableThead">
+                    <div className="TableThead">
                         <table>
                             <thead>
-                                <tr>{header.map((item)=>{
-                                    return <th>{item}</th>
-                                })}</tr>
+                                <tr> {
+                                    header.map((item) => {
+                                        return <th> {item}</th>
+                                })
+                                }</tr>
                             </thead>
                         </table>
                     </div>
-                        <div className = "TableTbody">
-                            <table>
-                                <tbody>
-                                    {Data.map((item)=>{
-                                        return(
-                                            <tr>
-                                                <td>{item.staName}</td>
-                                                <td>{item.doorName}</td>
-                                                <td>{item.doorId}</td>
-                                                <td>{Number(item.isOpen)}</td>
-                                                <td style = {{color: "blue"}}>{item.openTime}</td>
-                                                <td style = {{color: "red"}}>{item.closeTime}</td>
-                                                <td>{Number(item.warning)}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div className="TableTbody">
+                        <table>
+                            <tbody> {
+                                Data.map((item) => {
+                                    return (
+                                    <tr>
+                                        <td>{item.staName}</td>
+                                        <td>{item.doorName}</td>
+                                        <td>{item.doorId}</td>
+                                        <td>{Number(item.isOpen)}</td>
+                                        <td style = {{color: "blue"}}>{item.openTime}</td>
+                                        <td style = {{color: "red"}}>{item.closeTime}</td>
+                                        <td>{Number(item.warning)}</td>
+                                    </tr>)
+                                })
+                            } </tbody>
+                        </table>
                     </div>
-                    <UserModal/>
                 </div>
+                <UserModal/>
             </div>
-            <style jsx>{style}</style>
         </div>
-    )
+        <style jsx> {style}</style>
+    </div>)
 }
-
 export default Main;

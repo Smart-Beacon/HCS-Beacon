@@ -210,8 +210,11 @@ function ExitHistory() {
         setData(startDayresult);
     }
     // 시작일 ~ 마지막일 선택시 필터링 함수
-    const EndDaySearch = (date) => { // startDate.setDate(startDate.getDate()-1);
-        const endDayresult = DataClone.filter(e => new Date(e.enterDate).getTime() <= date.getTime() && new Date(e.enterDate).getTime() >= startDate.getTime());
+    const EndDaySearch = (date) => { 
+        const endDayresult = DataClone.filter(e => {
+            const newDate = new Date(e.enterDate);
+            newDate.setHours(newDate.getHours() - 9);
+            return newDate.getTime() <= date.getTime() && new Date(e.enterDate).getTime() >= startDate.getTime()});
         setData(endDayresult);
     }
     return (<div>

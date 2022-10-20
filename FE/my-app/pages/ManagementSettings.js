@@ -136,7 +136,7 @@ function ManagementSettings(){
         getCookieFunc();
       }, [])
 
-      const [isSuper, setIsSuper] = useState(false);
+    const [isSuper, setIsSuper] = useState(false);
 
     const getCookieFunc = () => {
         if(cookies.get("isSuper") === "1"){
@@ -165,15 +165,15 @@ function ManagementSettings(){
     const [staDoorData, setStaDoorData] = useState([]);
 
     const onSelect = (time) => {
-        const saveStartTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
-        setStartTime(saveStartTime);
+        //const saveStartTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
+        setStartTime(time);
         setIsSelected(true);
         setEndTime(null);
     };
 
     const onSelectEnd = (time) => {
-        const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
-        setEndTime(saveEndTime);
+        // const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
+        setEndTime(time);
     }
 
     const handleAdminId = (e) => setAdminId(e.target.value);
@@ -196,16 +196,16 @@ function ManagementSettings(){
         // const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
 
-        const info = {
-            "staName": staName,
-            "doorName": doorName,
-            "doorId": doorId,
-            "isOpen": "0",
-            "isMonitoring": isMonitoring,
-            "latestDate": "null",
-            "openTime": startTime,
-            "closeTime": endTime
-        }
+        // const info = {
+        //     "staName": staName,
+        //     "doorName": doorName,
+        //     "doorId": doorId,
+        //     "isOpen": "0",
+        //     "isMonitoring": isMonitoring,
+        //     "latestDate": "null",
+        //     "openTime": startTime,
+        //     "closeTime": endTime
+        // }
 
         const serverinfo = {
             "adminLoginId" : AdminId,
@@ -216,12 +216,13 @@ function ManagementSettings(){
             "isMonitoring": isMonitoringBoolean,
             "openWeeks": checkedList,
             "openDates": String(startDate),
-            "openTime": startTime,
-            "closeTime": endTime
+            "openTime": String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00",
+            "closeTime": String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00"
         }
 
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
-        serverinfo.opentime  !== "" && serverinfo.closeTime !== ""){
+        serverinfo.openTime  !== "" && serverinfo.closeTime !== ""){
+            console.log(serverinfo);
             postDoorInfo(serverinfo);
             clearData();
             onClose();
