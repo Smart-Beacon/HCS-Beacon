@@ -26,10 +26,15 @@ const getAlertSuperDatas = async() => {
                 attributes:['adminName']
             });
             const statement = await Statement.findOne({where:{staId:record.door.staId}});
-
+            
+            console.log(record.startTime);
             let alertDate = getDate(record.startTime);
             let alertStartTime = getTime(record.startTime);
-            let alertEndTime = getTime(record.endTime);
+            let alertEndTime = '';
+            if(record.endTime){
+                alertEndTime = getTime(record.endTime);
+            }
+            
 
             const result = {
                 staName : statement.staName,
