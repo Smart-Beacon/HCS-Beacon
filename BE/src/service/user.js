@@ -171,7 +171,7 @@ const getAdminEntrantList = async(adminId) => {
                     console.log(doorList);
                     return {
                         staName: doors.staName,
-                        doorList: doorList,
+                        doorNameList: doorList,
                     };
             }));
 
