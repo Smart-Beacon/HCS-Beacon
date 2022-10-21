@@ -418,7 +418,7 @@ function visitorManagement(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <SideBar pageNumber = "4"/>
+                    <SideBar pageNumber = "4" isSuper = {isSuper}/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>

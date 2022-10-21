@@ -459,7 +459,7 @@ function ManagementSettings(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <SideBar pageNumber = "2"/>
+                    <SideBar pageNumber = "2" isSuper = {isSuper}/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>

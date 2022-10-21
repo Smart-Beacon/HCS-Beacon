@@ -222,7 +222,7 @@ function ExitHistory() {
         <Header/>
         <div className="container">
             <div className="containerBody">
-                <SideBar pageNumber = "3"/>
+                <SideBar pageNumber = "3" isSuper = {isSuper}/>
                 <div className="Main">
                     <div className="MenuBar">
                         <ul className="MenuBarUl">

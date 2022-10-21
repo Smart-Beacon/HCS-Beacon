@@ -1,8 +1,9 @@
 import React, {useState, useEffect, useCallback, useRef} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
-import Link from "next/link";
+import {Cookies} from "react-cookie";
 import axios from "axios";
 import {
     Checkbox,
@@ -130,18 +131,26 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function visitorManagement(){
 
      useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+      const getCookieFunc = () => {
+          if (cookies.get("isSuper") === "1") {
+              setIsSuper(true);
+          } else {
+              setIsSuper(false);
+          }
+      }
 
     
     const header = ["No.", "소속", "관리자이름", "ID", "전화번호", "등록일자", "로그인 상태", "문자수신"]
-
-    useEffect(() => {
-        getDoorInfo();
-      }, [])
 
     const [Data, setData] = useState([]);
     const [DataClone, setDataClone] = useState([]);
@@ -414,16 +423,7 @@ function visitorManagement(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li><Link href = "./main">출입문 현황</Link></li>
-                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li className = "Select"><Link href = "#">출입 관리자</Link></li>
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
-                    </div>
+                    <SideBar pageNumber = "5" isSuper = {isSuper}/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>

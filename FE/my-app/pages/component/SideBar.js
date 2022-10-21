@@ -27,7 +27,7 @@ const style = css`
     }
     `;
 
-const SideBar = ({pageNumber}) => {
+const SideBar = ({pageNumber, isSuper}) => {
 
     return(
         <>
@@ -45,9 +45,9 @@ const SideBar = ({pageNumber}) => {
                 <li style = {pageNumber === "4" ? {color: "blue"} : {color: "black"}}>
                     <Link href="./visitorManagement">출입자 관리</Link>
                 </li>
-                {/* {isSuper && <li>
+                {isSuper && <li style = {pageNumber === "5" ? {color: "blue"} : {color: "black"}}>
                     <Link href="./visitorManager">출입 관리자</Link>
-                </li>} */}
+                </li>}
                 <li style = {pageNumber === "6" ? {color: "blue"} : {color: "black"}}>
                     <Link href="./alarmHistory">경보 이력</Link>
                 </li>

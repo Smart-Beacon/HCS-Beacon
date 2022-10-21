@@ -3,7 +3,6 @@ import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
-import Link from "next/link";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
@@ -157,7 +156,7 @@ function Main() {
         <Header/>
         <div className="container">
             <div className="containerBody">
-                <SideBar pageNumber = "1"/>
+                <SideBar pageNumber = "1" isSuper = {isSuper}/>
                 <div className="Main">
                     <div className="MainHeader">
                         <h1 className="MainHeaderTitle">🟦 실시간 감시 현황</h1>
