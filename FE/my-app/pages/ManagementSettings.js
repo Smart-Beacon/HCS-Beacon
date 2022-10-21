@@ -5,7 +5,6 @@ import css from "styled-jsx/css";
 import {setHours, setMinutes} from "date-fns";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Link from "next/link";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import SideBar from "./component/SideBar";
@@ -197,20 +196,7 @@ function ManagementSettings(){
 
     const addInfo = () => {
 
-        // const saveStartTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
-        // const saveEndTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
-
-        // const info = {
-        //     "staName": staName,
-        //     "doorName": doorName,
-        //     "doorId": doorId,
-        //     "isOpen": "0",
-        //     "isMonitoring": isMonitoring,
-        //     "latestDate": "null",
-        //     "openTime": startTime,
-        //     "closeTime": endTime
-        // }
 
         const serverinfo = {
             "adminLoginId" : AdminId,
@@ -447,7 +433,9 @@ function ManagementSettings(){
             <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
-            <Button onClick={onClose} colorScheme='blue'>취소</Button>
+            <Button onClick={(e) => {
+                onClose(e)
+                clearData(e)}} colorScheme='blue'>취소</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

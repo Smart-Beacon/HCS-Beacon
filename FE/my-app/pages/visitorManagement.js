@@ -3,7 +3,6 @@ import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
-import Link from "next/link";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import {

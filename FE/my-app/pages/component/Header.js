@@ -52,22 +52,21 @@ const style = css`
 `;
 
 
-
-
 function Header() {
   
-  const Logout = (e) => {
-    const request = axios.post('http://localhost:3000/auth/logout', null)
-            .then(res => {
-                console.log(res);
-                if(res.status === 200){
-                    localStorage.clear();
-                    console.log("======================", "로그아웃 성공");
-                }else{
-                    alert(res.data);
-                }
-            });
-  }
+  const Logout = async (e) =>{
+    const URL = "http://localhost:5000/auth/logout"
+    axios.defaults.withCredentials = true;
+        await axios.post(URL, null)
+        .then(res => {
+            if(res.status === 200){
+              console.log("======================", "로그아웃 성공");
+              localStorage.clear();
+            }else{
+                alert(res.data);
+            }
+        });
+}
 
   let timer = null;
 
