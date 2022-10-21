@@ -1,6 +1,7 @@
 import React, {useState, useMemo, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -136,6 +137,7 @@ function Main() {
             setIsSuper(false);
         }
     }
+
     const [Data, setData] = useState([])
     const getDoorInfo = async () => {
         const URL = 'http://localhost:5000/door/monitor';
@@ -155,28 +157,7 @@ function Main() {
         <Header/>
         <div className="container">
             <div className="containerBody">
-                <div className="SideBar">
-                    <ul>
-                        <li className="Select">
-                            <a href="#">출입문 현황</a>
-                        </li>
-                        <li>
-                            <Link href="./ManagementSettings">출입문 관리설정</Link>
-                        </li>
-                        <li>
-                            <Link href="./ExitHistory">출입문 입출이력</Link>
-                        </li>
-                        <li>
-                            <Link href="./visitorManagement">출입자 관리</Link>
-                        </li>
-                        {isSuper && <li>
-                            <Link href="./visitorManager">출입 관리자</Link>
-                        </li>}
-                        <li>
-                            <Link href="./alarmHistory">경보 이력</Link>
-                        </li>
-                    </ul>
-                </div>
+                <SideBar pageNumber = "1"/>
                 <div className="Main">
                     <div className="MainHeader">
                         <h1 className="MainHeaderTitle">🟦 실시간 감시 현황</h1>

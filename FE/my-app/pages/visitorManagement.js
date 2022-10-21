@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback, useRef } from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -185,6 +186,10 @@ function visitorManagement(){
         }else{
             setData(DataClone);
         }
+    }
+
+    const force = () => {
+        window.location.reload();
     }
 
     const addInfo = () => {
@@ -413,22 +418,14 @@ function visitorManagement(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li><Link href = "./main">출입문 현황</Link></li>
-                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li className = "Select"><Link href = "#">출입자 관리</Link></li>
-                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
-                    </div>
+                    <SideBar pageNumber = "4"/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
                             <Input placeholder= "Search Guest Name" style = {{width: "25%"}} onChange = {handleGuestName}/>
                             <Button style = {{marginLeft: "1%"}} onClick = {SearchName}>검색</Button>
-                            <div className = "MainHeaderBtn" style = {{width: "70%"}}>
+                            <div className = "MainHeaderBtn" style = {{width: "50%", display: "flex", justifyContent: "flex-end"}}>
+                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
                                 <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>

@@ -3,6 +3,7 @@ import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import Link from "next/link";
+import SideBar from "./component/SideBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ExportExcel from "./component/Excelexport";
@@ -299,28 +300,7 @@ function reservationCheck() {
         <Header/>
         <div className="container">
             <div className="containerBody">
-                <div className="SideBar">
-                    <ul>
-                        <li>
-                            <Link href="./main">출입문 현황</Link>
-                        </li>
-                        <li>
-                            <Link href="./ManagementSettings">출입문 관리설정</Link>
-                        </li>
-                        <li className="Select">
-                            <Link href="#">출입문 입출이력</Link>
-                        </li>
-                        <li>
-                            <Link href="./visitorManagement">출입자 관리</Link>
-                        </li>
-                        {isSuper && <li>
-                            <Link href="./visitorManager">출입 관리자</Link>
-                        </li>}
-                        <li>
-                            <Link href="./alarmHistory">경보 이력</Link>
-                        </li>
-                    </ul>
-                </div>
+                <SideBar pageNumber = "3"/>
                 <div className="Main">
                     <div className="MenuBar">
                         <ul className="MenuBarUl">

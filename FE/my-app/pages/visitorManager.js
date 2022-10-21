@@ -221,6 +221,10 @@ function visitorManagement(){
         }
     }
 
+    const force = () => {
+        window.location.reload();
+    }
+
     const numClear = () => {
         setNum("");
     }
@@ -423,7 +427,8 @@ function visitorManagement(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
-                            <div className = "MainHeaderBtn" style = {{width: "70%"}}>
+                            <div className = "MainHeaderBtn" style = {{width: "70%", display: "flex", justifyContent: "flex-end"}}>
+                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
                                 <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>

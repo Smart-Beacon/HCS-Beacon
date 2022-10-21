@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import SideBar from "./component/SideBar";
 
 import {
     Button,
@@ -171,6 +172,10 @@ function ManagementSettings(){
         setEndTime(null);
     };
 
+    const force = () => {
+        window.location.reload();
+    }
+
     const onSelectEnd = (time) => {
         // const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
         setEndTime(time);
@@ -222,7 +227,6 @@ function ManagementSettings(){
 
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
         serverinfo.openTime  !== "" && serverinfo.closeTime !== ""){
-            console.log(serverinfo);
             postDoorInfo(serverinfo);
             clearData();
             onClose();
@@ -247,6 +251,7 @@ function ManagementSettings(){
         .then(res => {
             console.log(res);
             if(res.status === 200){
+                console.log("서버데이터 받아옴");
                 setData(res.data);           
             }else{
                 alert(res.data);
@@ -267,8 +272,6 @@ function ManagementSettings(){
                 }
             });
     }
-
-    console.log(addData);
 
     const getStaInfo = async () =>{
         const URL = 'http://localhost:5000/statement';
@@ -449,26 +452,22 @@ function ManagementSettings(){
         </ModalContent>
       </Modal>
 
+      console.log("render");
+
     return(
         <div>
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li><Link href = "./main">출입문 현황</Link></li>
-                            <li className = "Select"><Link href = "#">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
-                    </div>
+                    <SideBar pageNumber = "2"/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
-                            <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
-                            {modal}
+                            <div className = "BtnDiv" style = {{display: "flex"}}>
+                                <Button onClick = {force} style = {{marginRight: "30%"}}>새로고침</Button>
+                                <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                {modal}
+                            </div>
                         </div>
                         <div className = "TableThead">
                             <table>
