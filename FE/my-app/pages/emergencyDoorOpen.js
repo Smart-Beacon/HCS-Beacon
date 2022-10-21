@@ -200,14 +200,23 @@ function emergencyDoorOpen() {
     const [selectStaName, setSelectStaName] = useState("");
     // -----------------------------------------------------------------------
     // 전체 체크박스 체크 함수
+<<<<<<< HEAD
     const onCheckedAll = useCallback((checked) => {
         if (checked) {
             const checkedListArray = DoorData.map(list => list.doorId);
+=======
+    const onCheckedAll = useCallback(
+        (checked) => { 
+          if (checked) {
+            const checkedListArray = Data.map(list => list.doorId);
+            console.log(checkedListArray);
+>>>>>>> main
             setCheckedLists(checkedListArray);
             allTrue();
         } else {
             setCheckedLists([]);
             allFalse();
+<<<<<<< HEAD
         }
     }, [DoorData]);
     const allTrue = () => { // 전체 선택 체크시 모든 도어의 isOpen 값이 1로 변경
@@ -221,6 +230,30 @@ function emergencyDoorOpen() {
             }
             arrayTrue.push(info);
         }
+=======
+          }
+        },
+        [DoorData]
+      );
+      
+      const allTrue = () => { //전체 선택 체크시 모든 도어의 isOpen 값이 1로 변경
+        const arrayTrue = Data.map(e =>{
+            console.log(e.doorId);
+            return {
+                "doorId": e.doorId,
+                "isOpen": true,
+            };
+        });
+        const FilterData = Data.map(e => e.doorId);
+        const FliterDataLength = FilterData.length;
+        // for(let i = 0; i <= FliterDataLength; i++){
+        //     const info = {
+        //         "doorId": FilterData[i],
+        //         "isOpen": true
+        //     }
+        //     arrayTrue.push(info);
+        // }
+>>>>>>> main
         getDoorInfo(arrayTrue);
     }
     const allFalse = () => { // 전체 선택 체크시 모든 도어의 isOpen 값이 0로 변경
