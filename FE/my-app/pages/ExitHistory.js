@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
@@ -210,38 +211,18 @@ function ExitHistory() {
         setData(startDayresult);
     }
     // 시작일 ~ 마지막일 선택시 필터링 함수
-    const EndDaySearch = (date) => { // startDate.setDate(startDate.getDate()-1);
-        const endDayresult = DataClone.filter(e => new Date(e.enterDate).getTime() <= date.getTime() && new Date(e.enterDate).getTime() >= startDate.getTime());
+    const EndDaySearch = (date) => { 
+        const endDayresult = DataClone.filter(e => {
+            const newDate = new Date(e.enterDate);
+            newDate.setHours(newDate.getHours() - 9);
+            return newDate.getTime() <= date.getTime() && new Date(e.enterDate).getTime() >= startDate.getTime()});
         setData(endDayresult);
     }
     return (<div>
         <Header/>
         <div className="container">
             <div className="containerBody">
-                <div className="SideBar">
-                    <ul>
-                        <li>
-                            <Link href="./main">출입문 현황</Link>
-                        </li>
-                        <li>
-                            <Link href="./ManagementSettings">출입문 관리설정</Link>
-                        </li>
-                        <li className="Select">
-                            <Link href="#">출입문 입출이력</Link>
-                        </li>
-                        <li>
-                            <Link href="./visitorManagement">출입자 관리</Link>
-                        </li>
-                        {
-                        isSuper && <li>
-                            <Link href="./visitorManager">출입 관리자</Link>
-                        </li>
-                    }
-                        <li>
-                            <Link href="./alarmHistory">경보 이력</Link>
-                        </li>
-                    </ul>
-                </div>
+                <SideBar pageNumber = "3" isSuper = {isSuper}/>
                 <div className="Main">
                     <div className="MenuBar">
                         <ul className="MenuBarUl">

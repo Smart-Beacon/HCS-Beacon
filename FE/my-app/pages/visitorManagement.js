@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback, useRef } from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
 import Link from "next/link";
 import axios from "axios";
@@ -187,6 +188,10 @@ function visitorManagement(){
         }
     }
 
+    const force = () => {
+        window.location.reload();
+    }
+
     const addInfo = () => {
 
         const doorListLen = checkedList.length;
@@ -203,13 +208,16 @@ function visitorManagement(){
         }
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
         && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
-            console.log(info);
-            // postInfo(info);
+            postInfo(info);
             setCheckedLists([]);
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
+    }
+
+    const numClear = () => {
+        setNum("");
     }
 
     const handleDoorList = (e) => {
@@ -368,7 +376,7 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw} required/>
+                    <Input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleUserLoginPw} required/>
                 </div>
                 </FormControl>
             </div>
@@ -398,7 +406,9 @@ function visitorManagement(){
             <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
-            <Button onClick={onClose} colorScheme='blue'>취소</Button>
+            <Button onClick={(e) => {
+                onClose(e)
+                numClear(e)}} colorScheme='blue'>취소</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -408,22 +418,14 @@ function visitorManagement(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li><Link href = "./main">출입문 현황</Link></li>
-                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li className = "Select"><Link href = "#">출입자 관리</Link></li>
-                            {isSuper && <li><Link href = "./visitorManager">출입 관리자</Link></li>}
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
-                    </div>
+                    <SideBar pageNumber = "4" isSuper = {isSuper}/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
                             <Input placeholder= "Search Guest Name" style = {{width: "25%"}} onChange = {handleGuestName}/>
                             <Button style = {{marginLeft: "1%"}} onClick = {SearchName}>검색</Button>
-                            <div className = "MainHeaderBtn" style = {{width: "70%"}}>
+                            <div className = "MainHeaderBtn" style = {{width: "50%", display: "flex", justifyContent: "flex-end"}}>
+                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
                                 <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>
@@ -472,7 +474,7 @@ function visitorManagement(){
                                                                 return(
                                                                 <tr>
                                                                     <td>건물명 : {e.staName}</td>
-                                                                    <td>도어명 : {e.doorNameList.toString()}</td> 
+                                                                    <td>도어명 : {e.doorNameList}</td> 
                                                                 </tr>
                                                                 )
                                                             })}

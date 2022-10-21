@@ -1,8 +1,9 @@
 import React, {useState, useEffect, useCallback, useRef} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
+import SideBar from "./component/SideBar";
 import css from "styled-jsx/css";
-import Link from "next/link";
+import {Cookies} from "react-cookie";
 import axios from "axios";
 import {
     Checkbox,
@@ -130,18 +131,26 @@ const style = css`
     }
 `;
 
+const cookies = new Cookies();
+
 function visitorManagement(){
 
      useEffect(() => {
         getDoorInfo();
+        getCookieFunc();
       }, [])
+
+      const [isSuper, setIsSuper] = useState(false);
+      const getCookieFunc = () => {
+          if (cookies.get("isSuper") === "1") {
+              setIsSuper(true);
+          } else {
+              setIsSuper(false);
+          }
+      }
 
     
     const header = ["No.", "소속", "관리자이름", "ID", "전화번호", "등록일자", "로그인 상태", "문자수신"]
-
-    useEffect(() => {
-        getDoorInfo();
-      }, [])
 
     const [Data, setData] = useState([]);
     const [DataClone, setDataClone] = useState([]);
@@ -215,14 +224,17 @@ function visitorManagement(){
         && info.adminLoginPw !== "" && doorListLen !== 0 && info.sms !== ""){
             getamdinInfo(serverinfo);
             setCheckedLists([]);
-            clearData();
             onClose();
         }else{
             alert("빈 칸을 작성해주세요");            
         }
     }
 
-    const clearData = () => {
+    const force = () => {
+        window.location.reload();
+    }
+
+    const numClear = () => {
         setNum("");
     }
 
@@ -348,13 +360,13 @@ function visitorManagement(){
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦ID</FormLabel>
-                    <input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
+                    <Input style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginId} required/>
                 </div>
                 </FormControl>
                 <FormControl mt={4} style={{width: '40%'}}>
                 <div style={{display: "flex"}}>
                     <FormLabel style={{width: "50%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦PW</FormLabel>
-                    <input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
+                    <Input type = "password" style = {{borderWidth: "2px", borderColor: "black"}} onChange = {handleadminLoginPw} required/>
                 </div>
                 </FormControl>
             </div>
@@ -399,7 +411,9 @@ function visitorManagement(){
             <Button colorScheme='blue' mr={3} onClick = {addInfo}>
               저장
             </Button>
-            <Button onClick={onClose} colorScheme='blue'>취소</Button>
+            <Button onClick={(e) => {
+                onClose(e)
+                numClear(e)}} colorScheme='blue'>취소</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -409,20 +423,12 @@ function visitorManagement(){
             <Header/>
             <div className="container">
                 <div className="containerBody">
-                    <div className = "SideBar">
-                        <ul>
-                            <li><Link href = "./main">출입문 현황</Link></li>
-                            <li ><Link href = "./ManagementSettings">출입문 관리설정</Link></li>
-                            <li><Link href = "./ExitHistory">출입문 입출이력</Link></li>
-                            <li><Link href = "./visitorManagement">출입자 관리</Link></li>
-                            <li className = "Select"><Link href = "#">출입 관리자</Link></li>
-                            <li><Link href = "./alarmHistory">경보 이력</Link></li>
-                        </ul>
-                    </div>
+                    <SideBar pageNumber = "5" isSuper = {isSuper}/>
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
-                            <div className = "MainHeaderBtn" style = {{width: "70%"}}>
+                            <div className = "MainHeaderBtn" style = {{width: "70%", display: "flex", justifyContent: "flex-end"}}>
+                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
                                 <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
                                 {modal}
                             </div>
