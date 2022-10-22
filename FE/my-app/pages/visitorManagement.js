@@ -2,6 +2,8 @@ import React, {useState, useEffect, useCallback, useRef } from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateBack } from "@fortawesome/free-solid-svg-icons";
 import css from "styled-jsx/css";
 import axios from "axios";
 import { Cookies } from "react-cookie";
@@ -424,8 +426,10 @@ function visitorManagement(){
                             <Input placeholder= "Search Guest Name" style = {{width: "25%"}} onChange = {handleGuestName}/>
                             <Button style = {{marginLeft: "1%"}} onClick = {SearchName}>검색</Button>
                             <div className = "MainHeaderBtn" style = {{width: "50%", display: "flex", justifyContent: "flex-end"}}>
-                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
-                                <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                <Button onClick = {force} style = {{marginRight: "2%", backgroundColor: "#ffb300"}}>
+                                    <FontAwesomeIcon icon={faArrowRotateBack}/>
+                                </Button>
+                                <Button onClick={getStaDoorInfo} colorScheme='green'>➕</Button>
                                 {modal}
                             </div>
                         </div>
