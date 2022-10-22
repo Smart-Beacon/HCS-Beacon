@@ -3,7 +3,6 @@ import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import SideBar from "./component/SideBar";
-import Link from "next/link";
 import axios from "axios";
 import ExportExcel from "./component/Excelexport";
 import { Cookies } from "react-cookie";
@@ -167,7 +166,7 @@ function visitorManagement(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 경보 이력</h1>
-                            <ExportExcel excelData={Data} fileName={"Excel Export"}/>
+                            {Data.length > 0 && <ExportExcel excelData={Data} fileName={"Excel Export"}/>}
                         </div>
                         <div className = "TableThead">
                             <table>

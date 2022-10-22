@@ -222,7 +222,7 @@ function visitorManagement(){
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
         && info.phoneNum !== "" && info.adminLoginId !== "" 
         && info.adminLoginPw !== "" && doorListLen !== 0 && info.sms !== ""){
-            getamdinInfo(serverinfo);
+            getamdinInfo(info);
             setCheckedLists([]);
             onClose();
         }else{
