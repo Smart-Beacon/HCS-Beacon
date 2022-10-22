@@ -1,10 +1,12 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
 import {setHours, setMinutes} from "date-fns";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateBack } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import SideBar from "./component/SideBar";
@@ -176,7 +178,7 @@ function ManagementSettings(){
     }
 
     const onSelectEnd = (time) => {
-        // const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
+        //const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
         setEndTime(time);
     }
 
@@ -197,6 +199,15 @@ function ManagementSettings(){
     const addInfo = () => {
 
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
+        const OpenTime = "";
+        const CloseTime = "";
+        if(startTime !== null){
+            OpenTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        }
+        if(endTime !== null){
+            CloseTime = tring(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
+        }
+
 
         const serverinfo = {
             "adminLoginId" : AdminId,
@@ -207,9 +218,11 @@ function ManagementSettings(){
             "isMonitoring": isMonitoringBoolean,
             "openWeeks": checkedList,
             "openDates": String(startDate),
-            "openTime": String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00",
-            "closeTime": String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00"
+            "openTime": OpenTime,
+            "closeTime": CloseTime
         }
+
+
 
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
         serverinfo.openTime  !== "" && serverinfo.closeTime !== ""){
@@ -217,7 +230,8 @@ function ManagementSettings(){
             clearData();
             onClose();
         }else{
-            alert("빈 칸을 작성해주세요");            
+            alert("빈 칸을 작성해주세요");
+            console.log(serverinfo);            
         }
     }
 
@@ -452,8 +466,10 @@ function ManagementSettings(){
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle">🟦 출입문 관리 설정</h1>
                             <div className = "BtnDiv" style = {{display: "flex"}}>
-                                <Button onClick = {force} style = {{marginRight: "30%"}}>새로고침</Button>
-                                <Button onClick={onOpen} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                                <Button onClick = {force} style = {{marginRight: "10%", backgroundColor: "#ffb300"}}>
+                                    <FontAwesomeIcon icon={faArrowRotateBack}/>
+                                </Button>
+                                <Button onClick={onOpen} colorScheme='green'>➕</Button>
                                 {modal}
                             </div>
                         </div>

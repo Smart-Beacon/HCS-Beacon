@@ -2,6 +2,8 @@ import React, {useState, useEffect, useCallback, useRef} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateBack } from "@fortawesome/free-solid-svg-icons";
 import css from "styled-jsx/css";
 import {Cookies} from "react-cookie";
 import axios from "axios";
@@ -427,9 +429,11 @@ function visitorManagement(){
                     <div className = "Main">
                         <div className = "MainHeader">
                             <h1 className = "MainHeaderTitle" style = {{width: "25%",  marginRight: "1%"}}>🟦 출입자 관리</h1>
-                            <div className = "MainHeaderBtn" style = {{width: "70%", display: "flex", justifyContent: "flex-end"}}>
-                                <Button onClick = {force} style = {{marginRight: "5%"}}>새로고침</Button>
-                                <Button onClick={getStaDoorInfo} colorScheme='green' style = {{float: "right"}}>➕</Button>
+                            <div className = "MainHeaderBtn" style = {{width: "75%", display: "flex", justifyContent: "flex-end"}}>
+                                <Button onClick = {force} style = {{marginRight: "2%", backgroundColor: "#ffb300"}}>
+                                    <FontAwesomeIcon icon={faArrowRotateBack}/>
+                                </Button>
+                                <Button onClick={getStaDoorInfo} colorScheme='green'>➕</Button>
                                 {modal}
                             </div>
                         </div>
