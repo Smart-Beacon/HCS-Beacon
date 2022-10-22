@@ -40,8 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> callAPI(BuildContext context) async {
     try {
-      //String? venderId = await PlatformDeviceId.getDeviceId;
-      _getDeviceId();
+      //await _getDeviceId();
       var dio = Dio();
       String url = "http://10.0.2.2:5000/auth/user/login";
       var res = await dio.post(url, data: {
@@ -85,6 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
       return false;
     }
     return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getDeviceId();
   }
 
   @override

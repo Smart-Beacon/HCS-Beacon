@@ -12,25 +12,25 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 
+import android.util.Log;
 import android.bluetooth.BluetoothAdapter;
-import android.os.Bundle;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
+import android.os.Bundle;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
-
-// import android.support.v4.app.ActivityCompat;
-// import android.support.v4.content.ContextCompat;
-// import android.support.v7.app.AppCompatActivity;
-// import android.content.pm.PackageManager;
-
+import android.os.Build;
+// import java.util.Collections;
+// import java.util.ArrayList;
 import java.util.List;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
+import android.Manifest;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "samples.flutter.dev/battery";
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
+    private static final int REQUEST_ENABLE_BT = 2;
 
     private MinewBeaconManager mMinewBeaconManager;
     private boolean isScanning;
@@ -44,9 +44,7 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
-                            // This method is invoked on the main thread.
                             if (call.method.equals("getBeaconId")) {
-                                getBeaconId();
                                 if(errorMessage != null){
                                     result.success(errorMessage);
                                 }
@@ -55,43 +53,51 @@ public class MainActivity extends FlutterActivity {
                                 } else {
                                     result.error("UNAVAILABLE", "no Search BeaconDevice.", null);
                                 }
-                            } else {
+                            } else if(call.method.equals("initBeacon")){
+                                init();
+                                if(mMinewBeaconManager != null){
+                                    result.success("success");
+                                }else {
+                                    result.error("UNAVAILABLE", "no init", null);
+                                }
+
+                            }else {
                                 result.notImplemented();
                             }
                         }
                 );
     }
 
-    private void getBeaconId() {
-        try{
-            mMinewBeaconManager = MinewBeaconManager.getInstance(this);
-            BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
+    private void init(){
+        mMinewBeaconManager = MinewBeaconManager.getInstance(this);
+        BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
+        if (mMinewBeaconManager != null) {
+            switch (bluetoothState) {
+                case BluetoothStateNotSupported:
+                    errorMessage = "BluetoothStateNotSupported";
+                    break;
+                case BluetoothStatePowerOff:
+                    showBLEDialog();
+                    errorMessage = "BluetoothStatePowerOff";
+                    return;
+                case BluetoothStatePowerOn:
+                    break;
+            }
+        }
+        if (isScanning) {
+            isScanning = false;
             if (mMinewBeaconManager != null) {
-                switch (bluetoothState) {
-                    case BluetoothStateNotSupported:
-                        errorMessage = "BluetoothStateNotSupported";
-                        break;
-                    case BluetoothStatePowerOff:
-                        errorMessage = "BluetoothStatePowerOff";
-                        return;
-                    case BluetoothStatePowerOn:
-                        break;
-                }
+                mMinewBeaconManager.stopScan();
             }
-            if (isScanning) {
-                isScanning = false;
-                if (mMinewBeaconManager != null) {
-                    mMinewBeaconManager.stopScan();
-                }
-            } else {
-                isScanning = true;
-                try {
-                    mMinewBeaconManager.startScan();
-                } catch (Exception e) {
-                    errorMessage = e.getMessage();
-                }
+        } else {
+            isScanning = true;
+            try {
+                mMinewBeaconManager.startScan();
+            } catch (Exception e) {
+                errorMessage = e.getMessage();
             }
-            //checkLocationPermition();
+        }
+        try{
             mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
                 /**
                  *   if the manager find some new beacon, it will call back this method.
@@ -100,7 +106,12 @@ public class MainActivity extends FlutterActivity {
                  */
                 @Override
                 public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-    
+                    Log.i("success1", "success1");
+                    for (MinewBeacon mMinewBeacon : minewBeacons) {
+                        deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_UUID).getStringValue();
+                        Log.i(deviceUUID, deviceUUID);
+                        return;
+                    }
                 }
     
                 /**
@@ -123,8 +134,11 @@ public class MainActivity extends FlutterActivity {
                  */
                 @Override
                 public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
+                    Log.i("success2", "success2");
                     for (MinewBeacon mMinewBeacon : minewBeacons) {
                         deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_UUID).getStringValue();
+                        String deviceInRange = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
+                        Log.i(deviceUUID, deviceInRange);
                     }
                 }
     
@@ -147,43 +161,16 @@ public class MainActivity extends FlutterActivity {
                     }
                 }
             });
-            //initManager();
-            //checkBluetooth();
-            //initListener();
         }catch(Exception e){
             e.printStackTrace();
             throw e;
         }
-        
     }
 
-//     private void checkLocationPermition() {
-//         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-//             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-//             if(permissionCheck == PackageManager.PERMISSION_DENIED){
-
-//                 // 권한 없음
-//                 ActivityCompat.requestPermissions(this,
-//                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                         REQUEST_ACCESS_FINE_LOCATION);
-
-
-//             } else{
-
-//                 // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-
-//             }
-
-
-//         }
-
-// // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
-//         else{
-
-//         }
-//     }
+    private void showBLEDialog() {
+        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+    }
 
     // private void initManager() {
     //     mMinewBeaconManager = MinewBeaconManager.getInstance(this);
@@ -284,13 +271,13 @@ public class MainActivity extends FlutterActivity {
     //     });
     // }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //stop scan
-        if (isScanning) {
-            mMinewBeaconManager.stopScan();
-        }
-    }
+    // @Override
+    // protected void onDestroy() {
+    //     super.onDestroy();
+    //     //stop scan
+    //     if (isScanning) {
+    //         mMinewBeaconManager.stopScan();
+    //     }
+    // }
 
 }

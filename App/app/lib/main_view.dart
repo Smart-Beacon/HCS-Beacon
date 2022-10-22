@@ -7,11 +7,52 @@ import 'package:flutter/services.dart';
 
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'dart:developer';
 
-class MainView extends StatelessWidget {
-  const MainView({Key? key}) : super(key: key);
+
+class MainView extends StatefulWidget {
+  const MainView({super.key});
+
+  @override
+  State<MainView> createState() => _MainViewState();
+}
+
+class _MainViewState extends State<MainView> {
+  static const platform = MethodChannel('samples.flutter.dev/battery');
+  String _state = '';
+
+  Future<void> _initBeacon() async {
+    String state;
+    try {
+      final String result = await platform.invokeMethod("initBeacon");
+      state = result;
+    } on PlatformException catch (e) {
+      state = e.message.toString();
+    }
+
+    setState(() {
+      _state = state;
+    });
+  }
+
+  // Get battery level.
+  Future<void> permissionBle() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.bluetooth,
+      Permission.location,
+      Permission.bluetoothConnect,
+      Permission.bluetoothScan,
+    ].request();
+    _initBeacon();
+  }
+  @override
+  void initState() {
+    super.initState();
+    permissionBle();
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +91,24 @@ class InOutButton extends StatefulWidget {
 }
 
 class _InOutButtonState extends State<InOutButton> {
-  
   static const platform = MethodChannel('samples.flutter.dev/battery');
 
   String _deviceId = "";
-  String _beaconID = "";
+  String _beaconId = "";
+
+  Future<void> _getBeaconId() async {
+    String beaconId;
+    try {
+      final String result = await platform.invokeMethod("getBeaconId");
+      beaconId = result;
+    } on PlatformException catch (e) {
+      beaconId = e.message.toString();
+    }
+
+    setState(() {
+      _beaconId = beaconId;
+    });
+  }
 
   Future<void> _getDeviceId() async{
     try{
@@ -75,22 +129,6 @@ class _InOutButtonState extends State<InOutButton> {
     } 
   }
 
-  Future<void> _getBeaconUUID() async {
-    String beaconID;
-    try {
-      final String result = await platform.invokeMethod('getBeaconId');
-      checkUser(result);
-      beaconID = 'Battery level at $result % .';
-    } on PlatformException catch (e) {
-      checkUser(e.message);
-      beaconID = "Failed to get battery level: '${e.message}'.";
-    }
-
-    setState(() {
-      _beaconID = beaconID;
-    });
-  }
-
 
   void checkUser(result) {
       showSnackBar(context, result);
@@ -99,10 +137,11 @@ class _InOutButtonState extends State<InOutButton> {
 
   Future<String?> isOpen() async {
     try {
-      _getDeviceId();
+      //_getDeviceId();
       const storage = FlutterSecureStorage();
       String? token = await storage.read(key:'BeaconToken');
       String? doorId = '01';
+      //String? doorId = _beaconId;
 
       if(_deviceId != "" && token != "" && doorId != ""){
         log("${_deviceId.toString()}, ${token.toString()}, ${doorId.toString()}");        
@@ -125,7 +164,8 @@ class _InOutButtonState extends State<InOutButton> {
   @override
   void initState() {
     super.initState();
-    _getBeaconUUID();
+    _getBeaconId();
+    _getDeviceId();
   }
 
   @override

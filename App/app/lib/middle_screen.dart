@@ -3,9 +3,50 @@ import 'package:flutter/material.dart';
 // 테스트 하기 위함
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class MiddleScreen extends StatelessWidget {
+class MiddleScreen extends StatefulWidget {
   const MiddleScreen({super.key});
+
+  @override
+  State<MiddleScreen> createState() => _MiddleScreenState();
+}
+
+class _MiddleScreenState extends State<MiddleScreen> {
+  static const platform = MethodChannel('samples.flutter.dev/battery');
+  String _state = '';
+
+  Future<void> _initBeacon() async {
+    String state;
+    try {
+      final String result = await platform.invokeMethod("initBeacon");
+      state = result;
+    } on PlatformException catch (e) {
+      state = e.message.toString();
+    }
+
+    setState(() {
+      _state = state;
+    });
+  }
+
+  Future<void> permissionBle() async {
+    await [
+      Permission.bluetooth,
+      Permission.location,
+      Permission.bluetoothConnect,
+      Permission.bluetoothScan,
+    ].request();
+    _initBeacon();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    permissionBle();
+    //WidgetsBinding.instance.addPostFrameCallback((_) { permissionBle(); } );
+    //WidgetsFlutterBinding.ensureInitialized();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +63,7 @@ class MiddleScreen extends StatelessWidget {
             children: const <Widget>[
               LoginButton(),
               RegisterButton(),
-              BlueToothButton()
+              BlueToothButton(),
             ],
           ),
         ),
@@ -30,6 +71,32 @@ class MiddleScreen extends StatelessWidget {
     );
   }
 }
+
+// class MiddleScreen extends StatelessWidget {
+//   const MiddleScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         alignment: Alignment.center,
+//         padding: const EdgeInsets.all(50),
+//         decoration: const BoxDecoration(
+//             image: DecorationImage(
+//                 image: AssetImage('assets/background.png'), fit: BoxFit.cover)),
+//         child: Center(
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: const <Widget>[
+//               LoginButton(),
+//               RegisterButton(),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
@@ -94,21 +161,20 @@ class BlueToothButton extends StatefulWidget {
 
 class _BlueToothButtonState extends State<BlueToothButton> {
   static const platform = MethodChannel('samples.flutter.dev/battery');
-  // Get battery level.
 
-  String _batteryLevel = 'Unknown battery level.';
+  String _beaconID = '';
 
-  Future<void> _getBatteryLevel() async {
-    String batteryLevel;
+  Future<void> _getBeaconId() async {
+    String beaconId;
     try {
-      final String result = await platform.invokeMethod('getBeaconId');
-      batteryLevel = 'Battery level at $result % .';
+      final String result = await platform.invokeMethod("getBeaconId");
+      beaconId = result;
     } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
+      beaconId = e.message.toString();
     }
 
     setState(() {
-      _batteryLevel = batteryLevel;
+      _beaconID = beaconId;
     });
   }
 
@@ -118,12 +184,11 @@ class _BlueToothButtonState extends State<BlueToothButton> {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: _getBatteryLevel,
-              child: const Text('Get Battery Level'),
+          children: [ElevatedButton(
+              onPressed: _getBeaconId,
+              child: Text(_beaconID),
             ),
-            Text(_batteryLevel),
+            Text(_beaconID),
           ],
         ),
       ),
