@@ -2,13 +2,14 @@ import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
+import TabMenu from "./component/TabMenu";
 import css from "styled-jsx/css";
-import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import ExportExcel from "./component/Excelexport";
 import {Cookies} from "react-cookie";
+
 const style = css `
     .container{
         width: 95%;
@@ -21,27 +22,7 @@ const style = css `
     .containerBody{
         display: flex;
         height: 100%;
-    }
-    .SideBar{
-        width: 15%;
-        height: 100%;
-    }
-    .SideBar ul{
-        padding: 0;
-        list-style: none;
-        text-align: center;
-    }
-    .SideBar ul li{
-        font-size: 30px;
-        width: 90%;
-        margin-bottom: 15px;
-        border-bottom: solid 2px gray;
-        font-weight: bold;
-    }
-    .SideBar ul li:hover{
-        color: blue;
-    }
-    
+    }  
     .Main{
         width: 85%;
         border-left: solid 5px gray;
@@ -58,11 +39,6 @@ const style = css `
         font-size: 40px;
         font-weight: bold;
     }
-    .icon{
-        margin: 0;
-        font-size: 50px;
-        color: green;
-    }
     .MainHeaderTitle{
         margin-left: 30px;
     }
@@ -75,29 +51,6 @@ const style = css `
     }
     .Select{
         color: blue;
-    }
-    .MenuBar{
-        height: 8%;
-    }
-    .MenuBarUl{
-        list-style: none;
-        height: 100%;
-        display: flex;
-        margin-left: 30px;
-        align-items: flex-end;
-    }
-    .MenuBarUl li{
-        width: 12%;
-        border-right: solid 2px #f5f5f5;
-        border-left: solid 2px #f5f5f5;
-        border-top: solid 2px #f5f5f5;
-        background-color: #bdbdbd;
-        padding: 8px 18px;
-        font-weight: bold;
-        border-top-right-radius: 30px;
-    }
-    .MenuBarUl li:hover{
-        background-color: #448aff;
     }
     .daySelect{
         border-bottom: solid 4px gray;
@@ -224,19 +177,7 @@ function ExitHistory() {
             <div className="containerBody">
                 <SideBar pageNumber = "3" isSuper = {isSuper}/>
                 <div className="Main">
-                    <div className="MenuBar">
-                        <ul className="MenuBarUl">
-                            <li style={
-                                {backgroundColor: "#448aff"}
-                            }>출입문 입출이력</li>
-                            <li>
-                                <Link href="./reservationCheck">방문자 예약승인</Link>
-                            </li>
-                            <li>
-                                <Link href="./emergencyDoorOpen">비상도어 개방</Link>
-                            </li>
-                        </ul>
-                    </div>
+                    <TabMenu pageNumber = "1"/>
                     <div className="MainHeader">
                         <h1 className="MainHeaderTitle">🟦 출입문 입출 이력</h1>
                         <ExportExcel excelData={Data}

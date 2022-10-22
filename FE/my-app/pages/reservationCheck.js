@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
-import Link from "next/link";
+import TabMenu from "./component/TabMenu";
 import SideBar from "./component/SideBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -32,29 +32,6 @@ const style = css `
         height: 100%;
     }
 
-    .SideBar{
-        width: 15%;
-        height: 100%;
-    }
-
-    .SideBar ul{
-        padding: 0;
-        list-style: none;
-        text-align: center;
-    }
-
-    .SideBar ul li{
-        font-size: 30px;
-        width: 90%;
-        margin-bottom: 15px;
-        border-bottom: solid 2px gray;
-        font-weight: bold;
-    }
-
-    .SideBar ul li:hover{
-        color: blue;
-    }
-    
     .Main{
         width: 85%;
         border-left: solid 5px gray;
@@ -74,12 +51,6 @@ const style = css `
         font-weight: bold;
     }
 
-    .icon{
-        margin: 0;
-        font-size: 50px;
-        color: green;
-    }
-
     .MainHeaderTitle{
         margin-left: 30px;
     }
@@ -94,31 +65,6 @@ const style = css `
     }
     .Select{
         color: blue;
-    }
-
-    .MenuBar{
-        height: 8%;
-    }
-
-    .MenuBarUl{
-        list-style: none;
-        height: 100%;
-        display: flex;
-        margin-left: 30px;
-        align-items: flex-end;
-    }
-    .MenuBarUl li{
-        width: 12%;
-        border-right: solid 2px #f5f5f5;
-        border-left: solid 2px #f5f5f5;
-        border-top: solid 2px #f5f5f5;
-        background-color: #bdbdbd;
-        padding: 8px 18px;
-        font-weight: bold;
-        border-top-right-radius: 30px;
-    }
-    .MenuBarUl li:hover{
-        background-color: #448aff;
     }
 
     .daySelect{
@@ -302,19 +248,7 @@ function reservationCheck() {
             <div className="containerBody">
                 <SideBar pageNumber = "3" isSuper = {isSuper}/>
                 <div className="Main">
-                    <div className="MenuBar">
-                        <ul className="MenuBarUl">
-                            <li>
-                                <Link href="./ExitHistory">출입문 입출이력</Link>
-                            </li>
-                            <li style={
-                                {backgroundColor: "#448aff"}
-                            }>방문자 예약승인</li>
-                            <li>
-                                <Link href="./emergencyDoorOpen">비상도어 개방</Link>
-                            </li>
-                        </ul>
-                    </div>
+                    <TabMenu pageNumber = "2"/>
                     <div className="MainHeader">
                         <h1 className="MainHeaderTitle">🟦 방문자 예약승인</h1>
                         <ExportExcel excelData={Data}

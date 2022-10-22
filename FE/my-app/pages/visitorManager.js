@@ -39,29 +39,6 @@ const style = css`
         display: flex;
         height: 100%;
     }
-
-    .SideBar{
-        width: 15%;
-        height: 100%;
-    }
-
-    .SideBar ul{
-        padding: 0;
-        list-style: none;
-        text-align: center;
-    }
-
-    .SideBar ul li{
-        font-size: 30px;
-        width: 90%;
-        margin-bottom: 15px;
-        border-bottom: solid 2px gray;
-        font-weight: bold;
-    }
-
-    .SideBar ul li:hover{
-        color: blue;
-    }
     
     .Main{
         width: 85%;
@@ -78,12 +55,7 @@ const style = css`
         font-size: 40px;
         font-weight: bold;
     }
-
-    .siren{
-        margin: 0;
-        font-size: 80px;
-    }
-
+    
     .MainHeaderTitle{
         margin-left: 30px;
     }
