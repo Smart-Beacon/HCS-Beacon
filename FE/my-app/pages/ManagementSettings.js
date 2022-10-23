@@ -148,7 +148,6 @@ function ManagementSettings(){
     const [staDoorData, setStaDoorData] = useState([]);
 
     const onSelect = (time) => {
-        //const saveStartTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
         setStartTime(time);
         setIsSelected(true);
         setEndTime(null);
@@ -159,7 +158,6 @@ function ManagementSettings(){
     }
 
     const onSelectEnd = (time) => {
-        //const saveEndTime = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + ":" + "00";
         setEndTime(time);
     }
 
@@ -186,7 +184,7 @@ function ManagementSettings(){
             OpenTime = String(startTime.getHours()).padStart(2, "0") + ":" + String(startTime.getMinutes()).padStart(2, "0") + ":" + "00";
         }
         if(endTime !== null){
-            CloseTime = tring(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
+            CloseTime = String(endTime.getHours()).padStart(2, "0") + ":" + String(endTime.getMinutes()).padStart(2, "0") + ":" + "00";
         }
 
 
@@ -206,7 +204,8 @@ function ManagementSettings(){
 
 
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
-        serverinfo.openTime  !== "" && serverinfo.closeTime !== ""){
+        serverinfo.openTime  !== "" && serverinfo.closeTime !== "" && checkedList.length !== 0){
+            console.log(serverinfo);
             postDoorInfo(serverinfo);
             clearData();
             onClose();
@@ -218,6 +217,7 @@ function ManagementSettings(){
 
     const clearData = () => {
         setIsMonitoring("");
+        setIsSelected(false);
         setCheckedList([]);
         setStartDate(new Date());
         setStartTime(null);
@@ -269,12 +269,15 @@ function ManagementSettings(){
      });
     }
 
+    console.log(checkedList);
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     const [startDate, setStartDate] = useState(new Date());
     let modal = null;
     modal = <Modal
+        closeOnOverlayClick={false}
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
@@ -434,8 +437,6 @@ function ManagementSettings(){
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      console.log("render");
 
     return(
         <div>

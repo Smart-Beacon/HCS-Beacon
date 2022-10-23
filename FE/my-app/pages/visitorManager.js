@@ -279,11 +279,14 @@ function visitorManagement(){
      });
     }
 
+    console.log(checkedList);
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     let modal = null;
     modal = <Modal
+        closeOnOverlayClick={false}
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
@@ -374,7 +377,8 @@ function visitorManagement(){
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
               {doorInfoData.map((item) => (
                                         <Checkbox value={item.doorId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}
-                                        onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}>
+                                        onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
+                                        defaultChecked={checkedList.includes(item.doorId) === true ? true : false}>
                                         {item.doorName}
                                         </Checkbox>
                                     ))}
