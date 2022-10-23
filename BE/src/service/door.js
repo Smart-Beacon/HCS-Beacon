@@ -178,7 +178,7 @@ const createDoorData = async(data) =>{
         });
     
         await AdminDoor.create({
-            controlId: uuid.uuid(),
+            controlId: await uuid.uuid(),
             doorId: data.doorId,
             adminId: exAdmin.adminId,
         });
@@ -186,7 +186,7 @@ const createDoorData = async(data) =>{
         await AdminStatement.findOrCreate({
             where: { staId: data.staId, adminId: exAdmin.adminId },
             defaults:{
-                controlId: uuid.uuid(),    
+                controlId: await uuid.uuid(),    
             }
         });
 
