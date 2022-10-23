@@ -14,8 +14,8 @@ const OPEN  = 1;
 const CLOSE = 0;
 let TIME;
 
-const addr = process.env.IP_ADDR || 'http://203.247.40.115:5000';
-const beaconId = process.env.BEACON_ID || "01";
+const addr     = process.env.IP_ADDR;
+const beaconId = process.env.BEACON_ID;
 
 const socket = io.connect(addr, {
     path: '/socket.io',
