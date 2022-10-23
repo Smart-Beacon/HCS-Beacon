@@ -45,14 +45,19 @@ const createAdminData = async(data) => {
             sms: data.sms,
         });
         
+        
+        let staIds = data.staIds;
+        await Promise.all(
+            staIds.map(async staId =>{
+                await AdminStatment.create({
+                    controlId: await uuid.uuid(),
+                    staId: staId,
+                    adminId: adminData.adminId
+                });
+            })
+        );
+
         let doorList = data.doorlist;
-
-        await AdminStatment.create({
-            controlId: await uuid.uuid(),
-            staId: data.staId,
-            adminId: adminData.adminId
-        });
-
         await Promise.all(
             doorList.map(async doorId =>{
                 await AdminDoor.create({
