@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import ExportExcel from "./component/Excelexport";
 import {Cookies} from "react-cookie";
+import { getHours } from "date-fns";
 
 const style = css `
     .container{
@@ -164,11 +165,12 @@ function ExitHistory() {
         setData(startDayresult);
     }
     // 시작일 ~ 마지막일 선택시 필터링 함수
-    const EndDaySearch = (date) => { 
+    const EndDaySearch = (date) => {
         const endDayresult = DataClone.filter(e => {
             const newDate = new Date(e.enterDate);
             newDate.setHours(newDate.getHours() - 9);
-            return newDate.getTime() <= date.getTime() && new Date(e.enterDate).getTime() >= startDate.getTime()});
+            startDate.setHours(0,0,0,0);             
+            return newDate.getTime() <= date.getTime() && newDate.getTime() >= startDate.getTime()});
         setData(endDayresult);
     }
     return (<div>

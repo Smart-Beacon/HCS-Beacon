@@ -164,7 +164,11 @@ function ManagementSettings(){
     const handleAdminId = (e) => setAdminId(e.target.value);
     const handledoorname = (e) => setDoorName(e.target.value);
     const handledoorId = (e) => setDoorId(e.target.value);
-    const handlestaName = (e) => setstaName(e.target.value);
+    const handlestaName = (e) => {
+        const Name = e.target.value;
+        setstaName(Name);
+        staDoorData.map((e) => Name === e.staName ? setstaId(e.staId) : null);
+    }
     const handlestaId = (e) => setstaId(e.target.value);
     const handleisMonitoring = (e) => setIsMonitoring(e.target.value);  
     const handleCheckdList = (checked, item) => {
@@ -206,7 +210,7 @@ function ManagementSettings(){
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
         serverinfo.openTime  !== "" && serverinfo.closeTime !== "" && checkedList.length !== 0){
             console.log(serverinfo);
-            postDoorInfo(serverinfo);
+            // postDoorInfo(serverinfo);
             clearData();
             onClose();
         }else{
@@ -269,8 +273,6 @@ function ManagementSettings(){
      });
     }
 
-    console.log(checkedList);
-
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
@@ -294,9 +296,9 @@ function ManagementSettings(){
                 </div>
             </FormControl>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
-                <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
+                <FormControl mt={4} style={{width: '80%', marginRight: "5%"}}>
                 <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
+                    <FormLabel style={{width: "20%", marginTop: "1%", fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
                     <Select placeholder='Select Gate'
                                 onChange = {(e) => {
                                     handlestaName(e)
@@ -304,21 +306,6 @@ function ManagementSettings(){
                                     {staDoorData.map((item) => (
                                         <option value={item.staName} key={item.staName}>
                                         {item.staName}
-                                        </option>
-                                    ))}
-                    </Select>
-                </div>
-                </FormControl>
-                <FormControl mt={4} style={{width: '40%'}}>
-                <div style={{display: "flex"}}>
-                    <FormLabel style={{width: "40%", marginTop: "2%", fontSize: "20px", fontWeight: "bold"}}>🟦건물ID</FormLabel>
-                    <Select placeholder='Select Gate'
-                                onChange = {(e) => {
-                                    handlestaId(e)
-                                }}width="70%">
-                                    {staDoorData.map((item) => (
-                                        <option value={item.staId} key={item.staId}>
-                                        {item.staId}
                                         </option>
                                     ))}
                     </Select>

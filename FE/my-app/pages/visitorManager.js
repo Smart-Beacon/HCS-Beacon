@@ -158,6 +158,11 @@ function visitorManagement(){
     const [checkedList, setCheckedLists] = useState([]);
     const onCheckedElement = useCallback(
         (checked, list) => {
+        const checkedData = {
+            "doorId" : list.doorId,
+            "staId" : list.staId
+        }
+        console.log(checkedData);
          if (checked) {
             setCheckedLists([...checkedList, list]);
           } else {
@@ -176,12 +181,11 @@ function visitorManagement(){
     
     const addInfo = () => {
 
-        const nowDate = new Date();
-        // const year = nowDate.getFullYear();
-        // const Month = String(nowDate.getMonth()+1).padStart(2, "0");
-        // const Day = nowDate.getDate();
-
         const doorListLen = checkedList.length;
+        const doorIdList = checkedList.map((e) => e.doorId);
+        const staIdList =  checkedList.map((e) => e.staId);
+        const set = new Set(staIdList);
+        const staIdArray = [...set];
 
         const info = {
             "company": company,
@@ -190,8 +194,9 @@ function visitorManagement(){
             "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
+            "staId": staIdList,
             "sms": isMonitoring,
-            "doorlist": checkedList
+            "doorlist": doorIdList
         }
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
         && info.phoneNum !== "" && info.adminLoginId !== "" 
@@ -278,8 +283,6 @@ function visitorManagement(){
             }
      });
     }
-
-    console.log(checkedList);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
@@ -377,8 +380,8 @@ function visitorManagement(){
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입문명</FormLabel>
               {doorInfoData.map((item) => (
                                         <Checkbox value={item.doorId} key={item.doorId} style = {{width: "20%", marginBottom: "1%"}}
-                                        onChange={(e) => onCheckedElement(e.target.checked, item.doorId)}
-                                        defaultChecked={checkedList.includes(item.doorId) === true ? true : false}>
+                                        onChange={(e) => onCheckedElement(e.target.checked, item)}
+                                        defaultChecked={checkedList.includes(item) === true ? true : false}>
                                         {item.doorName}
                                         </Checkbox>
                                     ))}
