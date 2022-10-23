@@ -36,6 +36,7 @@ router.post('/enterant', async(req,res,next) =>{
         const isSuper = Number(req.cookies.isSuper);
         console.log(`adminId: ${id}, isSuper: ${isSuper}`);
         const check = await checkAdmin.checkAdmin(id, isSuper);
+        console.log(req.body.doorList);
         if(check !== 2){
             const userData = await getMainDatas.createRegularUserData(req.body);
             if(userData){
