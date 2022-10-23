@@ -19,13 +19,16 @@ import android.os.Bundle;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Build;
-// import java.util.Collections;
-// import java.util.ArrayList;
-import java.util.List;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.content.pm.PackageManager;
+
 import android.Manifest;
+import java.util.List;
+import java.util.Collections;
+// import java.util.ArrayList;
+// import androidx.core.app.ActivityCompat;
+// import androidx.core.content.ContextCompat;
+// import android.content.pm.PackageManager;
+
+
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "samples.flutter.dev/battery";
@@ -35,6 +38,8 @@ public class MainActivity extends FlutterActivity {
     private MinewBeaconManager mMinewBeaconManager;
     private boolean isScanning;
     private int state;
+    UserRssi comp = new UserRssi();
+
     public String deviceUUID;
     public String errorMessage;
 
@@ -106,12 +111,7 @@ public class MainActivity extends FlutterActivity {
                  */
                 @Override
                 public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-                    Log.i("success1", "success1");
-                    for (MinewBeacon mMinewBeacon : minewBeacons) {
-                        deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_UUID).getStringValue();
-                        Log.i(deviceUUID, deviceUUID);
-                        return;
-                    }
+                    
                 }
     
                 /**
@@ -134,12 +134,23 @@ public class MainActivity extends FlutterActivity {
                  */
                 @Override
                 public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
-                    Log.i("success2", "success2");
-                    for (MinewBeacon mMinewBeacon : minewBeacons) {
-                        deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_UUID).getStringValue();
-                        String deviceInRange = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
-                        Log.i(deviceUUID, deviceInRange);
-                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!minewBeacons.isEmpty()){
+                                Collections.sort(minewBeacons, comp);
+                                deviceUUID = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
+                                //float deviceInRange = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getFloatValue();
+                                //Log.i(deviceUUID, deviceUUID);
+                                for (MinewBeacon mMinewBeacon : minewBeacons) {
+                                    deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
+                                    String deviceInRange = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
+                                    Log.i(deviceUUID, deviceInRange);
+                                }
+                            }
+                        }
+                    });
+                   
                 }
     
                 /**

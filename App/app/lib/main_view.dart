@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 import 'dart:developer';
 
@@ -140,14 +142,16 @@ class _InOutButtonState extends State<InOutButton> {
       //_getDeviceId();
       const storage = FlutterSecureStorage();
       String? token = await storage.read(key:'BeaconToken');
-      String? doorId = '01';
-      //String? doorId = _beaconId;
+      //String? doorId = '01';
+      String? doorId = _beaconId;
 
       if(_deviceId != "" && token != "" && doorId != ""){
         log("${_deviceId.toString()}, ${token.toString()}, ${doorId.toString()}");        
         var dio = Dio();
         dio.options.headers['token'] = token;
-        String url = "http://10.0.2.2:5000/user/opendoor";
+        
+        //String url = "http://10.0.2.2:5000/user/opendoor";
+        String url = "${dotenv.env['SERVER_URL']!}/user/opendoor";
         var res = await dio.post(url, data: {'doorId': doorId, 'deviceId': _deviceId});
         log(res.data);
         return res.data;
@@ -176,6 +180,7 @@ class _InOutButtonState extends State<InOutButton> {
       height: 150,
       child: ElevatedButton(
         onPressed: () async {
+          _getBeaconId();
           checkUser(await isOpen());
         },
         style: ElevatedButton.styleFrom(

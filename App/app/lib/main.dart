@@ -9,10 +9,12 @@ import 'package:app/find_pw_screen.dart';
 import 'package:app/find_account_screen.dart';
 import 'package:app/device_info_check.dart';
 import 'package:app/edit_personal_info.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: 'assets/config/.env');
   runApp(const MyApp());
 }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:app/snackbar.dart';
-//import 'package:platform_device_id/platform_device_id.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -42,7 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       //await _getDeviceId();
       var dio = Dio();
-      String url = "http://10.0.2.2:5000/auth/user/login";
+      //String url = "http://10.0.2.2:5000/auth/user/login";
+      String url = "${dotenv.env['SERVER_URL']!}/auth/user/login";
       var res = await dio.post(url, data: {
         'userId': userId.text,
         'userPw': userPw.text,

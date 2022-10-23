@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:app/snackbar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EditPersonalInfo extends StatefulWidget {
   const EditPersonalInfo({super.key});
@@ -35,7 +36,8 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
 
   Future<String?> changePassword() async{
     try{
-      String url = "http://10.0.2.2:5000/user/changepassword";
+      //String url = "http://10.0.2.2:5000/user/changepassword";
+      String url = "${dotenv.env['SERVER_URL']!}/user/changepassword";
       var dio = Dio();
       var data = {
         "userLoginId": userLoginId,
@@ -62,7 +64,8 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
       var accessToken = await storage.read(key: 'BeaconToken');
       var dio = Dio();
       dio.options.headers['token'] = accessToken;
-      String url = "http://10.0.2.2:5000/user/info";
+      //String url = "http://10.0.2.2:5000/user/info";      
+      String url = "${dotenv.env['SERVER_URL']!}/user/info";
       final res = await dio.post(url);
       switch (res.statusCode) {
         case 200:

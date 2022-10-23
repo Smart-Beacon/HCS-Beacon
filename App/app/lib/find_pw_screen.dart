@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:app/snackbar.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class FindPwScreen extends StatefulWidget {
   const FindPwScreen({Key? key}) : super(key: key);
@@ -45,7 +46,8 @@ class _FindPwScreenState extends State<FindPwScreen> {
   Future<int?> isUserExist(BuildContext context) async {
     try {
       var dio = Dio();
-      String url = "http://10.0.2.2:5000/user/check/pw";
+      //String url = "http://10.0.2.2:5000/user/check/pw";
+      String url = "${dotenv.env['SERVER_URL']!}/user/check/pw";
       var res = await dio.post(url, data: {
         'name': userName.text,
         'phoneNum': userPhone.text,
@@ -79,7 +81,8 @@ class _FindPwScreenState extends State<FindPwScreen> {
   Future<int?> verifyUser() async {
     try {
       var dio = Dio();
-      String url = "http://10.0.2.2:5000/user/find/pw";
+      //String url = "http://10.0.2.2:5000/user/find/pw";
+      String url = "${dotenv.env['SERVER_URL']!}/user/find/pw";
       final res =
           await dio.post(url, data: {'userId': userId, 'token': token.text});
       switch (res.statusCode) {

@@ -5,6 +5,7 @@ import 'package:time_picker_sheet/widget/time_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:app/snackbar.dart';
 import 'dart:developer';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -88,7 +89,8 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
 
   Future<void> getDoorInfo() async {
     var dio = Dio();
-    String url = 'http://10.0.2.2:5000/statement/regist';
+    //String url = 'http://10.0.2.2:5000/statement/regist';
+    String url = "${dotenv.env['SERVER_URL']!}/statement/regist";
     var res = await dio.post(url);
     switch (res.statusCode) {
       case 200:
@@ -270,7 +272,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   child: Row(children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 15.0, right: 17.5, top: 15, bottom: 0),
+                          left: 15.0, right: 22.5, top: 15, bottom: 0),
                       child: SizedBox(
                         height: 60,
                         width: 110,
@@ -294,7 +296,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 17.5, right: 15.0, top: 15, bottom: 0),
+                          left: 22.5, right: 15.0, top: 15, bottom: 0),
                       child: SizedBox(
                         height: 60,
                         width: 110,
@@ -325,7 +327,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   if (statement != null)
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 20.0, right: 15.0, top: 15, bottom: 0),
+                          left: 20.0, right: 5.0, top: 15, bottom: 0),
                       child: DropdownButton<Statement>(
                         borderRadius: BorderRadius.circular(10),
                         underline: Container(
@@ -356,7 +358,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   if (selectStaId != null && doorInfo != null)
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 50.0, right: 10.0, top: 15, bottom: 0),
+                          left: 20.0, right: 5.0, top: 15, bottom: 0),
                       child: DropdownButton<DoorInfo>(
                         borderRadius: BorderRadius.circular(10),
                         underline: Container(
@@ -437,7 +439,8 @@ class RegisterButton extends StatefulWidget {
 class _RegisterButtonState extends State<RegisterButton> {
   Future callAPI(BuildContext context) async {
     try {
-      String url = "http://10.0.2.2:5000/user/register";
+      //String url = "http://10.0.2.2:5000/user/register"; 
+      String url = "${dotenv.env['SERVER_URL']!}/user/register";
       var dio = Dio();
       var date = DateFormat('yyyy-MM-dd').format(widget.selectedDate!);
       var startTime = await getStringTime(widget.selectedStartTime!);

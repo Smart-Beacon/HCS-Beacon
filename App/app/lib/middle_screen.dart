@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-// 테스트 하기 위함
-import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 class MiddleScreen extends StatefulWidget {
   const MiddleScreen({super.key});
 
@@ -13,41 +8,6 @@ class MiddleScreen extends StatefulWidget {
 }
 
 class _MiddleScreenState extends State<MiddleScreen> {
-  static const platform = MethodChannel('samples.flutter.dev/battery');
-  String _state = '';
-
-  Future<void> _initBeacon() async {
-    String state;
-    try {
-      final String result = await platform.invokeMethod("initBeacon");
-      state = result;
-    } on PlatformException catch (e) {
-      state = e.message.toString();
-    }
-
-    setState(() {
-      _state = state;
-    });
-  }
-
-  Future<void> permissionBle() async {
-    await [
-      Permission.bluetooth,
-      Permission.location,
-      Permission.bluetoothConnect,
-      Permission.bluetoothScan,
-    ].request();
-    _initBeacon();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    permissionBle();
-    //WidgetsBinding.instance.addPostFrameCallback((_) { permissionBle(); } );
-    //WidgetsFlutterBinding.ensureInitialized();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +23,6 @@ class _MiddleScreenState extends State<MiddleScreen> {
             children: const <Widget>[
               LoginButton(),
               RegisterButton(),
-              BlueToothButton(),
             ],
           ),
         ),
@@ -152,46 +111,3 @@ class RegisterButton extends StatelessWidget {
   }
 }
 
-class BlueToothButton extends StatefulWidget {
-  const BlueToothButton({super.key});
-
-  @override
-  State<BlueToothButton> createState() => _BlueToothButtonState();
-}
-
-class _BlueToothButtonState extends State<BlueToothButton> {
-  static const platform = MethodChannel('samples.flutter.dev/battery');
-
-  String _beaconID = '';
-
-  Future<void> _getBeaconId() async {
-    String beaconId;
-    try {
-      final String result = await platform.invokeMethod("getBeaconId");
-      beaconId = result;
-    } on PlatformException catch (e) {
-      beaconId = e.message.toString();
-    }
-
-    setState(() {
-      _beaconID = beaconId;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [ElevatedButton(
-              onPressed: _getBeaconId,
-              child: Text(_beaconID),
-            ),
-            Text(_beaconID),
-          ],
-        ),
-      ),
-    );
-  }
-}
