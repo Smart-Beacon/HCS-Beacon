@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:app/snackbar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 

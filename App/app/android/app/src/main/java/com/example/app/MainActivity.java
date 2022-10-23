@@ -140,13 +140,6 @@ public class MainActivity extends FlutterActivity {
                             if(!minewBeacons.isEmpty()){
                                 Collections.sort(minewBeacons, comp);
                                 deviceUUID = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
-                                //float deviceInRange = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getFloatValue();
-                                //Log.i(deviceUUID, deviceUUID);
-                                for (MinewBeacon mMinewBeacon : minewBeacons) {
-                                    deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
-                                    String deviceInRange = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
-                                    Log.i(deviceUUID, deviceInRange);
-                                }
                             }
                         }
                     });
