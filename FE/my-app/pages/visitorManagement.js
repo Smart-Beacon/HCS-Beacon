@@ -90,7 +90,7 @@ const style = css`
     }
 
     table tr td{
-        width: 15.33%;
+        width: 15.25%;
     }
 
     .TableThead{
@@ -99,7 +99,7 @@ const style = css`
     }
 
     .TableTbody{
-        height: 65%;
+        height: 85%;
         overflow: auto;
         text-align: center;
     }
@@ -416,7 +416,7 @@ function visitorManagement(){
                                 </thead>
                             </table>
                         </div>
-                        <div className = "tableTbody">
+                        <div className = "TableTbody">
                             <table>
                                 <tbody>
                                 {Data.map((item)=>{
