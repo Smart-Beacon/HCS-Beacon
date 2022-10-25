@@ -194,7 +194,7 @@ function visitorManagement(){
             "phoneNum" : num,
             "adminLoginId": adminLoginId,
             "adminLoginPw": adminLoginPw,
-            "staId": staIdList,
+            "staId": staIdArray,
             "sms": isMonitoring,
             "doorlist": doorIdList
         }
@@ -419,8 +419,8 @@ function visitorManagement(){
                         <div className = "TableThead">
                             <table>
                                 <thead>
-                                    <tr>{header.map((item)=>{
-                                        return <th>{item}</th>
+                                    <tr>{header.map((item, index)=>{
+                                        return <th key = {index}>{item}</th>
                                     })}</tr>
                                 </thead>
                             </table>
@@ -444,7 +444,7 @@ function visitorManagement(){
                                         IsSmsValue = "N";
                                     }
                                             return(
-                                                <tr>
+                                                <tr key = {index}>
                                                     <td>{index+1}</td>
                                                     <td>{item.company}</td>
                                                     <td>{item.adminName}</td>

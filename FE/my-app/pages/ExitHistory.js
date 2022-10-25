@@ -256,8 +256,8 @@ function ExitHistory() {
             <table>
                 <thead>
                     <tr> {
-                        header.map((item) => {
-                            return <th> {item}</th>
+                        header.map((item, index) => {
+                            return <th key = {index}> {item}</th>
                     })
                     }</tr>
                 </thead>
@@ -266,8 +266,8 @@ function ExitHistory() {
         <div className="TableTbody">
             <table>
                 <tbody> {
-                    Data.map((item) => {
-                        return (<tr>
+                    Data.map((item, index) => {
+                        return (<tr key = {index}>
                             <td> {item.staName}</td>
                             <td> {item.doorName}</td>
                             <td> {item.doorId}</td>

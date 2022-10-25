@@ -34,13 +34,13 @@ const TabMenu = ({pageNumber}) => {
         <>
         <div className="MenuBar">
             <ul className="MenuBarUl">
-                <li style = {pageNumber === "1" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd;"}}>
+                <li style = {pageNumber === "1" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd"}}>
                     <Link href="./ExitHistory">출입문 입출이력</Link>
                 </li>
-                <li style = {pageNumber === "2" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd;"}}>
+                <li style = {pageNumber === "2" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd"}}>
                     <Link href="./reservationCheck">방문자 예약승인</Link>
                 </li>
-                <li style = {pageNumber === "3" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd;"}}>
+                <li style = {pageNumber === "3" ? {backgroundColor: "#448aff"} : {backgroundColor : "#bdbdbd"}}>
                     <Link href="./emergencyDoorOpen">비상도어 개방</Link>
                 </li>
             </ul>
