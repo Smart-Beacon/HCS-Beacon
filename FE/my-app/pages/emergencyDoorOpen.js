@@ -232,13 +232,11 @@ function emergencyDoorOpen() {
         axios.get(URL).then(res => {
             // console.log(res);
             if (res.status === 200) {
-                console.log("가져오기 성공");
                 setData(res.data);
                 setDataClone(res.data);
                 setDoorData(res.data);
                 NowCheck(res.data);
             } else {
-                console.log("가져오기 실패");
                 alert(res.data);
             }
         });
@@ -247,13 +245,10 @@ function emergencyDoorOpen() {
         const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL).then(res => {
-            // console.log(res);
             if (res.status === 200) {
-                console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);
                 // setDoorData(res.data.doorData);
             } else {
-                console.log("데이터 받아오기 실패");
             }
         });
     }
@@ -263,9 +258,7 @@ function emergencyDoorOpen() {
         await axios.post(URL, item).then(res => {
             // console.log(res);
             if (res.status === 200) {
-                console.log("데이터 전송 성공");
             } else {
-                console.log("데이터 전송 실패");
             }
         });
     }

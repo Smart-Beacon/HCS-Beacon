@@ -209,13 +209,11 @@ function ManagementSettings(){
 
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
         serverinfo.openTime  !== "" && serverinfo.closeTime !== "" && checkedList.length !== 0){
-            // console.log(serverinfo);
             postDoorInfo(serverinfo);
             clearData();
             onClose();
         }else{
-            alert("빈 칸을 작성해주세요");
-            // console.log(serverinfo);            
+            alert("빈 칸을 작성해주세요");      
         }
     }
 
@@ -229,14 +227,11 @@ function ManagementSettings(){
     }
 
     const getDoorInfo = async () =>{
-        // console.log('management start');
         const URL = 'http://localhost:5000/door/management';
         axios.defaults.withCredentials = true;
         await axios.get(URL)
         .then(res => {
-            // console.log(res);
             if(res.status === 200){
-                console.log("서버데이터 받아옴");
                 setData(res.data);           
             }else{
                 alert(res.data);
@@ -249,9 +244,7 @@ function ManagementSettings(){
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
-                // console.log(res);
                 if(res.status === 201){
-                    console.log("======================", "데이터 전송 성공");
                 }else{
                     alert(res.data);
                 }
@@ -265,10 +258,8 @@ function ManagementSettings(){
         .then(res => {
             // console.log(res);
             if(res.status === 200){
-                console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);          
             }else{
-                console.log("데이터 받아오기 실패");
             }
      });
     }

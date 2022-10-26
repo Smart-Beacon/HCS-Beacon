@@ -259,12 +259,10 @@ function visitorManagement(){
         .then(res => {
             // console.log(res);
             if(res.status === 200){
-                console.log("데이터를 불러오는데 성공했습니다");
                 setDoorInfoData([]);
                 setStaDoorData(res.data.staData);
                 setDoorInfoDataClone(res.data.doorData);         
             }else{
-                console.log("데이터를 불러오지 못했습니다");
             }
      });
      onOpen();
@@ -276,10 +274,8 @@ function visitorManagement(){
         axios.post(URL, item)
         .then(res => {
             // console.log(res);
-            if(res.status === 200){
-                console.log("데이터를 불러오는데 성공했습니다");      
+            if(res.status === 200){   
             }else{
-                console.log("데이터를 불러오지 못했습니다");
             }
      });
     }

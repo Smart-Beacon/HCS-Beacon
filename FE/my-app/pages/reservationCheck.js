@@ -206,7 +206,6 @@ function reservationCheck() {
         axios.get(URL).then(res => {
             // console.log(res);
             if (res.status === 200) {
-                console.log("데이터 받아옴")
                 setData(res.data);
                 setDataClone(res.data);
             } else {
@@ -234,10 +233,8 @@ function reservationCheck() {
         // console.log(item);
         await axios.post(URL, item).then(res => {
             if (res.status === 200) {
-                // console.log(item);
                 console.log("======================", "데이터 전송 성공");
             } else {
-                // console.log(item);
                 console.log("데이터전송 실패");
             }
         });
