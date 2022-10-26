@@ -1,8 +1,10 @@
 /*
 *   led.js
+*
 *   라즈베리 동작 테스트용 코드
-*   LED가 0.5초 간격으로 점멸
-*   사용법 - sudo node led.js
+*   LED가 0.5초 간격으로 점멸됩니다.
+*
+*   사용법 - *현재 디렉토리에서* sudo node led.js
 */
 
 'use strict';

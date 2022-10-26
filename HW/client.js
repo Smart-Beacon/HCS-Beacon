@@ -1,6 +1,14 @@
 /*
 *   client.js
-*   라즈베리 실행시 24시간 가동되는 (IP주소, 비콘ID)
+*
+*   라즈베리 실행시 24시간 가동되는 코드
+*   서버의 IP주소, 비콘ID를 .env파일에 작성해주시기 바랍니다.
+*
+*   작성 예시
+*   IP_ADDR="https://xxx.xxx.xxx.xxx:포트번호"
+*   BEACON_ID="FF:FF:FF:FF:FF:FF"
+*
+*   사용법 - *현재 디렉토리에서* sudo node client.js
 */
 
 'use strict';
@@ -10,12 +18,14 @@ const io = require('socket.io-client');
 const Gpio = require('onoff').Gpio;
 
 const doorPin = new Gpio(21, 'out');
-const OPEN  = 1;
-const CLOSE = 0;
+const OPEN  = 0;
+const CLOSE = 1;
 let TIME;
 
 const addr     = process.env.IP_ADDR;
 const beaconId = process.env.BEACON_ID;
+
+doorPin.writeSync(CLOSE);
 
 const socket = io.connect(addr, {
     path: '/socket.io',
