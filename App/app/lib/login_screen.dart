@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
                   //padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Text("※ 상시 출입자는 아이디를 입력해주세요",textAlign: TextAlign.center,style: TextStyle(
+                  child: Text("※ 고정 출입자는 아이디를 입력해주세요",textAlign: TextAlign.center,style: TextStyle(
                     fontSize: 13.0, color: Colors.grey, fontWeight:  FontWeight.bold,
                   ),),
                 ),
