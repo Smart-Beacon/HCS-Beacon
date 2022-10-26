@@ -1,0 +1,43 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.2.8",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-brands-svg-icons": "^6.1.2",
+    "@fortawesome/free-regular-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "axios": "^0.27.2",
+    "crypto-js": "^4.1.1",
+    "date-fns": "^2.29.2",
+    "fetch-blob": "^3.2.0",
+    "file-saver": "^2.0.5",
+    "framer-motion": "^6.5.1",
+    "js-cookie": "^3.0.1",
+    "moment": "^2.29.4",
+    "next": "12.2.5",
+    "react": "18.2.0",
+    "react-cookie": "^4.1.1",
+    "react-csv": "^2.2.2",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "18.2.0",
+    "react-table": "^7.8.0",
+    "sheetjs-style": "^0.15.8",
+    "untils": "^1.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "8.21.0",
+    "eslint-config-next": "12.2.5"
+  }
+}
