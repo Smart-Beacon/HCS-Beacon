@@ -64,7 +64,7 @@ function UserModal() {
         axios.defaults.withCredentials = true;
         await axios.post(URL, item)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.status === 202){
                 console.log("데이터 전송 성공");   
             }else{

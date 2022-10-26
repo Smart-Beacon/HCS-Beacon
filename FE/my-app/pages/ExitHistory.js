@@ -128,7 +128,7 @@ function ExitHistory() {
         const URL = 'http://localhost:5000/accessrecord';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 setData(res.data);
                 setDataClone(res.data);
@@ -194,7 +194,8 @@ function ExitHistory() {
                                 style={
                                     {
                                         border: "solid 3px gray",
-                                        marginRight: "1%"
+                                        marginRight: "1%",
+                                        width: "13%"
                                     }
                             }>
                                 <DatePicker selected={startMonth}
@@ -217,7 +218,8 @@ function ExitHistory() {
                             style={
                                 {
                                     border: "solid 3px gray",
-                                    marginRight: "3%"
+                                    marginRight: "3%",
+                                    width: "13%"
                                 }
                         }>
                             <DatePicker selected={startDate}
@@ -235,7 +237,8 @@ function ExitHistory() {
                         </div>
                     <div className="DatePicker"
                         style={
-                            {border: "solid 3px gray"}
+                            {border: "solid 3px gray",
+                            width: "13%"}
                     }>
                         <DatePicker selected={endDate}
                             onChange={
