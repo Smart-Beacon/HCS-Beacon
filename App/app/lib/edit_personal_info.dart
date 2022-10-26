@@ -111,12 +111,12 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const Padding(padding: EdgeInsets.only(top: 60.0)),
               Text(
-                "Name : ${userName!}",
+                " ○ 이름: ${userName!}",
                 style: const TextStyle(
                   letterSpacing: 1.5,
                   fontWeight: FontWeight.bold,
@@ -124,9 +124,15 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
                   color: Colors.indigo,
                 ),
               ),
-              const SizedBox(height: 12.0),
+              Divider(
+              height: 5.0,
+              color: Colors.grey[850],
+              thickness: 0.5,
+              endIndent: 30.0,
+             ),
+              //const SizedBox(height: 12.0),
               Text(
-                "ID : ${userLoginId!}",
+                " ○ 아이디 : ${userLoginId!}",
                 style: const TextStyle(
                   letterSpacing: 1.5,
                   fontWeight: FontWeight.bold,
@@ -134,70 +140,98 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
                   color: Colors.indigo,
                 ),
               ),
-              const SizedBox(height: 12.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                 SizedBox(
-                width: 200,
+                width: 170,
                 child: TextField(
                       controller: password,
                       obscureText: true,
                       decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(9),
+                          isDense: true,          
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           labelText: '변경할 패스워드',
-                          labelStyle: TextStyle(color: Colors.black),
+                          labelStyle: TextStyle(color: Colors.black, fontSize: 13.0),
                           hintText: 'Enter your password'),
                     ),
               ),
               const SizedBox(width: 10.0),
-              ElevatedButton(onPressed: ()async{
-                if(isEmptyPassword()){
-                  checkUser("패스워드를 입력해주세요.");
-                }else{
-                  checkUser(await changePassword());
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff81a4ff),
-                padding: const EdgeInsets.all(5.0),
-                textStyle: const TextStyle(color: Colors.black),
-              ),child: const Text("패스워드 변경"),),
+              Container(
+                margin:const EdgeInsets.only(right:35.0),
+                child: ElevatedButton(
+                  onPressed: () async{
+                  if(isEmptyPassword()){
+                    checkUser("패스워드를 입력해주세요.");
+                  }else{
+                    checkUser(await changePassword());          
+                    Future.delayed(const Duration(milliseconds: 3000),
+                    (() => Navigator.pushNamed(context, '/main')));
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff81a4ff),
+                  padding: const EdgeInsets.all(7.0),
+                  textStyle: const TextStyle(color: Colors.black),
+                ),child: const Text("패스워드 변경"),),
+              ),
                 ],
               ),
+              Divider(
+              height: 5.0,
+              color: Colors.grey[850],
+              thickness: 0.5,
+              endIndent: 30.0,
+              ),
+              Text(
+                " ○ 전화번호 : ${phoneNum!}",
+                style: const TextStyle(
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.indigo,
+                ),
+              ),
+              Divider(
+              height: 5.0,
+              color: Colors.grey[850],
+              thickness: 0.5,
+              endIndent: 30.0,
+            ),
+              Text(
+                " ○ 소속 : ${company!}",
+                style: const TextStyle(
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.indigo,
+                ),
+              ),
+              Divider(
+              height: 5.0,
+              color: Colors.grey[850],
+              thickness: 0.5,
+              endIndent: 30.0,
+            ),
+              Text(
+                " ○ 직책 : ${position!}",
+                style: const TextStyle(
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.indigo,
+                ),
+              ),
               
-              const SizedBox(height: 12.0),
-              Text(
-                "Phone Number : ${phoneNum!}",
-                style: const TextStyle(
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.indigo,
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              Text(
-                "소속 : ${company!}",
-                style: const TextStyle(
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.indigo,
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              Text(
-                "직책 : ${position!}",
-                style: const TextStyle(
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.indigo,
-                ),
-              ),
-              const SizedBox(height: 12.0),
+              Divider(
+              height: 5.0,
+              color: Colors.grey[850],
+              thickness: 0.5,
+              endIndent: 30.0,
+            ),
             ],
           ),
         ),

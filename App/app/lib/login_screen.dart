@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
         case 202:
           //fail
           // ignore: use_build_context_synchronously
-          showSnackBar(context, 'Unsigned User');
+          showSnackBar(context, '등록되지 않은 유저입니다.');
           break;
       }
     } catch (err) {
@@ -76,11 +76,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   dynamic isEnterInfo() {
     if (userId.text.isEmpty) {
-      showSnackBar(context, 'Enter your ID');
+      showSnackBar(context, '아이디를 입력해주세요.');
       return false;
     }
     if (userPw.text.isEmpty) {
-      showSnackBar(context, 'Enter your password');
+      showSnackBar(context, '패스워드를 입력해주세요.');
       return false;
     }
     return true;
@@ -148,6 +148,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Enter your verify code'),
                   ),
                 ),
+                const Padding(
+                  padding: EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 0),
+                  //padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Text("※ 상시 출입자는 아이디를 입력해주세요",textAlign: TextAlign.center,style: TextStyle(
+                    fontSize: 13.0, color: Colors.grey, fontWeight:  FontWeight.bold,
+                  ),),
+                ),
                 Container(
                   margin: const EdgeInsets.only(top: 15.0),
                   height: 50,
@@ -163,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     child: const Text(
-                      'Login',
+                      '로그인',
                       style: TextStyle(color: Colors.white, fontSize: 24.0),
                     ),
                   ),
@@ -173,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.pushNamed(context, '/account');
                   },
                   child: const Text(
-                    'Forgot ID or Password',
+                    '사용자 계정 찾기',
                     style: TextStyle(color: Color(0xff81a4ff), fontSize: 15),
                   ),
                 ),

@@ -76,7 +76,7 @@ class LoginButton extends StatelessWidget {
           Navigator.pushNamed(context, '/login');
         },
         child: const Text(
-          'Login',
+          '로그인',
           style: TextStyle(color: Colors.white, fontSize: 24.0),
         ),
       ),
@@ -103,7 +103,7 @@ class RegisterButton extends StatelessWidget {
           Navigator.pushNamed(context, '/regist');
         },
         child: const Text(
-          'Register',
+          '방문 신청',
           style: TextStyle(color: Colors.white, fontSize: 24.0),
         ),
       ),

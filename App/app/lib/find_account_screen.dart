@@ -40,9 +40,13 @@ class FindIdButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 30),
-      width: 250,
-      height: 60,
-      child: ElevatedButton(
+      width: 270,
+      height: 150,
+      child: ElevatedButton.icon(
+        icon: const Icon(
+          Icons.account_box, 
+          size:70.0
+        ),
         onPressed: () {
           Navigator.pushNamed(context, '/findId');
         },
@@ -51,10 +55,7 @@ class FindIdButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
-        child: const Text(
-          '아이디 찾기',
-          style: TextStyle(fontSize: 24.0),
-        ),
+        label: const Text("아이디 찾기", style: TextStyle(fontSize: 25.0),),
       ),
     );
   }
@@ -68,9 +69,13 @@ class FindPwButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 30),
-      width: 250,
-      height: 60,
-      child: ElevatedButton(
+      width: 270,
+      height: 150,
+      child: ElevatedButton.icon(
+        icon: const Icon(
+          Icons.fact_check, 
+          size:70.0
+        ),
         onPressed: () {
           Navigator.pushNamed(context, '/findPw');
         },
@@ -79,10 +84,7 @@ class FindPwButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
-        child: const Text(
-          '비밀번호 찾기',
-          style: TextStyle(fontSize: 24.0),
-        ),
+        label: const Text("비밀번호 찾기", style: TextStyle(fontSize: 25.0),),
       ),
     );
   }

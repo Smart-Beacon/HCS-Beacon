@@ -12,10 +12,10 @@ class NavBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const UserAccountsDrawerHeader(
-            accountName: Text('SMART BEACON'),
-            accountEmail: Text('example@gmail.com'),
+            accountName: Text('OPNC (Open&close)'),
+            accountEmail: Text('< (주)명품 시스템  담당자: 김성환 >'),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color.fromARGB(255, 23, 20, 122),
             ),
           ),
           ListTile(
@@ -36,13 +36,16 @@ class NavBar extends StatelessWidget {
             leading: const Icon(Icons.dialpad),
             title: const Text('고객센터'),
             onTap: () {
-              _makePhoneCall('tel:04212345678'); //고객센터 번호 넣기!!
+              _makePhoneCall('tel:0426256785'); //고객센터 번호 넣기!!
             },
           ),
           SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 23, 20, 122),
+                ),
                 child: const Text('로그아웃'),
                 onPressed: () {
                   logOut();

@@ -334,7 +334,7 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                           height: 2,
                           color: Colors.deepPurpleAccent,
                         ),
-                        hint: const Text('Select State'),
+                        hint: const Text('건물 선택'),
                         value: selectSta, // 수정
                         isDense: true,
                         onChanged: ((value) {
@@ -358,14 +358,14 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
                   if (selectStaId != null && doorInfo != null)
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 20.0, right: 5.0, top: 15, bottom: 0),
+                          left: 20.0, right: 20.0, top: 15, bottom: 0),
                       child: DropdownButton<DoorInfo>(
                         borderRadius: BorderRadius.circular(10),
                         underline: Container(
                           height: 2,
                           color: Colors.deepPurpleAccent,
                         ),
-                        hint: const Text('Select door'),
+                        hint: const Text('출입문 선택'),
                         value: selectDoor, // 수정
                         isDense: true,
                         onChanged: ((value) {
@@ -555,7 +555,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           }
         },
         child: const Text(
-          'Register',
+          '방문 신청',
           style: TextStyle(color: Colors.white, fontSize: 24.0),
         ),
       ),

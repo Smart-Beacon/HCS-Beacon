@@ -74,20 +74,20 @@ class _DeviceInfoCheckState extends State<DeviceInfoCheck> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text("VENDOR ID",
+                const Text("디바이스 고유ID",
                     style: TextStyle(
                       letterSpacing: 2.0,
                       fontWeight: FontWeight.bold,
-                      fontSize: 42,
+                      fontSize: 35,
                       color: Colors.indigo,
                     )),
                 const SizedBox(height: 10.0),
                 Text(_deviceId,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 15,
                     )),
                 const SizedBox(height: 80.0),
-                const Text("BEACON VER.",
+                const Text("개발사",
                     style: TextStyle(
                       letterSpacing: 1.0,
                       fontWeight: FontWeight.bold,
@@ -95,21 +95,25 @@ class _DeviceInfoCheckState extends State<DeviceInfoCheck> {
                       color: Colors.indigo,
                     )),
                 const SizedBox(height: 10.0),
-                const Text("____SYSTEM USED BEACON VERSION____",
+                const Text("OPNC",
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 15,
                     )),
+                const Text("(주) 명품시스템",
+                    style: TextStyle(
+                      fontSize: 15,
+                    )),    
                 const SizedBox(height: 80.0),
-                const Text("APPLICATION VER.",
+                const Text("어플리케이션 버전",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 28,
+                      fontSize: 35,
                       color: Colors.indigo,
                     )),
                 const SizedBox(height: 10.0),
-                const Text("____APPLICATION VERSION____",
+                const Text("V1.0.0",
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 15,
                     )),
               ],
             ),
