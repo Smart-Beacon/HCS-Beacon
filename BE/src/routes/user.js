@@ -209,8 +209,7 @@ router.post('/opendoor',async(req,res)=>{
     try{
         const token = req.headers.token;
         const {doorId, deviceId} = req.body;
-        console.log(token);
-        console.log(doorId, deviceId);
+        console.log(token, doorId, deviceId);
         if(!token){
             return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
         }

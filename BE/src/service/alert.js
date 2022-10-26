@@ -66,6 +66,8 @@ const getAlertDatas = async(id) => {
         attributes: ['doorId'],
     });
 
+    //console.log(adminDoorData);
+
     const result2 = await Promise.all(
         adminDoorData.map(async adminDoor => {
             const alertRecord = await AlertRecord.findAll({
@@ -79,7 +81,7 @@ const getAlertDatas = async(id) => {
 
             const alertRecords = await Promise.all(
                 alertRecord.map(async record =>{
-
+                    console.log(record);
                     let alertDate = getDate(record.startTime);
                     let alertStartTime = getTime(record.startTime);
                     let alertEndTime = getTime(record.endTime);

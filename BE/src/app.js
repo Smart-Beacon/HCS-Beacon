@@ -20,7 +20,7 @@ const accessRecordRouter = require('./routes/accessRecord');
 const webSocket = require('./socket');
 
 const app = express();
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 8080);
 
 sequelize
     //? force: true 옵션은 모델 수정 시 db에 반영

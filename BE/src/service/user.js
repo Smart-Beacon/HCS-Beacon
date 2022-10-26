@@ -196,6 +196,7 @@ const getAdminEntrantList = async(adminId) => {
 // 출입자(상시) 등록 함수
 // 사용 API : 출입자(상시) 등록 API
 const createRegularUserData = async(data) => {
+    console.log(data);
     const exUser = await User.findOne({where:{userLoginId:data.userLoginId}});
     if(!exUser){
         const userData = await User.create({
@@ -206,7 +207,7 @@ const createRegularUserData = async(data) => {
             phoneNum: data.phoneNum,
             userLoginId: data.userLoginId,
             userLoginPw: data.userLoginPw,
-            reason: '상시 출입',
+            reason: '고정 등록자',
             enterTime: null,
             exitTime: null,
         });
@@ -218,7 +219,7 @@ const createRegularUserData = async(data) => {
                     userId: userData.userId,
                     doorId: doorId,
                     isAllowed: 1,
-                    userFlag: 0,
+                    userFlag: data.userFlag,
                 });
             })
         );
@@ -268,8 +269,8 @@ const getAdminVisitorList = async(adminId) => {
 
     const UserAllows = await AdminUserAllows.flatMap(data => data);
     const visitorList = await getVisitorList(UserAllows);
-
-    return visitorList;
+    console.log(visitorList);
+    return visitorList; 
 }
 
 // 방문자 예약 승인 변경
@@ -400,6 +401,12 @@ const getVisitorList = async(allows) => {
                     const stateData = await Statement.findOne({
                         where: {staId:doorData.staId}
                     });
+                    
+                    let EnterTime = userData.enterTime
+                    let ExitTime = userData.exitTime
+
+                    EnterTime.setHours(EnterTime.getHours()+9);
+                    ExitTime.setHours(ExitTime.getHours()+9);
 
                     const setData = {
                         allowId: allowData.allowId,
@@ -410,8 +417,8 @@ const getVisitorList = async(allows) => {
                         phoneNum: userData.phoneNum,
                         staName: stateData.staName,
                         doorName: doorData.doorName,
-                        enterTime: userData.enterTime,
-                        exitTime: userData.exitTime,
+                        enterTime: EnterTime,
+                        exitTime: ExitTime,
                         reason: userData.reason,
                         isAllowed: allowData.isAllowed,
                     };
@@ -643,21 +650,24 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
     if(!exUser){
         // vendorId 잘못됨
         console.log(`unRegist vendorId : ${vendorId}`);
-        return "등록된 기기가 아닙니다.";
+        return "현재 디바이스에 등록된 \n 계정이 올바르지 않습니다.";
     }else{
         const exUserAllow = await UserAllow.findOne({where:{userId,doorId}});
+        const exDoor = await Door.findOne({where:{doorId}});
         if(exUserAllow){
             if(exUserAllow.isAllowed){
-                const exDoor = await Door.findOne({where:{doorId}});
+                //const exDoor = await Door.findOne({where:{doorId}});
                 var nowTime = new Date();
                 nowTime.setHours(nowTime.getHours()+9);
                 console.log(nowTime);
-                let userEnterTime = exUser.enterTime.setHours(exUser.enterTime.getHours()+9);
-                let userExitTime = exUser.exitTime.setHours(exUser.exitTime.getHours()+9);
-                if(exUserAllow.userFlag !== 0 && (userEnterTime  > nowTime || userExitTime < nowTime)){
-                    //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
-                    console.log(`time range out: ${nowTime}`);
-                    return "방문시간이 일치하지 않습니다.";
+                if(exUserAllow.userFlag != 0){
+                    let userEnterTime = exUser.enterTime.setHours(exUser.enterTime.getHours()+9);
+                    let userExitTime = exUser.exitTime.setHours(exUser.exitTime.getHours()+9);
+                    if(exUserAllow.userFlag !== 0 && (userEnterTime  > nowTime || userExitTime < nowTime)){
+                        //일일, 자주 방문자들 시간 체크 and 시간 범위에 안맞음
+                        console.log(`time range out: ${nowTime}`);
+                        return "방문시간이 일치하지 않습니다.";
+                    }
                 }
                 console.log(time.getTimeSecond(nowTime));
                 let nowTimeHMS = time.getTimeSecond(nowTime)
@@ -696,9 +706,13 @@ const openDoorUser = async(userId, doorId, vendorId, io) =>{
                 //수락이 안된경우 대기 or 거절
             }
         }else{
-            console.log(`unRegist doorId : ${doorId}`);
-            return "BeaconId가 잘못되었습니다.";
-            // doorId 값이 잘못됨
+            if(exDoor){
+                console.log(`unRegist doorId : ${doorId}`);
+                return `해당 ${exDoor.doorName}에 들어갈 권한이 없습니다.`;
+                // doorId 값이 잘못됨
+            }else{
+                return "해당 출입문은 존재하지 않습니다.";
+            }
         }
     }
 }
