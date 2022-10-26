@@ -204,7 +204,7 @@ function reservationCheck() {
         const URL = 'http://localhost:5000/user/visitor';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 console.log("데이터 받아옴")
                 setData(res.data);
@@ -231,13 +231,13 @@ function reservationCheck() {
     const postAllowInfo = async (item) => {
         const URL = "http://localhost:5000/user/visitor"
         axios.defaults.withCredentials = true;
-        console.log(item);
+        // console.log(item);
         await axios.post(URL, item).then(res => {
             if (res.status === 200) {
-                console.log(item);
+                // console.log(item);
                 console.log("======================", "데이터 전송 성공");
             } else {
-                console.log(item);
+                // console.log(item);
                 console.log("데이터전송 실패");
             }
         });
@@ -264,7 +264,7 @@ function reservationCheck() {
                                     {
                                         border: "solid 3px gray",
                                         marginRight: "3%",
-                                        width: "12%"
+                                        width: "13%"
                                     }
                             }>
                                 <DatePicker selected={startDate}
@@ -277,13 +277,14 @@ function reservationCheck() {
                                     dateFormat="yyyy년 MM월 dd일"
                                     selectsStart
                                     startDate={startDate}
-                                    endDate={endDate}/>
+                                    endDate={endDate}
+                                    />
                             </div>
                         <div className="DatePicker"
                             style={
                                 {
                                     border: "solid 3px gray",
-                                    width: "12%"
+                                    width: "13%"
                                 }
                         }>
                             <DatePicker selected={endDate}

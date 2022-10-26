@@ -119,7 +119,7 @@ function Main() {
         const URL = 'http://localhost:5000/door/monitor';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 setData(res.data);
                 const warningArray = res.data.map(e => e.warning);

@@ -60,7 +60,7 @@ function Header() {
         await axios.post(URL, null)
         .then(res => {
             if(res.status === 200){
-              console.log("======================", "로그아웃 성공");
+              // console.log("======================", "로그아웃 성공");
               localStorage.clear();
             }else{
                 alert(res.data);
@@ -76,7 +76,7 @@ function Header() {
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
     const getName = localStorage.getItem('name').slice(1,-1);
-    console.log(getName);
+    // console.log(getName);
     const bytes = crypto.AES.decrypt(getName, key).toString(crypto.enc.Utf8);
     const originalText = JSON.parse(bytes);
     // console.log(originalText);

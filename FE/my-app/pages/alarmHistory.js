@@ -120,7 +120,7 @@ function visitorManagement(){
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
                 setData(res.data);           
             }else{

@@ -230,7 +230,7 @@ function emergencyDoorOpen() {
         const URL = 'http://localhost:5000/door/adminemergency';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 console.log("가져오기 성공");
                 setData(res.data);
@@ -247,7 +247,7 @@ function emergencyDoorOpen() {
         const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);
@@ -261,7 +261,7 @@ function emergencyDoorOpen() {
         const URL = 'http://localhost:5000/door/adminemergency';
         axios.defaults.withCredentials = true;
         await axios.post(URL, item).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status === 200) {
                 console.log("데이터 전송 성공");
             } else {
