@@ -28,6 +28,9 @@ import {
     ModalCloseButton,
     useDisclosure,
     Divider,
+    Stack,
+    Radio, 
+    RadioGroup
   } from '@chakra-ui/react'
 
 const style = css`
@@ -146,12 +149,16 @@ function visitorManagement(){
     const [guestName, setGuestName] = useState("");
     const [staDoorData, setStaDoorData] = useState([]);
 
+    const [isUserFlag, setIsUserFlag] = useState(2);
+
     const handleUserName = (e) => setUserName(e.target.value);
     const handleCompany = (e) => setCompany(e.target.value);
     const handlePosition = (e) => setPosition(e.target.value);
     const handleUserLoginId = (e) => setUserLoginId(e.target.value);
     const handleUserLoginPw = (e) => setUserLoginPw(e.target.value);
     const handleGuestName = (e) => setGuestName(e.target.value);
+
+    const handleisFlag = (e) => setIsUserFlag(Number(e.target.value));  
 
     const SearchName = () => {
         if(guestName !== ""){
@@ -178,11 +185,13 @@ function visitorManagement(){
             "phoneNum": num,
             "userLoginId" : userLoginId,
             "userLoginPw": userLoginPw,
+            "userFlag": isUserFlag,
             "doorList": checkedList
         }
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
-        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
+        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0 && isUserFlag !== 2){
             postInfo(info);
+            setIsUserFlag(2);
             setCheckedLists([]);
             onClose();
         }else{
@@ -349,6 +358,21 @@ function visitorManagement(){
                 </div>
                 </FormControl>
             </div>
+            <FormControl mt={4} style = {{width: '85%', margin: "auto", marginBottom: "3%"}}>
+              <div style={{display: "flex"}}>
+                <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입자</FormLabel>
+                <RadioGroup defaultValue='2'>
+                    <Stack spacing={5} direction='row'>
+                        <Radio colorScheme='green' value = "0" onChange = {handleisFlag}>
+                        상시 출입자
+                        </Radio>
+                        <Radio colorScheme='red' value = "1" onChange = {handleisFlag}>
+                        자주 출입자
+                        </Radio>
+                    </Stack>
+                    </RadioGroup>
+              </div>
+            </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
               <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"
@@ -419,9 +443,9 @@ function visitorManagement(){
                                     if(item.userFlag === 0){
                                         Flag = "상시";
                                     } else if(item.userFlag === 1){
-                                        Flag = "방문";
-                                    } else{
                                         Flag = "자주";
+                                    } else{
+                                        Flag = "방문";
                                     }
                                     let DoorInfo = item.doorInfo;
                                             return(
