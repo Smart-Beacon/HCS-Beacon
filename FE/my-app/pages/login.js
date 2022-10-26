@@ -14,9 +14,9 @@ function Login() {
         const body = { ID, PW }
         const request = axios.post(URL, body)
             .then(res => {
-                console.log(res);
+                // console.log(res);
                 if(res.status === 200){
-                    console.log("======================", "로그인 성공");
+                    // console.log("======================", "로그인 성공");
                     localStorage.setItem('name',JSON.stringify(res.data));
                     window.location.replace('http://localhost:3000/main');
                 }else{
@@ -26,17 +26,17 @@ function Login() {
     }
 
     const onIdHandler = (e) => {
-        console.log(ID);
+        // console.log(ID);
         setID(e.currentTarget.value)
     }
 
     const onPwHandler = (e) => {
-        console.log(PW);
+        // console.log(PW);
         setPW(e.currentTarget.value)
     }
 
     const onSubmitHandler = (e) => {
-        console.log('start');
+        // console.log('start');
         e.preventDefault();
         loginUser();
     }

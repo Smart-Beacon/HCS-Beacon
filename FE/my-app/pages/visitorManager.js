@@ -138,7 +138,7 @@ function visitorManagement(){
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
                 setData(res.data);
                 setDataClone(res.data);           
@@ -162,7 +162,7 @@ function visitorManagement(){
             "doorId" : list.doorId,
             "staId" : list.staId
         }
-        console.log(checkedData);
+        // console.log(checkedData);
          if (checked) {
             setCheckedLists([...checkedList, list]);
           } else {
@@ -257,7 +257,7 @@ function visitorManagement(){
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
                 console.log("데이터를 불러오는데 성공했습니다");
                 setDoorInfoData([]);
@@ -275,7 +275,7 @@ function visitorManagement(){
         axios.defaults.withCredentials = true;
         axios.post(URL, item)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
                 console.log("데이터를 불러오는데 성공했습니다");      
             }else{
