@@ -38,6 +38,14 @@ const socket = io.connect(addr, {
 socket.emit('set', { beaconId: beaconId });
 
 /*
+ *  서버와 재연결시 메시지 발신 
+ */
+socket.on('againSet', msg => {
+    console.log("Server reconnected");
+    socket.emit('set', { beaconId: beaconId });
+});
+
+/*
 *   비상개방 열기 신호 대기
 */
 socket.on('emergencyOpen', msg => {
