@@ -27,6 +27,7 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure,
+    Divider,
   } from '@chakra-ui/react'
 
 const style = css`
@@ -410,8 +411,8 @@ function visitorManagement(){
                         <div className = "TableThead">
                             <table>
                                 <thead>
-                                    <tr>{header.map((item)=>{
-                                        return <th>{item}</th>
+                                    <tr>{header.map((item, index)=>{
+                                        return <th key = {index}>{item}</th>
                                     })}</tr>
                                 </thead>
                             </table>
@@ -419,7 +420,7 @@ function visitorManagement(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                {Data.map((item)=>{
+                                {Data.map((item, index)=>{
                                     let Flag = "";
                                     if(item.userFlag === 0){
                                         Flag = "상시";
@@ -430,7 +431,7 @@ function visitorManagement(){
                                     }
                                     let DoorInfo = item.doorInfo;
                                             return(
-                                                <tr>
+                                                <tr key = {index}>
                                                     <Accordion allowToggle>
                                                     <AccordionItem>
                                                     <td>{Flag}</td>
@@ -441,18 +442,20 @@ function visitorManagement(){
                                                     <td>방문일시</td>
                                                     <td>
                                                         <AccordionButton style = {{marginLeft: "52%"}}>
-                                                            <Box flex='1' textAlign='center'>
                                                             상세 정보
-                                                            </Box>
                                                             <AccordionIcon />
                                                         </AccordionButton></td>
                                                         <AccordionPanel pb={4}>
-                                                            {DoorInfo.map((e) => {
+                                                            {DoorInfo.map((e, index) => {
                                                                 return(
-                                                                <tr>
-                                                                    <td>건물명 : {e.staName}</td>
-                                                                    <td>도어명 : {e.doorNameList.toString()}</td> 
-                                                                </tr>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr key = {index}>
+                                                                            <td>건물명 : {e.staName}</td>
+                                                                            <td>도어명 : {e.doorNameList.toString()}</td> 
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                                 )
                                                             })}
                                                          </AccordionPanel>

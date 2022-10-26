@@ -210,7 +210,7 @@ function ManagementSettings(){
         if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
         serverinfo.openTime  !== "" && serverinfo.closeTime !== "" && checkedList.length !== 0){
             console.log(serverinfo);
-            // postDoorInfo(serverinfo);
+            postDoorInfo(serverinfo);
             clearData();
             onClose();
         }else{
@@ -445,8 +445,8 @@ function ManagementSettings(){
                         <div className = "TableThead">
                             <table>
                                 <thead>
-                                <tr>{header.map((item)=>{
-                                    return <th>{item}</th>
+                                <tr>{header.map((item, index)=>{
+                                    return <th key = {index}>{item}</th>
                                 })}</tr>
                                 </thead>
                             </table>
@@ -454,9 +454,9 @@ function ManagementSettings(){
                         <div className = "TableTbody">
                             <table>
                                 <tbody>
-                                    {Data.map((item)=>{
+                                    {Data.map((item, index)=>{
                                         return(
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{item.staName}</td>
                                                 <td>{item.doorName}</td>
                                                 <td>{item.doorId}</td>

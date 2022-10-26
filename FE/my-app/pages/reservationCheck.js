@@ -305,8 +305,8 @@ function reservationCheck() {
                 <table>
                     <thead>
                         <tr> {
-                            header.map((item) => {
-                                return <th> {item}</th>
+                            header.map((item, index) => {
+                                return <th key = {index}> {item}</th>
                         })
                         }</tr>
                     </thead>
@@ -321,7 +321,7 @@ function reservationCheck() {
                             const DataDate = new Date(enterDay).getFullYear() + "-" + String(new Date(enterDay).getMonth() + 1).padStart(2, "0") + "-" + String(new Date(enterDay).getDate()).padStart(2, "0");
                             const EnterTime = String((new Date(enterDay).getHours()) - 9).padStart(2, "0") + ":" + String(new Date(enterDay).getMinutes()).padStart(2, "0") + ":" + String(new Date(enterDay).getSeconds()).padStart(2, "0");
                             const ExitTime = String((new Date(exitDay).getHours()) - 9).padStart(2, "0") + ":" + String(new Date(exitDay).getMinutes()).padStart(2, "0") + ":" + String(new Date(exitDay).getSeconds()).padStart(2, "0");
-                            return (<tr>
+                            return (<tr key = {index}>
                                 <Accordion allowToggle>
                                     <AccordionItem>
                                         <td> {index + 1}</td>

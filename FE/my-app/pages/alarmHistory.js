@@ -142,8 +142,8 @@ function visitorManagement(){
                         <div className = "TableThead">
                             <table>
                                 <thead>
-                                    <tr>{header.map((item)=>{
-                                        return <th>{item}</th>
+                                    <tr>{header.map((item, index)=>{
+                                        return <th key = {index}>{item}</th>
                                     })}</tr>
                                 </thead>
                             </table>
@@ -153,7 +153,7 @@ function visitorManagement(){
                                 <tbody>
                                 {Data.map((item, index)=>{
                                             return(
-                                                <tr>
+                                                <tr key = {index}>
                                                     <td>{index+1}</td>
                                                     <td>{item.staName}</td>
                                                     <td>{item.doorName}</td>

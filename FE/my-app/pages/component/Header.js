@@ -79,7 +79,7 @@ function Header() {
     console.log(getName);
     const bytes = crypto.AES.decrypt(getName, key).toString(crypto.enc.Utf8);
     const originalText = JSON.parse(bytes);
-    console.log(originalText);
+    // console.log(originalText);
     setData(originalText);
     timer = setInterval(() => {
       setTime(moment());

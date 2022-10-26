@@ -279,7 +279,6 @@ function emergencyDoorOpen() {
         });
         setCheckedLists(checkedArray);
     }
-    console.log(checkedList);
     return(
         <div>
             <Header/>
@@ -321,8 +320,8 @@ function emergencyDoorOpen() {
                                 <div className = "TableThead">
                                     <table>
                                         <thead>
-                                            <tr>{header.map((item)=>{
-                                                return <th>{item}</th>
+                                            <tr>{header.map((item, index)=>{
+                                                return <th key = {index}>{item}</th>
                                             })}</tr>
                                         </thead>
                                     </table>
@@ -333,7 +332,7 @@ function emergencyDoorOpen() {
                                         {Data.map((item, index)=>{
                                             if(index%2==0){
                                                 return(
-                                                    <tr>
+                                                    <tr key = {index}>
                                                         <td>{index+1}</td>
                                                         <td>{item.staName}</td>
                                                         <td>{item.doorName}</td>
@@ -347,12 +346,12 @@ function emergencyDoorOpen() {
                                     </table>
                                 </div>
                             </div>
-                            <div classNmae = "Table" style={{width: "50%"}}>
+                            <div className = "Table" style={{width: "50%"}}>
                                 <div className = "TableThead">
                                     <table>
                                         <thead>
-                                            <tr>{header.map((item)=>{
-                                                return <th>{item}</th>
+                                            <tr>{header.map((item, index)=>{
+                                                return <th key = {index}>{item}</th>
                                             })}</tr>
                                         </thead>
                                     </table>
@@ -363,7 +362,7 @@ function emergencyDoorOpen() {
                                         {Data.map((item, index)=>{
                                             if(index%2==1){
                                                 return(
-                                                    <tr>
+                                                    <tr key = {index}>
                                                         <td>{index+1}</td>
                                                         <td>{item.staName}</td>
                                                         <td>{item.doorName}</td>
