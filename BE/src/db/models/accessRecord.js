@@ -9,12 +9,20 @@ class accessRecord extends Sequelize.Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                enterTime: {
-                    type: Sequelize.DATE,
+                enterDate: {
+                    type: Sequelize.DATEONLY,
                     allowNull: false,
                 },
+                enterTime: {
+                    type: Sequelize.TIME,
+                    allowNull: false,
+                },
+                exitDate: {
+                    type: Sequelize.DATEONLY,
+                    allowNull: true,
+                },
                 exitTime: {
-                    type: Sequelize.DATE,
+                    type: Sequelize.TIME,
                     allowNull: true,
                 },
             },{

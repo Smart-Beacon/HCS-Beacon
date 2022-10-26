@@ -22,7 +22,7 @@ router.get('/monitor', async(req,res,next) =>{
             res.status(400).send('Not Found Admin');
         }
     }catch(err){
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
@@ -36,10 +36,10 @@ router.get('/management', async(req,res,next) => {
         const check = await checkAdmin.checkAdmin(id,isSuper);
         if(check === 0){
             const data = await getMainDatas.getSuperDoorDatas();
-            res.json(data);
+            res.status(200).json(data);
         }else if(check === 1){
             const data = await getMainDatas.getAdminDoorDatas(id);
-            res.json(data);
+            res.status(200).json(data);
         }else{
             res.status(400).send('Not Found Admin');
         }
@@ -58,7 +58,7 @@ router.post('/register',async(req,res,next)=>{
         if(check !== 2){
             const result = await getMainDatas.createDoorData(req.body);
             if(result){
-                res.status(201).end();
+                res.status(201).json(result);
             }else{
                 res.status(400).send('Unregistered Admin or registered Door');    
             }
@@ -69,5 +69,51 @@ router.post('/register',async(req,res,next)=>{
         res.status(400).send(err.message);
     }
 });
+
+//비상도어 리스트(중간 관리자) API
+router.get('/adminemergency', async(req,res,next) => {
+    try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if(check === 0){
+            const data = await getMainDatas.getSuperEmergency();
+            res.status(200).json(data);
+        }else if(check === 1){
+            const data = await getMainDatas.getAdminEmergency(id);
+            res.status(200).json(data);
+        }else{
+            res.status(400).send('Not Found Admin');
+        }
+    }catch(err){
+        res.status(500).send(err.message);
+    }
+});
+
+//비상도어 개방 API
+router.post('/adminemergency', async(req,res,next) => {
+    try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const check = await checkAdmin.checkAdmin(id,isSuper);
+        if(check !== 2){
+            const io = req.app.get('io');
+            const data = await getMainDatas.emergencyOpen(req.body,io);
+            if(data){
+                res.status(200).json(data);
+            }else{
+                res.status(204).end();
+            }
+        }else{
+            res.status(400).send('Not Found Admin');
+        }
+    }catch(err){
+        res.status(500).send(err.message);
+    }
+});
+
+
 
 module.exports = router;

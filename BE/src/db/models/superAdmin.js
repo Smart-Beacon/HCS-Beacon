@@ -1,19 +1,8 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 
 class superAdmin extends Sequelize.Model {
-    // generateToken() {
-    //     const token = jwt.sign({
-    //         superId: this.superId,
-    //         superLoginId: this.superLoginId,
-    //     },process.env.JWT_SECRET,{
-    //         expiresIn: '7d',
-    //     },);
-    //     return token;
-    // }
-
     static init(sequelize) {
         return super.init({
                 superId: {

@@ -1,8 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
+
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
-const CryptoJS = require('crypto-js');
+const User = require('../db/models/user');
 
 const router = express.Router();
 
@@ -16,17 +19,19 @@ router.post('/login', async(req,res,next) =>{
             const checkPassword = await bcrypt.compare(PW,exSuperAdmin.superLoginPw);
             if(checkPassword){
                 res.cookie('accessToken',exSuperAdmin.superId,{
-                    expires: new Date(Date.now() + 1000*60*60*24*7),
-                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000*60*60*24*3),
+                    httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                     signed:true,
                 });
                 res.cookie('isSuper',1,{
-                    expires: new Date(Date.now() + 1000*60*60*24*7),
-                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000*60*60*24*3),
+                    httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                 });
-                const encrypted = CryptoJS.AES.encrypt(JSON.stringify(exSuperAdmin.superName), process.env.PRIVATEKEY).toString();
+                const str = exSuperAdmin.superName;
+                const encrypted = CryptoJS.AES.encrypt(JSON.stringify(str), process.env.PRIVATEKEY).toString();
+                console.log(encrypted);
                 console.log(res.getHeader('set-cookie'));
                 return res.status(200).send(encrypted);
             }else{
@@ -40,18 +45,21 @@ router.post('/login', async(req,res,next) =>{
                 const checkPassword = await bcrypt.compare(PW,exAdmin.adminLoginPw);
                 if(checkPassword){
                     res.cookie('accessToken',exAdmin.adminId,{
-                        expires: new Date(Date.now() + 1000*60*60*24*7),
-                        httpOnly: true,
+                        expires: new Date(Date.now() + 1000*60*60*24*3),
+                        httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false,
                         signed:true,
                     });
                     res.cookie('isSuper',0,{
-                        expires: new Date(Date.now() + 1000*60*60*24*7),
-                        httpOnly: true,
+                        expires: new Date(Date.now() + 1000*60*60*24*3),
+                        httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false
                     });
-                    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(exAdmin.adminName), process.env.PRIVATEKEY).toString();
-                    console.log(res.getHeader('set-cookie'),0);
+                    const strName = exAdmin.adminName
+                    exAdmin.isLogin = true;
+                    await exAdmin.save();
+                    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(strName), process.env.PRIVATEKEY).toString();
+                    console.log(res.getHeader('set-cookie'));
                     return res.status(200).send(encrypted);
                 }else{
                     return res.status(202).send('비밀번호가 일치하지 않습니다.');
@@ -67,8 +75,17 @@ router.post('/login', async(req,res,next) =>{
     }
 });
 
-router.post('/logout', (req,res)=>{
+router.post('/logout', async(req,res)=>{
     try{
+        const id = req.signedCookies.accessToken;
+        const isSuper = Number(req.cookies.isSuper);
+        console.log(id, isSuper);
+        const exAdmin = await Admin.findOne({where:{adminId:id}});
+        if(exAdmin){
+            console.log(`${exAdmin.adminName} logout`);
+            exAdmin.isLogin = false;
+            await exAdmin.save();
+        }
         console.log('로그아웃');
         res.clearCookie('accessToken');
         res.clearCookie('isSuper');
@@ -78,5 +95,40 @@ router.post('/logout', (req,res)=>{
         res.status(500).send(err.message);
     }
 });
+
+router.post('/user/login',async(req,res)=>{
+    const {userId, userPw, venderId} = req.body;
+    console.log(userId, userPw,venderId);
+    try{
+        const exUserId = await User.findOne({where:{userLoginId:userId}});
+        if(exUserId){
+            const checkPassword = await bcrypt.compare(userPw,exUserId.userLoginPw);
+            if(checkPassword){
+                if(!exUserId.vendorId){
+                    exUserId.vendorId = venderId;
+                    await exUserId.save();
+                }
+                const token = jwt.sign({
+                    userId:exUserId.userId
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn:'3 days'
+                }
+                );
+                return res.status(200).send({token});
+            }else{
+                return res.status(202).send('Do not match password');
+            } 
+        }else{
+            return res.status(202).send('Not exist ID');
+        }
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).send(err.message);
+    }
+})
+
 
 module.exports = router;
