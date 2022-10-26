@@ -298,7 +298,6 @@ function visitorManagement(){
       >
         <ModalOverlay />
         <ModalContent style = {{height: "80%"}}>
-          <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                 <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
