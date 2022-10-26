@@ -1,13 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 const Admin = require('../db/models/admin');
 const SuperAdmin = require('../db/models/superAdmin');
 const User = require('../db/models/user');
-const CryptoJS = require('crypto-js');
-const jwt = require('jsonwebtoken');
-
-const checkAdmin = require('../service/check.js');
 
 const router = express.Router();
 
@@ -21,13 +19,13 @@ router.post('/login', async(req,res,next) =>{
             const checkPassword = await bcrypt.compare(PW,exSuperAdmin.superLoginPw);
             if(checkPassword){
                 res.cookie('accessToken',exSuperAdmin.superId,{
-                    expires: new Date(Date.now() + 1000*60*60*24*7),
+                    expires: new Date(Date.now() + 1000*60*60*24*3),
                     httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                     signed:true,
                 });
                 res.cookie('isSuper',1,{
-                    expires: new Date(Date.now() + 1000*60*60*24*7),
+                    expires: new Date(Date.now() + 1000*60*60*24*3),
                     httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                     secure:false,
                 });
@@ -47,13 +45,13 @@ router.post('/login', async(req,res,next) =>{
                 const checkPassword = await bcrypt.compare(PW,exAdmin.adminLoginPw);
                 if(checkPassword){
                     res.cookie('accessToken',exAdmin.adminId,{
-                        expires: new Date(Date.now() + 1000*60*60*24*7),
+                        expires: new Date(Date.now() + 1000*60*60*24*3),
                         httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false,
                         signed:true,
                     });
                     res.cookie('isSuper',0,{
-                        expires: new Date(Date.now() + 1000*60*60*24*7),
+                        expires: new Date(Date.now() + 1000*60*60*24*3),
                         httpOnly: false, // 나중에 secure 및 httpOnly는 true로 바꿔줘야함
                         secure:false
                     });
@@ -109,10 +107,7 @@ router.post('/user/login',async(req,res)=>{
                 if(!exUserId.vendorId){
                     exUserId.vendorId = venderId;
                     await exUserId.save();
-                    //await User.update({vendorId:venderId},{where:{userLoginId:userId}});
-                    console.log("user update");
                 }
-                    
                 const token = jwt.sign({
                     userId:exUserId.userId
                 },

@@ -46,7 +46,7 @@ const createAdminData = async(data) => {
         });
         
         
-        let staIds = data.staIds;
+        let staIds = data.staId;
         await Promise.all(
             staIds.map(async staId =>{
                 await AdminStatment.create({
