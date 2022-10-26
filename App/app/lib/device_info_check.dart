@@ -37,7 +37,6 @@ class _DeviceInfoCheckState extends State<DeviceInfoCheck> {
   initState() {
     super.initState();
     _getDeviceId();
-    // Add listeners to this class
   }
 
   @override

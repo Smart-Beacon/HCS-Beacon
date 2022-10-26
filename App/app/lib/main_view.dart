@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -41,7 +43,7 @@ class _MainViewState extends State<MainView> {
 
   // Get battery level.
   Future<void> permissionBle() async {
-    Map<Permission, PermissionStatus> statuses = await [
+    await [
       Permission.bluetooth,
       Permission.location,
       Permission.bluetoothConnect,
@@ -78,7 +80,6 @@ class _MainViewState extends State<MainView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: const <Widget>[
               InOutButton(text: 'Open'),
-              //InOutButton(text: 'Out')
             ],
           ))),
     );
@@ -139,10 +140,8 @@ class _InOutButtonState extends State<InOutButton> {
 
   Future<String?> isOpen() async {
     try {
-      //_getDeviceId();
       const storage = FlutterSecureStorage();
       String? token = await storage.read(key:'BeaconToken');
-      //String? doorId = '01';
       String? doorId = _beaconId;
 
       if(_deviceId != "" && token != "" && doorId != ""){
@@ -150,7 +149,6 @@ class _InOutButtonState extends State<InOutButton> {
         var dio = Dio();
         dio.options.headers['token'] = token;
         
-        //String url = "http://10.0.2.2:5000/user/opendoor";
         String url = "${dotenv.env['SERVER_URL']!}/user/opendoor";
         var res = await dio.post(url, data: {'doorId': doorId, 'deviceId': _deviceId});
         log(res.data);
@@ -180,17 +178,15 @@ class _InOutButtonState extends State<InOutButton> {
       height: 150,
       child: ElevatedButton(
         onPressed: () async {
-          _getBeaconId();
+           await _getBeaconId();
           checkUser(await isOpen());
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF4E7EFC),
             shape: const CircleBorder(),),
-            // shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(30.0))),
         child: Text(
           widget.text,
-          style: const TextStyle(fontSize: 50.0),
+          style: const TextStyle(fontSize: 40.0),
         ),
       ),
     );

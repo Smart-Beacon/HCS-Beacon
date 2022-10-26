@@ -12,7 +12,6 @@ import 'package:app/edit_personal_info.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
-
 void main() async{
   await dotenv.load(fileName: 'assets/config/.env');
   runApp(const MyApp());
@@ -47,32 +46,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({
-//     Key? key,
-//     required this.route,
-//   }) : super(key: key);
-
-//   final String? route;
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       initialRoute: route,
-//       routes: {
-//         '/': (context) => const MiddleScreen(),
-//         '/login': (context) => const LoginScreen(),
-//         '/regist': (context) => const RegisterScreen(),
-//         '/account': (context) => const AccountFindingPage(),
-//         '/findId': (context) => const FindIdScreen(),
-//         '/findPw': (context) => const FindPwScreen(),
-//         '/findIdResult': (context) => const FindIdResultScreen(),
-//         '/findPwResult': (context) => const FindPwResultScreen(),
-//         '/main': (context) => const MainView(),
-//         '/editInfo': (context) => const EditPersonalInfo(),
-//         '/deviceInfo': (context) => const DeviceInfoCheck(),
-//       },
-//     );
-//   }
-// }

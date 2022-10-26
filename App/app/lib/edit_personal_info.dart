@@ -20,8 +20,6 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
   String? position = '';
   String? phoneNum = '';
 
-  //TextEditingController changePW = TextEditingController();
-
   void checkUser(result) {
       showSnackBar(context, result.toString());
   }
@@ -36,7 +34,6 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
 
   Future<String?> changePassword() async{
     try{
-      //String url = "http://10.0.2.2:5000/user/changepassword";
       String url = "${dotenv.env['SERVER_URL']!}/user/changepassword";
       var dio = Dio();
       var data = {
@@ -63,8 +60,7 @@ class _EditPersonalInfo extends State<EditPersonalInfo> {
       const storage = FlutterSecureStorage();
       var accessToken = await storage.read(key: 'BeaconToken');
       var dio = Dio();
-      dio.options.headers['token'] = accessToken;
-      //String url = "http://10.0.2.2:5000/user/info";      
+      dio.options.headers['token'] = accessToken;  
       String url = "${dotenv.env['SERVER_URL']!}/user/info";
       final res = await dio.post(url);
       switch (res.statusCode) {

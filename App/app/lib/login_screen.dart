@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userId = TextEditingController();
   TextEditingController userPw = TextEditingController();
-  String _deviceId = '';
+  String? _deviceId = '';
 
   Future<void> _getDeviceId() async{
     try{
