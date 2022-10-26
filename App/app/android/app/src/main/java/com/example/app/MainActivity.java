@@ -23,11 +23,6 @@ import android.os.Build;
 import android.Manifest;
 import java.util.List;
 import java.util.Collections;
-// import java.util.ArrayList;
-// import androidx.core.app.ActivityCompat;
-// import androidx.core.content.ContextCompat;
-// import android.content.pm.PackageManager;
-
 
 
 public class MainActivity extends FlutterActivity {
@@ -65,7 +60,8 @@ public class MainActivity extends FlutterActivity {
                                 }else {
                                     result.error("UNAVAILABLE", "no init", null);
                                 }
-
+                            } else if(call.method.equals("stopScan")){
+                                initListener();
                             }else {
                                 result.notImplemented();
                             }
@@ -74,16 +70,41 @@ public class MainActivity extends FlutterActivity {
     }
 
     private void init(){
+        initManager();
+        checkBluetooth();
+        initListener();
+    }
+
+    private void showBLEDialog() {
+        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+    }
+
+    private void initManager() {
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
+    }
+
+    private void checkBluetooth() {
         BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
+        switch (bluetoothState) {
+            case BluetoothStateNotSupported:
+                finish();
+                break;
+            case BluetoothStatePowerOff:
+                break;
+            case BluetoothStatePowerOn:
+                break;
+        }
+    }
+
+    private void initListener() {
         if (mMinewBeaconManager != null) {
+            BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
             switch (bluetoothState) {
                 case BluetoothStateNotSupported:
-                    errorMessage = "BluetoothStateNotSupported";
+                    finish();
                     break;
                 case BluetoothStatePowerOff:
-                    showBLEDialog();
-                    errorMessage = "BluetoothStatePowerOff";
                     return;
                 case BluetoothStatePowerOn:
                     break;
@@ -99,189 +120,79 @@ public class MainActivity extends FlutterActivity {
             try {
                 mMinewBeaconManager.startScan();
             } catch (Exception e) {
-                errorMessage = e.getMessage();
+                e.printStackTrace();
             }
         }
-        try{
-            mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
-                /**
-                 *   if the manager find some new beacon, it will call back this method.
-                 *
-                 *  @param minewBeacons  new beacons the manager scanned
-                 */
-                @Override
-                public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-                    
-                }
-    
-                /**
-                 *  if a beacon didn't update data in 10 seconds, we think this beacon is out of rang, the manager will call back this method.
-                 *
-                 *  @param minewBeacons beacons out of range
-                 */
-                @Override
-                public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
-                    /*for (MinewBeacon minewBeacon : minewBeacons) {
-                        String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                        Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
-                    }*/
-                }
-    
-                /**
-                 *  the manager calls back this method every 1 seconds, you can get all scanned beacons.
-                 *
-                 *  @param minewBeacons all scanned beacons
-                 */
-                @Override
-                public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!minewBeacons.isEmpty()){
-                                Collections.sort(minewBeacons, comp);
-                                deviceUUID = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
-                            }
-                        }
-                    });
-                   
-                }
-    
-                /**
-                 *  the manager calls back this method when BluetoothStateChanged.
-                 *
-                 *  @param state BluetoothState
-                 */
-                @Override
-                public void onUpdateState(BluetoothState state) {
-                    switch (state) {
-                        case BluetoothStatePowerOn:
-                            break;
-                        case BluetoothStatePowerOff:
-                            errorMessage = "BluetoothStatePowerOff";
-                            break;
-                        case BluetoothStateNotSupported:
-                            errorMessage = "BluetoothStatePowerOff";
-                            break;
-                    }
-                }
-            });
-        }catch(Exception e){
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    private void showBLEDialog() {
-        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-    }
-
-    // private void initManager() {
-    //     mMinewBeaconManager = MinewBeaconManager.getInstance(this);
-    // }
-
-    // private void checkBluetooth() {
-    //     BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
-    //     switch (bluetoothState) {
-    //         case BluetoothStateNotSupported:
-    //             finish();
-    //             break;
-    //         case BluetoothStatePowerOff:
-    //             break;
-    //         case BluetoothStatePowerOn:
-    //             break;
-    //     }
-    // }
-
-    // private void initListener() {
-    //     if (mMinewBeaconManager != null) {
-    //         BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
-    //         switch (bluetoothState) {
-    //             case BluetoothStateNotSupported:
-    //                 finish();
-    //                 break;
-    //             case BluetoothStatePowerOff:
-    //                 return;
-    //             case BluetoothStatePowerOn:
-    //                 break;
-    //         }
-    //     }
-    //     if (isScanning) {
-    //         isScanning = false;
-    //         if (mMinewBeaconManager != null) {
-    //             mMinewBeaconManager.stopScan();
-    //         }
-    //     } else {
-    //         isScanning = true;
-    //         try {
-    //             mMinewBeaconManager.startScan();
-    //         } catch (Exception e) {
-    //             e.printStackTrace();
-    //         }
-    //     }
         
-    //     mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
-    //         /**
-    //          *   if the manager find some new beacon, it will call back this method.
-    //          *
-    //          *  @param minewBeacons  new beacons the manager scanned
-    //          */
-    //         @Override
-    //         public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
+        mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
+            /**
+             *   if the manager find some new beacon, it will call back this method.
+             *
+             *  @param minewBeacons  new beacons the manager scanned
+             */
+            @Override
+            public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
 
-    //         }
+            }
 
-    //         /**
-    //          *  if a beacon didn't update data in 10 seconds, we think this beacon is out of rang, the manager will call back this method.
-    //          *
-    //          *  @param minewBeacons beacons out of range
-    //          */
-    //         @Override
-    //         public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
-    //             /*for (MinewBeacon minewBeacon : minewBeacons) {
-    //                 String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-    //                 Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
-    //             }*/
-    //         }
+            /**
+             *  if a beacon didn't update data in 10 seconds, we think this beacon is out of rang, the manager will call back this method.
+             *
+             *  @param minewBeacons beacons out of range
+             */
+            @Override
+            public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
+                /*for (MinewBeacon minewBeacon : minewBeacons) {
+                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                    Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
+                }*/
+            }
 
-    //         /**
-    //          *  the manager calls back this method every 1 seconds, you can get all scanned beacons.
-    //          *
-    //          *  @param minewBeacons all scanned beacons
-    //          */
-    //         @Override
-    //         public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
-    //             for (MinewBeacon mMinewBeacon : minewBeacons) {
-    //                 deviceUUID = mMinewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_UUID).getStringValue();
-    //             }
-    //         }
+            /**
+             *  the manager calls back this method every 1 seconds, you can get all scanned beacons.
+             *
+             *  @param minewBeacons all scanned beacons
+             */
+            @Override
+            public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("start","start");
+                        if(!minewBeacons.isEmpty()){
+                            minewBeacons.stream().filter(t->t.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue() == "MBeacon");
+                            Collections.sort(minewBeacons, comp);
+                            String Name = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                            deviceUUID = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
+                            Log.i(deviceUUID,Name);
+                        }
+                        Log.i("pass","pass");
+                        for (MinewBeacon minewBeacon : minewBeacons) {
+                            String deviceId = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
+                            String Rssi = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
+                            Log.i(deviceId,Rssi);
+                        }
+                    }
+                });
+            }
 
-    //         /**
-    //          *  the manager calls back this method when BluetoothStateChanged.
-    //          *
-    //          *  @param state BluetoothState
-    //          */
-    //         //@Override
-    //         public void onUpdateState(BluetoothState state) {
-    //             switch (state) {
-    //                 case BluetoothStatePowerOn:
-    //                     break;
-    //                 case BluetoothStatePowerOff:
-    //                     break;
-    //                 default:
-    //                     break;
-    //             }
-    //         }
-    //     });
-    // }
-
-    // @Override
-    // protected void onDestroy() {
-    //     super.onDestroy();
-    //     //stop scan
-    //     if (isScanning) {
-    //         mMinewBeaconManager.stopScan();
-    //     }
-    // }
+            /**
+             *  the manager calls back this method when BluetoothStateChanged.
+             *
+             *  @param state BluetoothState
+             */
+            //@Override
+            public void onUpdateState(BluetoothState state) {
+                switch (state) {
+                    case BluetoothStatePowerOn:
+                        break;
+                    case BluetoothStatePowerOff:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
 
 }

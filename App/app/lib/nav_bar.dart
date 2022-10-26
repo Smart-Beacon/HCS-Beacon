@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/services.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
+
+  static const platform = MethodChannel('samples.flutter.dev/battery');
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,7 @@ class NavBar extends StatelessWidget {
   logOut() async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "BeaconToken");
+    await platform.invokeMethod("stopScan");
   }
 
   Future<void> _makePhoneCall(String callNum) async {

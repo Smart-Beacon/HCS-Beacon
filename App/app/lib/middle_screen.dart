@@ -31,32 +31,6 @@ class _MiddleScreenState extends State<MiddleScreen> {
   }
 }
 
-// class MiddleScreen extends StatelessWidget {
-//   const MiddleScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         alignment: Alignment.center,
-//         padding: const EdgeInsets.all(50),
-//         decoration: const BoxDecoration(
-//             image: DecorationImage(
-//                 image: AssetImage('assets/background.png'), fit: BoxFit.cover)),
-//         child: Center(
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: const <Widget>[
-//               LoginButton(),
-//               RegisterButton(),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 

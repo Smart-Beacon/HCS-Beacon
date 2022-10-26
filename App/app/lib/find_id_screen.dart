@@ -23,7 +23,6 @@ class _FindIdScreenState extends State<FindIdScreen> {
   Future<int?> isUserExist(BuildContext context) async {
     try {
       var dio = Dio();
-      //String url = "http://10.0.2.2:5000/user/check/id";
       String url = "${dotenv.env['SERVER_URL']!}/user/check/id";
       var res = await dio
           .post(url, data: {'name': userName.text, 'phoneNum': userPhone.text});
@@ -55,7 +54,6 @@ class _FindIdScreenState extends State<FindIdScreen> {
   Future<int?> verifyUser() async {
     try {
       var dio = Dio();
-      //String url = "http://10.0.2.2:5000/user/find/id";
       String url = "${dotenv.env['SERVER_URL']!}/user/find/id";
       final res =
           await dio.post(url, data: {'userId': userId, 'token': token.text});
@@ -321,61 +319,3 @@ class ScreenArguments {
 
   ScreenArguments(this.userName, this.userLoginId);
 }
-
-
-// class FindIdResultScreen extends StatelessWidget {
-//   const FindIdResultScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-//     return Container(
-//       decoration: const BoxDecoration(
-//           image: DecorationImage(
-//         fit: BoxFit.cover,
-//         image: AssetImage('assets/background.png'),
-//       )),
-//       child: Scaffold(
-//         extendBodyBehindAppBar: true,
-//         backgroundColor: Colors.transparent,
-//         body: Center(
-//           child: Column(children: <Widget>[
-//             const SizedBox(height: 200),
-//             Text(
-//               '${args.userName} 님의 아이디는',
-//               style: const TextStyle(fontSize: 24),
-//             ),
-//             const SizedBox(height: 50),
-//             Text(
-//               '${args.userLoginId} 입니다.',
-//               style: const TextStyle(fontSize: 24),
-//             ),
-//             const SizedBox(height: 200),
-//             SizedBox(
-//                 width: 100,
-//                 height: 50,
-//                 child: ElevatedButton(
-//                     onPressed: () {
-//                       Navigator.pop(context);
-//                       Navigator.pop(context);
-//                       Navigator.pop(context);
-//                     },
-//                     child: const Text('확인', style: TextStyle(fontSize: 20)),
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: const Color(0xff81a4ff),
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(10.0)),
-//                     )))
-//           ]),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class ScreenArguments {
-//   final String userName;
-//   final String userLoginId;
-
-//   ScreenArguments(this.userName, this.userLoginId);
-// }
