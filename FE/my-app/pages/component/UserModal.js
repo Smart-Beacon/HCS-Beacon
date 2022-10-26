@@ -60,7 +60,7 @@ function UserModal() {
 
       
       const getUserInfo = async (item) =>{  
-        const URL = 'http://localhost:5000/sms/send';
+        const URL = 'http://localhost:8080/sms/send';
         axios.defaults.withCredentials = true;
         await axios.post(URL, item)
         .then(res => {

@@ -252,7 +252,7 @@ function visitorManagement(){
       };
 
     const getInfo = async () =>{
-        const URL = 'http://localhost:5000/user/enterant';
+        const URL = 'http://localhost:8080/user/enterant';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -267,7 +267,7 @@ function visitorManagement(){
     }
 
     const getStaDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/statement';
+        const URL = 'http://localhost:8080/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
@@ -283,7 +283,7 @@ function visitorManagement(){
     }
 
     const postInfo = async (item) =>{
-        const URL = "http://localhost:5000/user/enterant"
+        const URL = "http://localhost:8080/user/enterant"
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {

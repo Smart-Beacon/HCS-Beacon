@@ -234,7 +234,7 @@ function reservationCheck() {
         setNumber(number + 1);
     }
     const getDoorInfo = async () => {
-        const URL = 'http://localhost:5000/user/visitor';
+        const URL = 'http://localhost:8080/user/visitor';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);
@@ -261,7 +261,7 @@ function reservationCheck() {
         postAllowInfo(trueInfo);
     }
     const postAllowInfo = async (item) => {
-        const URL = "http://localhost:5000/user/visitor"
+        const URL = "http://localhost:8080/user/visitor"
         axios.defaults.withCredentials = true;
         // console.log(item);
         await axios.post(URL, item).then(res => {

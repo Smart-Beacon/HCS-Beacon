@@ -227,7 +227,7 @@ function ManagementSettings(){
     }
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/door/management';
+        const URL = 'http://localhost:8080/door/management';
         axios.defaults.withCredentials = true;
         await axios.get(URL)
         .then(res => {
@@ -240,7 +240,7 @@ function ManagementSettings(){
     }
 
     const postDoorInfo = async (item) =>{
-        const URL = "http://localhost:5000/door/register"
+        const URL = "http://localhost:8080/door/register"
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
@@ -252,7 +252,7 @@ function ManagementSettings(){
     }
 
     const getStaInfo = async () =>{
-        const URL = 'http://localhost:5000/statement';
+        const URL = 'http://localhost:8080/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {

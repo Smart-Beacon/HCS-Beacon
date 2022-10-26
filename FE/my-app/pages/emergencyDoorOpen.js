@@ -227,7 +227,7 @@ function emergencyDoorOpen() {
     };
     // ----------------------------------------------------------------------- 서버에서 데이터 받아오는 axios 함수
     const getInfo = async () => { // 도어 전체데이터
-        const URL = 'http://localhost:5000/door/adminemergency';
+        const URL = 'http://localhost:8080/door/adminemergency';
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);
@@ -242,7 +242,7 @@ function emergencyDoorOpen() {
         });
     }
     const getStaInfo = async () => { // 건물과 도어 데이터
-        const URL = 'http://localhost:5000/statement';
+        const URL = 'http://localhost:8080/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL).then(res => {
             if (res.status === 200) {
@@ -253,7 +253,7 @@ function emergencyDoorOpen() {
         });
     }
     const getDoorInfo = async (item) => { // 체크박스 사용시 데이터 정보를 보냄
-        const URL = 'http://localhost:5000/door/adminemergency';
+        const URL = 'http://localhost:8080/door/adminemergency';
         axios.defaults.withCredentials = true;
         await axios.post(URL, item).then(res => {
             // console.log(res);
