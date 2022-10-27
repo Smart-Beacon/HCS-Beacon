@@ -74,44 +74,6 @@ const getSuperEntrantList = async() => {
     return allUserData;
 }
 
-
-
-
-// const getEntrantList2 = async(userId,allows) => {
-//     const doorInfo = await Promise.all(allows.map(async allowData =>{
-//         return await Door.findOne({
-//             where:{doorId:allowData.doorId},
-//             attributes:['doorName', 'staId'],
-//             include:[{
-//                 model:Statement,
-//                 attributes:['staName']
-//             }]
-//         });
-//     }));
-
-//     const stateData = await Promise.all(doorInfo.map(async door =>{
-//         return await Statement.findOne({
-//             where:{staId:door.staId},
-//             attributes:['staName']
-//         });
-//     }));
-    
-//     const result = {
-//         userFlag: allows[0].userFlag,
-//         userName: userId.userName,
-//         company: userId.company,
-//         position: userId.position,
-//         phoneNum: userId.phoneNum,
-//         door: doorInfo.flatMap(data=>data.doorName),
-//         statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
-//         enterTime: userId.enterTime,
-//         exitTime: userId.exitTime,
-//         reason: userId.reason
-//     };
-
-//     return result;
-// }
-
 // 관리자용 출입자 리스트 함수
 // 사용 API : 출입자 관리 리스트 API
 // 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가
@@ -286,102 +248,9 @@ const changeVisitorAllow = async(data) => {
     return exAllow;
 }
 
-// 출입자 리스트 함수
-// 매개변수 : 출입 허용 목록(UserAllow)
-// 리턴값 : 출입자 목록(사용자 정보, 건물명, 출입문 명)
-// 사용함수
-//  getSuperEntrantList
-//  getAdminEntrantList
-// const getEntrantList = async(allows) => {
-//     const entrantList = await Promise.all(
-//         allows.map(async allowData => {
-//             const userDatas = await User.findAll({
-//                 where: {userId:allowData.userId},
-//                 attributes: ['userId','userName','company','position','phoneNum','reason','enterTime','exitTime']
-//             });
-
-//             const setUserData = await Promise.all(
-//                 userDatas.map(async userData => {
-
-//                     const doorData = await Door.findOne({
-//                         where: {doorId:allowData.doorId},
-//                         attributes:['doorName', 'staId']
-//                     });
-
-//                     const stateData = await Statement.findOne({
-//                         where: {staId:doorData.staId}
-//                     })
-
-//                     const setData = {
-//                         userFlag: allowData.userFlag,
-//                         userName: userData.userName,
-//                         company: userData.company,
-//                         position: userData.position,
-//                         phoneNum: userData.phoneNum,
-//                         staName: stateData.staName,
-//                         doorName: doorData.doorName,
-//                         enterTime: userData.enterTime,
-//                         exitTime: userData.exitTime,
-//                         reason: userData.reason,
-//                     }
-//                     return setData;
-//                 }));
-
-//             return setUserData;
-//         })
-//     )
-//     const result = await entrantList.flatMap(data => data);
-//     return result;
-// }
-
-
-
-const getEntrantList3 = async(userInfo) => {
-    const allowDatas = userInfo.userAllows;
-    console.log(allowDatas);
-    const doorInfo = await Promise.all(allowDatas.map(async allowData =>{
-        return await Door.findOne({
-            where:{doorId:allowData.doorId},
-            attributes:['doorName', 'staId'],
-            include:[{
-                model:Statement,
-                attributes:['staName']
-            }]
-        });
-    }));
-
-    console.log(doorInfo.flatMap(data=>data));
-
-    // const stateData = await Promise.all(doorInfo.map(async door =>{
-    //     return await Statement.findOne({
-    //         where:{staId:door.staId},
-    //         attributes:['staName']
-    //     });
-    // }));
-    
-    // const result = {
-    //     userFlag: allows[0].userFlag,
-    //     userName: userId.userName,
-    //     company: userId.company,
-    //     position: userId.position,
-    //     phoneNum: userId.phoneNum,
-    //     door: doorInfo.flatMap(data=>data.doorName),
-    //     statement: Array.from(new Set(stateData.flatMap(data=>data.staName))),
-    //     enterTime: userId.enterTime,
-    //     exitTime: userId.exitTime,
-    //     reason: userId.reason
-    // };
-
-    // return result;
-    return null;
-}
-
 // 방문자 리스트 함수
 // 매개변수 : 출입 허용 목록(UserAllow)
 // 리턴값 : 방문자 목록(사용자 정보, 건물명, 출입문 명)
-// 사용함수
-//  getSuperVisitorList
-//  getAdminVisitorList
 const getVisitorList = async(allows) => {
     const entrantList = await Promise.all(
         allows.map(async allowData => {
@@ -448,14 +317,6 @@ const registUser = async(userInfo) => {
         exUser.reason = userInfo.reason;
         exUser.enterTime = userInfo.enterTime;
         exUser.exitTime = userInfo.exitTime;
-        // const user = await User.update({
-        //     reason: userInfo.reason,
-        //     enterTime: userInfo.enterTime,
-        //     exitTime: userInfo.exitTime
-        // },{where:{
-        //     phoneNum:userInfo.phoneNum,
-        //     userName:userInfo.name
-        // }});
         await exUser.save();
         await UserAllow.create({
             allowId: await uuid.uuid(),

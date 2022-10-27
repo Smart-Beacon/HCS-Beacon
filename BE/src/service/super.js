@@ -5,6 +5,8 @@ const AdminStatment = require('../db/models/adminStatement');
 const uuid = require('./createUUID');
 const time = require('./time');
 
+// GET : 출입 관리자 리스트 함수
+// 모든 중간 관리자들의 정보를 리스트화 하여 보여주는 함수
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();
 
@@ -26,6 +28,8 @@ const getAdminData = async() =>{
     return result;
 };
 
+// POST : 출입 관리자 등록 함수
+// 관리할 건물 및 도어를 선택한 후 관리자를 생성하는 함수
 const createAdminData = async(data) => {
     console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});

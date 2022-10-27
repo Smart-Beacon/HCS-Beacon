@@ -49,8 +49,6 @@ const doorWarning = async(socketId) =>{
         console.log("socketId is null");
     }
     // null 일경우 체크
-  
-
 }
 
 module.exports = (server, app) =>{

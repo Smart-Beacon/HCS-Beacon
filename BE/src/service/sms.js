@@ -10,6 +10,7 @@ const CryptoJS = require("crypto-js");
 const SHA256 = require("crypto-js/sha256");
 const Base64 = require("crypto-js/enc-base64");
 
+
 const transData = async(doorIds,adminName) => {
     const result = await Promise.all(
         doorIds.map(async doorId => {
@@ -52,6 +53,7 @@ const transData = async(doorIds,adminName) => {
     return result 
 }
 
+
 const getSuperSmsRecord = async() => {
     const admin = await Admin.findAll({
         attributes: ['adminId', 'adminName'],
@@ -73,6 +75,7 @@ const getSuperSmsRecord = async() => {
     
     return sortedResult;
 }
+
 
 const getAdminSmsRecord = async(id) => {
 
@@ -145,13 +148,6 @@ const sendSMS = async (phoneNum, msg) =>{
 
     const smsRes = await axios(option);
     return smsRes.data.statusCode;
-    // request(option,function (err, res, body) {
-    //     if (err) console.log(err);
-    //     else {
-    //         console.log(body.statusCode);
-    //         return body.statusCode;
-    //     }
-    // });
 }
 
 module.exports = {
