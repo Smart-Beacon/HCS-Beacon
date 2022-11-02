@@ -107,7 +107,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManager(){
 
      useEffect(() => {
         getDoorInfo();
@@ -464,4 +464,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManager;

@@ -129,7 +129,7 @@ const style = css `
     }
 `;
 const cookies = new Cookies();
-function reservationCheck() {
+function useReservationCheck() {
     useEffect(() => {
         getDoorInfo();
         getCookieFunc();
@@ -439,4 +439,4 @@ function reservationCheck() {
 </div>
 <style jsx> {style}</style></div>)
 }
-export default reservationCheck;
+export default useReservationCheck;

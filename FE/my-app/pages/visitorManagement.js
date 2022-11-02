@@ -115,7 +115,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManagement(){
 
      useEffect(() => {
         getInfo();
@@ -466,9 +466,9 @@ function visitorManagement(){
                                                         <AccordionPanel pb={4}>
                                                             {DoorInfo.map((e, index) => {
                                                                 return(
-                                                                <table>
+                                                                <table key = {index}>
                                                                     <tbody>
-                                                                        <tr key = {index}>
+                                                                        <tr>
                                                                             <td>건물명 : {e.staName}</td>
                                                                             <td>도어명 : {e.doorNameList.toString()}</td> 
                                                                         </tr>
@@ -495,4 +495,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManagement;

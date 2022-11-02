@@ -121,7 +121,7 @@ const style = css `
 
 `;
 const cookies = new Cookies();
-function emergencyDoorOpen() {
+function useEmergencyDoorOpen() {
     useEffect(() => {
         getInfo();
         getStaInfo();
@@ -379,4 +379,4 @@ function emergencyDoorOpen() {
     )
 }
 
-export default emergencyDoorOpen;
+export default useEmergencyDoorOpen;
