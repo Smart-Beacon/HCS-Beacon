@@ -23,6 +23,8 @@ import android.os.Build;
 import android.Manifest;
 import java.util.List;
 import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class MainActivity extends FlutterActivity {
@@ -36,7 +38,7 @@ public class MainActivity extends FlutterActivity {
     UserRssi comp = new UserRssi();
 
     public String deviceUUID;
-    public String errorMessage;
+    HashSet<String> deviceIds = new HashSet<>();
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -45,11 +47,8 @@ public class MainActivity extends FlutterActivity {
                 .setMethodCallHandler(
                         (call, result) -> {
                             if (call.method.equals("getBeaconId")) {
-                                if(errorMessage != null){
-                                    result.success(errorMessage);
-                                }
-                                if (deviceUUID != null) {
-                                    result.success(deviceUUID);
+                                if (!this.deviceIds.isEmpty()) {
+                                    result.success(this.deviceIds.toString());
                                 } else {
                                     result.error("UNAVAILABLE", "no Search BeaconDevice.", null);
                                 }
@@ -158,19 +157,19 @@ public class MainActivity extends FlutterActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.i("start","start");
                         if(!minewBeacons.isEmpty()){
-                            minewBeacons.stream().filter(t->t.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue() == "MBeacon");
+                            HashSet<String> newDeviceId = new HashSet<String>();
                             Collections.sort(minewBeacons, comp);
-                            String Name = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                            deviceUUID = minewBeacons.get(0).getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
-                            Log.i(deviceUUID,Name);
-                        }
-                        Log.i("pass","pass");
-                        for (MinewBeacon minewBeacon : minewBeacons) {
-                            String deviceId = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
-                            String Rssi = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getStringValue();
-                            Log.i(deviceId,Rssi);
+                            for (MinewBeacon minewBeacon : minewBeacons) {
+                                String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                                String deviceMac = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_MAC).getStringValue();
+                                int Rssi = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getIntValue();
+                                if(Rssi >= -70 && deviceName.equals("MBeacon")){
+                                    newDeviceId.add(deviceMac);
+                                    //Log.i(deviceMac,String.valueOf(deviceIds.size()));
+                                }
+                            }
+                            deviceIds = (HashSet)newDeviceId.clone();
                         }
                     }
                 });
