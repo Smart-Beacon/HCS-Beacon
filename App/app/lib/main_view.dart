@@ -97,19 +97,23 @@ class _InOutButtonState extends State<InOutButton> {
   static const platform = MethodChannel('samples.flutter.dev/battery');
 
   String _deviceId = "";
-  String _beaconId = "";
+  List<String> _beaconIds = [];
+  List<String> _myDoorList = [];
+  
 
   Future<void> _getBeaconId() async {
     String beaconId;
+    List<String> beaconIds;
     try {
-      final String result = await platform.invokeMethod("getBeaconId");
-      beaconId = result;
+      beaconId = await platform.invokeMethod("getBeaconId");
+      String result = beaconId.replaceAll(' ', '');
+      beaconIds = result.substring(1,result.length-1).split(',');
     } on PlatformException catch (e) {
-      beaconId = e.message.toString();
+      beaconIds = [e.message.toString()];
     }
 
     setState(() {
-      _beaconId = beaconId;
+      _beaconIds = beaconIds;
     });
   }
 
@@ -132,27 +136,46 @@ class _InOutButtonState extends State<InOutButton> {
     } 
   }
 
-
-  void checkUser(result) {
-      showSnackBar(context, result);
+  Future<void> _getUserDoorList() async {
+    try{
+      const storage = FlutterSecureStorage();
+      var accessToken = await storage.read(key: 'BeaconToken');
+      var dio = Dio();
+      dio.options.headers['token'] = accessToken;  
+      String url = "${dotenv.env['SERVER_URL']!}/user/doorlist";
+      final res = await dio.post(url);
+      switch (res.statusCode) {
+        case 200:
+          var result  = res.toString().replaceAll(' ', '');
+          setState(() {
+            _myDoorList = result.substring(1,result.length-1).split(',');
+          });
+          break;
+        default:
+          checkUser("재로그인해주세요");
+          break;
+      }
+      
+    }catch(err){
+      checkUser(err.toString());
+    }
   }
 
-
-  Future<String?> isOpen() async {
+  Future<String?> isOpen(filterBeacon) async {
     try {
       const storage = FlutterSecureStorage();
       String? token = await storage.read(key:'BeaconToken');
-      String? doorId = _beaconId;
+      List <String> doorIds = filterBeacon;
+      //String? doorId = _beaconId;
 
-      if(_deviceId != "" && token != "" && doorId != ""){
-        log("${_deviceId.toString()}, ${token.toString()}, ${doorId.toString()}");        
+      if(_deviceId != "" && token != "" && doorIds.isNotEmpty){
+        log(doorIds.toString());        
         var dio = Dio();
         dio.options.headers['token'] = token;
-        
         String url = "${dotenv.env['SERVER_URL']!}/user/opendoor";
-        var res = await dio.post(url, data: {'doorId': doorId, 'deviceId': _deviceId});
+        var res = await dio.post(url, data: {'doorIds': doorIds, 'deviceId': _deviceId});
         log(res.data);
-        return res.data;
+        return res.data.toString();
       }
       return "서버 오류";
       
@@ -162,13 +185,54 @@ class _InOutButtonState extends State<InOutButton> {
     }
   }
 
+  Future<void> sendBeaconId() async {
+    await _getBeaconId();
+    List<String> filterBeacon = _myDoorList.where((element){
+      return _beaconIds.contains(element);
+    }
+    ).toList();
+    print(filterBeacon);
+    if(filterBeacon.isNotEmpty){
+        var result = await isOpen(filterBeacon);
+        checkUser(result);
+    }
+  }
+  
+  void checkUser(result) {
+      showSnackBar(context, result);
+  }
 
   @override
   void initState() {
     super.initState();
-    _getBeaconId();
+    _getUserDoorList();
+    //_getBeaconId();
     _getDeviceId();
+    Timer.periodic(const Duration(seconds: 6), (timer) {
+      sendBeaconId();  
+    });
   }
+
+  //@override
+  // Widget build(BuildContext context) {
+  //   return Container(
+  //     margin: const EdgeInsets.all(20),
+  //     width: 150,
+  //     height: 150,
+  //     child: ElevatedButton(
+  //       onPressed: () async {
+  //          await _getBeaconId();
+  //       },
+  //       style: ElevatedButton.styleFrom(
+  //           backgroundColor: const Color(0xFF4E7EFC),
+  //           shape: const CircleBorder(),),
+  //       child: Text(
+  //         widget.text,
+  //         style: const TextStyle(fontSize: 40.0),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -176,19 +240,7 @@ class _InOutButtonState extends State<InOutButton> {
       margin: const EdgeInsets.all(20),
       width: 150,
       height: 150,
-      child: ElevatedButton(
-        onPressed: () async {
-           await _getBeaconId();
-          checkUser(await isOpen());
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4E7EFC),
-            shape: const CircleBorder(),),
-        child: Text(
-          widget.text,
-          style: const TextStyle(fontSize: 40.0),
-        ),
-      ),
+      child: const Text("S"),
     );
   }
 }
