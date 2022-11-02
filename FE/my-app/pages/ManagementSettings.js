@@ -227,7 +227,7 @@ function ManagementSettings(){
     }
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/door/management';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/management`;
         axios.defaults.withCredentials = true;
         await axios.get(URL)
         .then(res => {
@@ -240,7 +240,7 @@ function ManagementSettings(){
     }
 
     const postDoorInfo = async (item) =>{
-        const URL = "http://localhost:8080/door/register"
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/register`;
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
@@ -252,7 +252,7 @@ function ManagementSettings(){
     }
 
     const getStaInfo = async () =>{
-        const URL = 'http://localhost:8080/statement';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {

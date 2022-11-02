@@ -55,7 +55,7 @@ const style = css`
 function Header() {
   
   const Logout = async (e) =>{
-    const URL = "http://localhost:8080/auth/logout"
+    const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/auth/logout`;
     axios.defaults.withCredentials = true;
         await axios.post(URL, null)
         .then(res => {

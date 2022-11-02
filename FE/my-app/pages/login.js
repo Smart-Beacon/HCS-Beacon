@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/Login.module.css";
 
-const URL = 'http://localhost:8080/auth/login';
+const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/auth/login`;
 axios.defaults.withCredentials = true;
 
 function Login() {
@@ -18,7 +18,7 @@ function Login() {
                 if(res.status === 200){
                     // console.log("======================", "로그인 성공");
                     localStorage.setItem('name',JSON.stringify(res.data));
-                    window.location.replace('http://localhost:3000/main');
+                    window.location.replace(`${process.env.NEXT_PUBLIC_CLIENT_ADDR}/main`);
                 }else{
                     alert(res.data);
                 }

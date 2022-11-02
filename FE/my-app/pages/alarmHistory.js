@@ -116,7 +116,7 @@ function visitorManagement(){
     const [Data, setData] = useState([]);
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/alert';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/alert`;
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
