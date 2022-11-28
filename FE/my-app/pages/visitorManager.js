@@ -107,7 +107,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManager(){
 
      useEffect(() => {
         getDoorInfo();
@@ -134,7 +134,7 @@ function visitorManagement(){
 
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/super/admins';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/super/admins`;
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -253,7 +253,7 @@ function visitorManagement(){
     }
 
     const getStaDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/statement';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
@@ -269,7 +269,7 @@ function visitorManagement(){
     }
 
     const getamdinInfo = async (item) =>{
-        const URL = 'http://localhost:8080/super/admin/register';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/super/admin/register`;
         axios.defaults.withCredentials = true;
         axios.post(URL, item)
         .then(res => {
@@ -464,4 +464,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManager;

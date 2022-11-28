@@ -89,7 +89,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManagement(){
 
      useEffect(() => {
         getDoorInfo();
@@ -109,14 +109,10 @@ function visitorManagement(){
     
     const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"]
 
-    useEffect(() => {
-        getDoorInfo();
-      }, [])
-
     const [Data, setData] = useState([]);
 
     const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/alert';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/alert`;
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -177,4 +173,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManagement;

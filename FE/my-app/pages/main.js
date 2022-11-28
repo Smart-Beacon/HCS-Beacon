@@ -116,7 +116,7 @@ function Main() {
 
     const [Data, setData] = useState([])
     const getDoorInfo = async () => {
-        const URL = 'http://localhost:8080/door/monitor';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/monitor`;
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);

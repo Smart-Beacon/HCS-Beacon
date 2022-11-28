@@ -191,7 +191,7 @@ class _InOutButtonState extends State<InOutButton> {
       return _beaconIds.contains(element);
     }
     ).toList();
-    print(filterBeacon);
+    //print(filterBeacon);
     if(filterBeacon.isNotEmpty){
         var result = await isOpen(filterBeacon);
         checkUser(result);
@@ -237,10 +237,10 @@ class _InOutButtonState extends State<InOutButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(50),
       width: 150,
       height: 150,
-      child: const Text("S"),
+      child: Image.asset('assets/logo.png'),
     );
   }
 }
