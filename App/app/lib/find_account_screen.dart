@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/*
+  < 잊어버린 사용자의 아이디 혹은 비밀번호를 찾기 위해 선택하는 뷰 >
+  - 아이디 찾기 버튼 및 비밀번호 찾기 버튼이 존재
+*/
+
 class AccountFindingPage extends StatelessWidget {
   const AccountFindingPage({Key? key}) : super(key: key);
 
@@ -32,7 +37,11 @@ class AccountFindingPage extends StatelessWidget {
   }
 }
 
-//아이디 찾기 버튼
+/*
+  < 아이디 찾기 버튼 >
+  - 해당 버튼을 누를 시, 아이디를 찾기 위한 findId뷰로 넘어간다.
+*/
+
 class FindIdButton extends StatelessWidget {
   const FindIdButton({Key? key}) : super(key: key);
 
@@ -43,10 +52,7 @@ class FindIdButton extends StatelessWidget {
       width: 270,
       height: 150,
       child: ElevatedButton.icon(
-        icon: const Icon(
-          Icons.account_box, 
-          size:70.0
-        ),
+        icon: const Icon(Icons.account_box, size: 70.0),
         onPressed: () {
           Navigator.pushNamed(context, '/findId');
         },
@@ -55,13 +61,20 @@ class FindIdButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
-        label: const Text("아이디 찾기", style: TextStyle(fontSize: 25.0),),
+        label: const Text(
+          "아이디 찾기",
+          style: TextStyle(fontSize: 25.0),
+        ),
       ),
     );
   }
 }
 
-// 패스워드 찾기 버튼
+/*
+  < 패스워드 찾기 버튼 >
+  - 해당 버튼을 누를 시, 비밀번호를 찾기 위한 findpw뷰로 넘어간다.
+*/
+
 class FindPwButton extends StatelessWidget {
   const FindPwButton({Key? key}) : super(key: key);
 
@@ -72,10 +85,7 @@ class FindPwButton extends StatelessWidget {
       width: 270,
       height: 150,
       child: ElevatedButton.icon(
-        icon: const Icon(
-          Icons.fact_check, 
-          size:70.0
-        ),
+        icon: const Icon(Icons.fact_check, size: 70.0),
         onPressed: () {
           Navigator.pushNamed(context, '/findPw');
         },
@@ -84,7 +94,10 @@ class FindPwButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
-        label: const Text("비밀번호 찾기", style: TextStyle(fontSize: 25.0),),
+        label: const Text(
+          "비밀번호 찾기",
+          style: TextStyle(fontSize: 25.0),
+        ),
       ),
     );
   }

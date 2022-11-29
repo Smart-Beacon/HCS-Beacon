@@ -1,3 +1,8 @@
+// ▼ express 패키지 사용
+// ▼ morgan 패키지 사용
+// ▼ cookieParser 패키지 사용(쿠키 암호화)
+// ▼ dotenv 패키지 사용 (환경변수 사용)
+// ▼ cors 패키지 사용 (cors 오류 해결)
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
@@ -5,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
+// 환경 변수를 사용하기 위한 초기 설정
 dotenv.config();
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
@@ -35,7 +41,7 @@ sequelize
     });
 
 app.use(morgan('dev')); // 로그
-// 굳이 필요한가? public 폴더에 이미지, css, js 파일을 제공받을 때 설정
+// public 폴더에 이미지, css, js 파일을 제공받을 때 설정
 // app.use(express.static(path.join(__dirname, 'public'))); // 요청시 기본 경로 설정 
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
@@ -77,4 +83,5 @@ const server = app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
 });
 
+// 서버를 웹 소켓 서버로 설정
 webSocket(server,app);
