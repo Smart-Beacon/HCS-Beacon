@@ -56,8 +56,8 @@ function UserModal() {
         };
 
       
-      const getUserInfo = async (item) =>{        //서버에 데이터를 보내는 함수  
-        const URL = 'http://localhost:5000/sms/send';
+      const getUserInfo = async (item) =>{  
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/sms/send`;
         axios.defaults.withCredentials = true;
         await axios.post(URL, item)
         .then(res => {

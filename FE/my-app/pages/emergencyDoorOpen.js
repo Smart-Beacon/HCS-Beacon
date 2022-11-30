@@ -121,7 +121,7 @@ const style = css `
 
 `;
 const cookies = new Cookies();
-function emergencyDoorOpen() {
+function useEmergencyDoorOpen() {
     useEffect(() => {
         getInfo();
         getStaInfo();
@@ -228,7 +228,8 @@ function emergencyDoorOpen() {
     };
     // ----------------------------------------------------------------------- 서버에서 데이터 받아오는 axios 함수
     const getInfo = async () => { // 도어 전체데이터
-        const URL = 'http://localhost:5000/door/adminemergency';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/adminemergency`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);
@@ -245,7 +246,7 @@ function emergencyDoorOpen() {
         });
     }
     const getStaInfo = async () => { // 건물과 도어 데이터
-        const URL = 'http://localhost:5000/statement';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
         axios.defaults.withCredentials = true;
         axios.post(URL).then(res => {
             // console.log(res);
@@ -259,7 +260,7 @@ function emergencyDoorOpen() {
         });
     }
     const getDoorInfo = async (item) => { // 체크박스 사용시 데이터 정보를 보냄
-        const URL = 'http://localhost:5000/door/adminemergency';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/adminemergency`;
         axios.defaults.withCredentials = true;
         await axios.post(URL, item).then(res => {
             // console.log(res);
@@ -387,4 +388,4 @@ function emergencyDoorOpen() {
     )
 }
 
-export default emergencyDoorOpen;
+export default useEmergencyDoorOpen;

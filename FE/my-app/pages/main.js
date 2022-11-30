@@ -116,8 +116,8 @@ function Main() {
     }
     //
     const [Data, setData] = useState([])
-    const getDoorInfo = async () => { //서버에 데이터를 받아오는 함수       
-        const URL = 'http://localhost:5000/door/monitor';
+    const getDoorInfo = async () => {
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/monitor`;
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             if (res.status === 200) {

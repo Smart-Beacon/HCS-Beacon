@@ -89,7 +89,7 @@ const style = css`
 
 const cookies = new Cookies();   
 
-function visitorManagement(){
+function useVisitorManagement(){
 
      useEffect(() => {
         getDoorInfo();
@@ -107,6 +107,7 @@ function visitorManagement(){
         }
      //
     
+
     const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"];
 
     const [Data, setData] = useState([]);       //서버에서 받아온 데이터를 저장하는 useState
@@ -172,4 +173,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManagement;

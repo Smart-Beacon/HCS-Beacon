@@ -185,8 +185,6 @@ router.post('/find/pw',async(req,res)=>{
 // 출입자 정보 가져오는 API
 // POST : http://localhost:5000/user/info
 router.post('/info',async(req,res)=>{
-    //token사용할건지??
-    //사용자 인지 확인되면 그대로 값 반환
     try{
         const token = req.headers.token;
         console.log(token);
@@ -208,16 +206,16 @@ router.post('/info',async(req,res)=>{
 router.post('/opendoor',async(req,res)=>{
     try{
         const token = req.headers.token;
-        const {doorId, deviceId} = req.body;
-        console.log(token, doorId, deviceId);
+        const {doorIds, deviceId} = req.body;
+        console.log(token, deviceId);
         if(!token){
             return res.json(util.fail(CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
         }
         const user = await jwt.verify(token,process.env.JWT_SECRET);
         console.log(user.userId);
         const io = req.app.get('io');
-        const result = await getMainDatas.openDoorUser(user.userId,doorId,deviceId,io);
-        return res.status(200).send(result);
+        const result = await getMainDatas.openDoorUser(user.userId,doorIds,deviceId,io);
+        return res.status(200).send(result.toString());
     }catch(err){
         console.log(err.message);
         res.status(404).send(err.message);
@@ -234,5 +232,25 @@ router.post('/changepassword',async(req,res)=>{
         res.status(400).send(err.message);
     }
 })
+
+// 출입자 정보 가져오는 API
+// POST : http://localhost:8080/user/doorlist
+router.post('/doorlist',async(req,res)=>{
+    try{
+        const token = req.headers.token;
+        console.log(token);
+        if(!token){
+            return res.status(204).send("Not exist token");
+        }
+        const user = await jwt.verify(token,process.env.JWT_SECRET);
+        console.log(user.userId);
+        const result = await getMainDatas.getUserDoorList(user.userId);
+        return res.status(200).json(result);
+    }catch(err){
+        console.log(err.message);
+        res.status(405).send(err.message);
+    }
+});
+
 
 module.exports = router;

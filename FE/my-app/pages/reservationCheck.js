@@ -129,7 +129,7 @@ const style = css `
     }
 `;
 const cookies = new Cookies();
-function reservationCheck() {
+function useReservationCheck() {
     useEffect(() => {
         getDoorInfo();
         getCookieFunc();
@@ -200,8 +200,9 @@ function reservationCheck() {
         setDisabled(disabledClone);
         setNumber(number + 1);
     }
-    const getDoorInfo = async () => {   //서버에 데이터를 받아오는 함수
-        const URL = 'http://localhost:5000/user/visitor';
+    const getDoorInfo = async () => {
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/visitor`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             if (res.status === 200) {
@@ -227,7 +228,8 @@ function reservationCheck() {
         postAllowInfo(trueInfo);
     }
     const postAllowInfo = async (item) => {
-        const URL = "http://localhost:5000/user/visitor"
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/visitor`;
+
         axios.defaults.withCredentials = true;
         await axios.post(URL, item).then(res => {
             if (res.status === 200) {
@@ -385,4 +387,4 @@ function reservationCheck() {
 </div>
 <style jsx> {style}</style></div>)
 }
-export default reservationCheck;
+export default useReservationCheck;

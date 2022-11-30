@@ -224,8 +224,9 @@ function ManagementSettings(){
         setEndTime(null);
     }
 
-    const getDoorInfo = async () =>{        //서버에 데이터를 받아오는 함수
-        const URL = 'http://localhost:5000/door/management';
+    const getDoorInfo = async () =>{
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/management`;
+
         axios.defaults.withCredentials = true;
         await axios.get(URL)
         .then(res => {
@@ -237,8 +238,9 @@ function ManagementSettings(){
      });
     }
 
-    const postDoorInfo = async (item) =>{       //서버에 데이터를 보내는 함수
-        const URL = "http://localhost:5000/door/register"
+    const postDoorInfo = async (item) =>{
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/register`;
+
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
@@ -250,8 +252,9 @@ function ManagementSettings(){
             });
     }
 
-    const getStaInfo = async () =>{     //door들의 Data들을 post로 받아오는 함수
-        const URL = 'http://localhost:5000/statement';
+    const getStaInfo = async () =>{
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
+
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {

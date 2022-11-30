@@ -124,7 +124,8 @@ function ExitHistory() {
     // 데이터 받아오는 코드
     //------------------------------------------------------------
     const getDoorInfo = async () => {
-        const URL = 'http://localhost:5000/accessrecord';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/accessrecord`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);

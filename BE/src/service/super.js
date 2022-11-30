@@ -1,12 +1,21 @@
+//  ▼ BE/src/db/models 에 위치한 모델 파일을 각각 클래스 형태로 불러온다.
 const Admin = require('../db/models/admin');
 const AdminDoor = require('../db/models/adminDoor');
 const AdminStatment = require('../db/models/adminStatement');
 
+/*
+    ▼ BE/src/service/createUUID에 위치한 메소드들을 불러온다.
+    ▼ BE/src/service/time에 위치한 메소드들을 불러온다.
+*/
 const uuid = require('./createUUID');
 const time = require('./time');
 
-// GET : 출입 관리자 리스트 함수
-// 모든 중간 관리자들의 정보를 리스트화 하여 보여주는 함수
+/*
+    ▼ 중간관리자의 모든 정보를 리턴하는 함수
+    - 모든 중간 관리자의 이름, 로그인 Id, 회사, 전화번호, 
+    등록일자, 로그인 유무, sms수신 여부의 정보를 리턴한다.
+*/
+
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();
 
@@ -28,8 +37,16 @@ const getAdminData = async() =>{
     return result;
 };
 
-// POST : 출입 관리자 등록 함수
-// 관리할 건물 및 도어를 선택한 후 관리자를 생성하는 함수
+/*
+    ▼ 중간관리자를 등록하는 함수
+    - 클라이언트에서 보낸 데이터를 가지고 관리자를 새로 만드는 함수.
+    - 로그인 Id가 중복되는지 체크한 후, 중복되지 않았다면, 현재 시간을 측정하여 등록일자로 등록
+    - 관리자의 개인 정보(클라이언트가 보낸 데이터)를 새로 등록한다.
+    - 새로 등록된 관리자가 관리해야할 건물 및 출입문들을 설정해준다.
+    - 그대로 DB에 저장한다.
+    - 이후 새로 만들어진 관리자의 정보를 클라이언트에게 다시 보내 응답이 제대로 이루어졌음을 알린다.
+*/
+
 const createAdminData = async(data) => {
     console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});
@@ -90,7 +107,7 @@ const createAdminData = async(data) => {
     
 };
 
-
+//외부에서 사용할 수 있게 내보내기
 module.exports = {
     getAdminData,
     createAdminData

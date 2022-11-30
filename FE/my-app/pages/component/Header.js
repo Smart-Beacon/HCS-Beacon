@@ -55,7 +55,8 @@ const style = css`
 function Header() {
   /**로그아웃 시 server에 null값을 보내 로그아웃을 알리고 Localstorage를 초기화 시키는 함수**/
   const Logout = async (e) =>{
-    const URL = "http://localhost:5000/auth/logout"
+
+    const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/auth/logout`;
     axios.defaults.withCredentials = true;
         await axios.post(URL, null)
         .then(res => {

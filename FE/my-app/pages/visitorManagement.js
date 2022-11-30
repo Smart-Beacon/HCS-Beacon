@@ -112,7 +112,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManagement(){
 
      useEffect(() => {
         getInfo();
@@ -242,7 +242,8 @@ function visitorManagement(){
       };
 
     const getInfo = async () =>{
-        const URL = 'http://localhost:5000/user/enterant';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/enterant`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
@@ -256,7 +257,8 @@ function visitorManagement(){
     }
 
     const getStaDoorInfo = async () =>{
-        const URL = 'http://localhost:5000/statement';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
+
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
@@ -273,7 +275,8 @@ function visitorManagement(){
     }
 
     const postInfo = async (item) =>{
-        const URL = "http://localhost:5000/user/enterant"
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/enterant`;
+
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
@@ -444,9 +447,9 @@ function visitorManagement(){
                                                         <AccordionPanel pb={4}>
                                                             {DoorInfo.map((e, index) => {
                                                                 return(
-                                                                <table>
+                                                                <table key = {index}>
                                                                     <tbody>
-                                                                        <tr key = {index}>
+                                                                        <tr>
                                                                             <td>건물명 : {e.staName}</td>
                                                                             <td>도어명 : {e.doorNameList.toString()}</td> 
                                                                         </tr>
@@ -473,4 +476,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManagement;
