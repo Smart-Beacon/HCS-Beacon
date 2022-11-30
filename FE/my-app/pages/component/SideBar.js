@@ -27,6 +27,7 @@ const style = css`
     }
     `;
 
+//각 Page에 Link로 페이지 이동을 시켜주는 Side바
 const SideBar = ({pageNumber, isSuper}) => {
 
     return(

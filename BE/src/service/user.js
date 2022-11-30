@@ -89,6 +89,7 @@ const getSuperEntrantList = async() => {
     - 자신이 관리하는 출입문에 들어 올 수 있는 출입자들의 목록을 반환하는 함수
     - 성명, 전화번호, 소속, 직책, 건물명, 출입문명, 방문일시, 방문허가의 정보들을 반환한다.
 */
+
 const getAdminEntrantList = async(adminId) => {
     console.log(adminId);
     const doorIds = await AdminDoor.findAll({
@@ -275,19 +276,16 @@ const changeVisitorAllow = async(data) => {
     return exAllow;
 }
 
-
 /*
     ▼ 모든 방문자 리스트 함수
     - app에서 사용자가 입력한 출입 정보들을 받아 해당 정보들을 db에 저장한다.
     - 만일 들어왔던 기록이 존재하는 방문자 일 경우, 출입 허가는 하지 않고, 방문 사유, 출입 시간만 수정하여 등록한다.
     - 처음 등록한 방문자일 경우, 출입 허가는 하지 않고, 모든 정보를 등록한다.
 */
+
 // 방문자 리스트 함수
 // 매개변수 : 출입 허용 목록(UserAllow)
 // 리턴값 : 방문자 목록(사용자 정보, 건물명, 출입문 명)
-// 사용함수
-//  getSuperVisitorList
-//  getAdminVisitorList
 const getVisitorList = async(allows) => {
     const entrantList = await Promise.all(
         allows.map(async allowData => {

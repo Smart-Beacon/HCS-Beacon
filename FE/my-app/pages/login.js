@@ -10,13 +10,11 @@ function Login() {
     const [ID, setID] = useState("")
     const [PW, setPW] = useState("")
 
-    function loginUser(){
+    function loginUser(){       //ID, PW를 입력받고 localStorage에 정보를 넣은 후 메인 홈페이지로 이동시키는 함수
         const body = { ID, PW }
         const request = axios.post(URL, body)
             .then(res => {
-                // console.log(res);
                 if(res.status === 200){
-                    // console.log("======================", "로그인 성공");
                     localStorage.setItem('name',JSON.stringify(res.data));
                     window.location.replace(`${process.env.NEXT_PUBLIC_CLIENT_ADDR}/main`);
                 }else{
@@ -25,18 +23,15 @@ function Login() {
             });
     }
 
-    const onIdHandler = (e) => {
-        // console.log(ID);
+    const onIdHandler = (e) => {    //ID를 입력받는 함수
         setID(e.currentTarget.value)
     }
 
-    const onPwHandler = (e) => {
-        // console.log(PW);
+    const onPwHandler = (e) => {    //PW를 입력받는 함수
         setPW(e.currentTarget.value)
     }
 
-    const onSubmitHandler = (e) => {
-        // console.log('start');
+    const onSubmitHandler = (e) => {    //로그인 사인을 보내는 함수
         e.preventDefault();
         loginUser();
     }

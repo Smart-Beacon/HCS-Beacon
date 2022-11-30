@@ -9,7 +9,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import ExportExcel from "./component/Excelexport";
 import {Cookies} from "react-cookie";
-import { getHours } from "date-fns";
 
 const style = css `
     .container{
@@ -126,6 +125,7 @@ function ExitHistory() {
     //------------------------------------------------------------
     const getDoorInfo = async () => {
         const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/accessrecord`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);

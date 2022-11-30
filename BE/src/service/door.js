@@ -79,7 +79,7 @@ const getAllDoorData = async() =>{
     return result;
 }
 
-// GET : 출입문 관리 설정 데이터
+// GET : 출입문 관리 설정 데이터(최고 관리자)
 // 모든 건물에 있는 도어들의 데이터들을 확인하는 함수
 // 최고 관리자만 사용하는 함수
 // 건물명, 출입문 명 ID, 현재상태, 출입관리, 날짜, 개방시간, 폐쇄시간
@@ -117,6 +117,10 @@ const getSuperDoorDatas = async() =>{
     return result;
 }
 
+// GET : 출입문 관리 설정 데이터(중간 관리자)
+// 자신이 관리하는 건물에 있는 도어들의 데이터들을 확인하는 함수
+// 중간 관리자만 사용하는 함수
+// 건물명, 출입문 명 ID, 현재상태, 출입관리, 날짜, 개방시간, 폐쇄시간
 const getAdminDoorDatas = async(adminId) =>{
         
     const doorIds = await AdminDoor.findAll({
@@ -271,9 +275,13 @@ const emergencyOpen = async(doorOpen, io) => {
         const exDoor = await Door.findOne({where: { doorId:door.doorId },attributes:['doorId','isOpen','socketId']});
         if(exDoor){
             if(door.isOpen){
-                io.to(exDoor.socketId).emit("emergencyOpen",{ duration:1000*60*60*24});  //ms단위로 24시간 열림
+                if(exDoor.socketId){
+                    io.to(exDoor.socketId).emit("emergencyOpen",{ duration:1000*60*60*24});  //ms단위로 24시간 열림
+                }
             }else{
-                io.to(exDoor.socketId).emit("emergencyClose","close door"); // 도어 닫음
+                if(exDoor.socketId){
+                    io.to(exDoor.socketId).emit("emergencyClose","close door"); // 도어 닫음
+                }
             }
             exDoor.latestDate = time.getDateHipon(new Date());
             exDoor.isOpen = door.isOpen;

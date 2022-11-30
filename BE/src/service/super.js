@@ -10,12 +10,12 @@ const AdminStatment = require('../db/models/adminStatement');
 const uuid = require('./createUUID');
 const time = require('./time');
 
-
 /*
     ▼ 중간관리자의 모든 정보를 리턴하는 함수
     - 모든 중간 관리자의 이름, 로그인 Id, 회사, 전화번호, 
     등록일자, 로그인 유무, sms수신 여부의 정보를 리턴한다.
 */
+
 const getAdminData = async() =>{
     const adminDatas = await Admin.findAll();
 
@@ -37,7 +37,6 @@ const getAdminData = async() =>{
     return result;
 };
 
-
 /*
     ▼ 중간관리자를 등록하는 함수
     - 클라이언트에서 보낸 데이터를 가지고 관리자를 새로 만드는 함수.
@@ -47,6 +46,7 @@ const getAdminData = async() =>{
     - 그대로 DB에 저장한다.
     - 이후 새로 만들어진 관리자의 정보를 클라이언트에게 다시 보내 응답이 제대로 이루어졌음을 알린다.
 */
+
 const createAdminData = async(data) => {
     console.log(data);
     const exAdmin = await Admin.findOne({where:{adminLoginId: data.adminLoginId}});

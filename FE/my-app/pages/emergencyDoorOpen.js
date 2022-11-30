@@ -127,6 +127,7 @@ function useEmergencyDoorOpen() {
         getStaInfo();
         getCookieFunc();
     }, [])
+    //쿠키값으로 최고관리자, 일반관리자를 확인하는 코드
     const [isSuper, setIsSuper] = useState(false);
     const getCookieFunc = () => {
         if (cookies.get("isSuper") === "1") {
@@ -135,14 +136,14 @@ function useEmergencyDoorOpen() {
             setIsSuper(false);
         }
     }
-    const header = ["No.", "시설명", "도어명", "개방여부"]
+    //
+    const header = ["No.", "시설명", "도어명", "개방여부"];
     const [Data, setData] = useState([]);
     const [DataClone, setDataClone] = useState([]);
     const [staDoorData, setStaDoorData] = useState([]);
     const [DoorData, setDoorData] = useState([]);
     const [filterData, setFilterData] = useState([]);
     const [checkedList, setCheckedLists] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
     const [selectStaName, setSelectStaName] = useState("");
     // -----------------------------------------------------------------------
     // 전체 체크박스 체크 함수
@@ -228,15 +229,18 @@ function useEmergencyDoorOpen() {
     // ----------------------------------------------------------------------- 서버에서 데이터 받아오는 axios 함수
     const getInfo = async () => { // 도어 전체데이터
         const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/adminemergency`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
             // console.log(res);
             if (res.status === 200) {
+                console.log("가져오기 성공");
                 setData(res.data);
                 setDataClone(res.data);
                 setDoorData(res.data);
                 NowCheck(res.data);
             } else {
+                console.log("가져오기 실패");
                 alert(res.data);
             }
         });
@@ -245,10 +249,13 @@ function useEmergencyDoorOpen() {
         const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
         axios.defaults.withCredentials = true;
         axios.post(URL).then(res => {
+            // console.log(res);
             if (res.status === 200) {
+                console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);
                 // setDoorData(res.data.doorData);
             } else {
+                console.log("데이터 받아오기 실패");
             }
         });
     }
@@ -258,7 +265,9 @@ function useEmergencyDoorOpen() {
         await axios.post(URL, item).then(res => {
             // console.log(res);
             if (res.status === 200) {
+                console.log("데이터 전송 성공");
             } else {
+                console.log("데이터 전송 실패");
             }
         });
     }

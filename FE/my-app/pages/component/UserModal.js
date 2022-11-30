@@ -15,27 +15,24 @@ import { useDisclosure,
     ModalBody,
     ModalCloseButton, } from '@chakra-ui/react'
 
-
-  
 function UserModal() {
 
-      const [userName, setUserName] = useState("");
-      const [num, setNum] = useState("");
+      const [userName, setUserName] = useState(""); 
+      const [num, setNum] = useState(""); //핸드폰 번호를 담아두는 useState
+      const phoneRef = useRef();
+      
+      const handleUserName = (e) => setUserName(e.target.value); //userName을 입력할 때 마다 값을 저장하는 useState
 
-      const addInfo = () => {
+      const addInfo = () => {       //입력한 userName과 PhoneNumber를 info에 저장 후 서버로 보내는 함수
         const info = {
             "userName": userName,
             "phoneNum": num
         }
-        console.log(info);
         getUserInfo(info);
         onClose();
       }
 
-      const handleUserName = (e) => setUserName(e.target.value);
-
-      const phoneRef = useRef();
-      const handlePhone = (e) => {
+      const handlePhone = (e) => {        //핸드폰 번호를 입력할 때 숫자만 입력받고 3 4 4순서로 자동 -을 넣어주는 함수
           const value = phoneRef.current.value.replace(/\D+/g, "");
           const numberLength = 11;
           let result;

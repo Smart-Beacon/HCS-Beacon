@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import SideBar from "./component/SideBar";
@@ -104,7 +104,8 @@ function Main() {
         "폐쇄시간",
         "경보상태"
     ];
-    const [warningCnt, setWarningCnt] = useState([]);
+    const [warningCnt, setWarningCnt] = useState([]);   //경보상태가 1인지 아닌지 확인하는 useState
+    //쿠키로 최고관리자, 일반관리자를 확인하는 코드
     const [isSuper, setIsSuper] = useState(false);
     const getCookieFunc = () => {
         if (cookies.get("isSuper") === "1") {
@@ -113,13 +114,12 @@ function Main() {
             setIsSuper(false);
         }
     }
-
+    //
     const [Data, setData] = useState([])
     const getDoorInfo = async () => {
         const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/door/monitor`;
         axios.defaults.withCredentials = true;
         axios.get(URL).then(res => {
-            // console.log(res);
             if (res.status === 200) {
                 setData(res.data);
                 const warningArray = res.data.map(e => e.warning);
