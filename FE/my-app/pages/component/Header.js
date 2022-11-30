@@ -53,9 +53,9 @@ const style = css`
 
 
 function Header() {
-  
+  /**로그아웃 시 server에 null값을 보내 로그아웃을 알리고 Localstorage를 초기화 시키는 함수**/
   const Logout = async (e) =>{
-    const URL = "http://localhost:8080/auth/logout"
+    const URL = "http://localhost:5000/auth/logout"
     axios.defaults.withCredentials = true;
         await axios.post(URL, null)
         .then(res => {
@@ -70,16 +70,15 @@ function Header() {
 
   let timer = null;
 
-  const [Data, setData] = useState("")
-  const [time, setTime] = useState(moment());
+  const [Data, setData] = useState("")      //복호화된 Admin Name을 담아두는 useState
+  const [time, setTime] = useState(moment());   //상단에 실시간 시계를 사용하기 위해 사용한 useState
   
   useEffect(() => {
+    // 암호화된 관리자의 이름을 복호화하는 코드
     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
     const getName = localStorage.getItem('name').slice(1,-1);
-    // console.log(getName);
     const bytes = crypto.AES.decrypt(getName, key).toString(crypto.enc.Utf8);
     const originalText = JSON.parse(bytes);
-    // console.log(originalText);
     setData(originalText);
     timer = setInterval(() => {
       setTime(moment());
@@ -88,15 +87,6 @@ function Header() {
       clearInterval(timer);
     };
   }, []);
-
-//   const getName = async () =>{
-//     const key = process.env.NEXT_PUBLIC_CRYPTO_KEY;
-//     console.log(key);
-//     const bytes = crypto.AES.decrypt(localStorage.getItem('name'), key);
-//     const originalText = JSON.parse(bytes.toString(crypto.enc.Utf8));
-//     console.log(originalText);
-//     setData(originalText);  
-//  };
 
   return (
     <div>

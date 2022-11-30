@@ -119,8 +119,8 @@ function ManagementSettings(){
         getCookieFunc();
       }, [])
 
+    // 쿠키로 최고관리자 ,일반관리자를 구분하는 코드  
     const [isSuper, setIsSuper] = useState(false);
-
     const getCookieFunc = () => {
         if(cookies.get("isSuper") === "1"){
             setIsSuper(true);
@@ -133,7 +133,6 @@ function ManagementSettings(){
     const header = ["건물명", "출입문명", "ID(비콘)", "현재상태", "출입관리", "날짜", "개방시간", "폐쇄시간"]
 
     const [Data, setData] = useState([]);
-    const [addData, setAddData] = useState([]);
     const [AdminId, setAdminId] = useState("");
     const [doorName, setDoorName] = useState("");
     const [doorId, setDoorId] = useState("");
@@ -142,7 +141,6 @@ function ManagementSettings(){
     const [isMonitoring, setIsMonitoring] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
-    const [weekCheck, setweekCheck] = useState("");
     const [isSelected, setIsSelected] = useState(false);
     const [checkedList, setCheckedList] = useState([]);
     const [staDoorData, setStaDoorData] = useState([]);
@@ -153,25 +151,25 @@ function ManagementSettings(){
         setEndTime(null);
     };
 
-    const force = () => {
+    const force = () => {       //새로고침을 시켜주는 함수
         window.location.reload();
     }
 
-    const onSelectEnd = (time) => {
+    const onSelectEnd = (time) => {     //퇴실 시간을 선택하는 함수
         setEndTime(time);
     }
 
-    const handleAdminId = (e) => setAdminId(e.target.value);
-    const handledoorname = (e) => setDoorName(e.target.value);
-    const handledoorId = (e) => setDoorId(e.target.value);
-    const handlestaName = (e) => {
+    const handleAdminId = (e) => setAdminId(e.target.value);    //ID를 입력받는 함수
+    const handledoorname = (e) => setDoorName(e.target.value);  //doorName를 입력받는 함수
+    const handledoorId = (e) => setDoorId(e.target.value);      //doorID를 입력받는 함수
+    const handlestaName = (e) => {      //staId를 입력받는 함수
         const Name = e.target.value;
         setstaName(Name);
         staDoorData.map((e) => Name === e.staName ? setstaId(e.staId) : null);
     }
-    const handlestaId = (e) => setstaId(e.target.value);
-    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);  
-    const handleCheckdList = (checked, item) => {
+    const handlestaId = (e) => setstaId(e.target.value);    //staId를 입력받는 함수
+    const handleisMonitoring = (e) => setIsMonitoring(e.target.value);  //실시간 감시여부를 체크하는 함수
+    const handleCheckdList = (checked, item) => {   //체크한 staDoorId를 Array에 추가하는 함수 
         if (checked) {
           setCheckedList([...checkedList, item]);
         } else if (!checked) {
@@ -179,7 +177,7 @@ function ManagementSettings(){
         }
       };  
 
-    const addInfo = () => {
+    const addInfo = () => {     //입력받은 데이터들을 JSON형식으로 서버에 보내는 함수
 
         const isMonitoringBoolean = Boolean(Number(isMonitoring));
         const OpenTime = "";
@@ -207,17 +205,17 @@ function ManagementSettings(){
 
 
 
-        if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" && 
+        if(serverinfo.adminLoginId !== "" && serverinfo.doorId !== "" && serverinfo.doorName !== "" &&      //빈 칸 입력을 막는 코드
         serverinfo.openTime  !== "" && serverinfo.closeTime !== "" && checkedList.length !== 0){
             postDoorInfo(serverinfo);
             clearData();
             onClose();
         }else{
-            alert("빈 칸을 작성해주세요");      
+            alert("빈 칸을 작성해주세요");            
         }
     }
 
-    const clearData = () => {
+    const clearData = () => {       //Modal창을 나갔을 때 데이터들을 초기화 시켜주는 함수
         setIsMonitoring("");
         setIsSelected(false);
         setCheckedList([]);
@@ -226,8 +224,8 @@ function ManagementSettings(){
         setEndTime(null);
     }
 
-    const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/door/management';
+    const getDoorInfo = async () =>{        //서버에 데이터를 받아오는 함수
+        const URL = 'http://localhost:5000/door/management';
         axios.defaults.withCredentials = true;
         await axios.get(URL)
         .then(res => {
@@ -239,27 +237,29 @@ function ManagementSettings(){
      });
     }
 
-    const postDoorInfo = async (item) =>{
-        const URL = "http://localhost:8080/door/register"
+    const postDoorInfo = async (item) =>{       //서버에 데이터를 보내는 함수
+        const URL = "http://localhost:5000/door/register"
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
                 if(res.status === 201){
+                    console.log("======================", "데이터 전송 성공");
                 }else{
                     alert(res.data);
                 }
             });
     }
 
-    const getStaInfo = async () =>{
-        const URL = 'http://localhost:8080/statement';
+    const getStaInfo = async () =>{     //door들의 Data들을 post로 받아오는 함수
+        const URL = 'http://localhost:5000/statement';
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
-            // console.log(res);
             if(res.status === 200){
+                console.log("데이터 받아오기 성공");
                 setStaDoorData(res.data.staData);          
             }else{
+                console.log("데이터 받아오기 실패");
             }
      });
     }

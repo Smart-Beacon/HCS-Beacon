@@ -28,6 +28,7 @@ const style = css`
         background-color: #448aff;
     }`;
 
+//출입문 입출이력에 상단 메뉴바
 const TabMenu = ({pageNumber}) => {
 
     return(
