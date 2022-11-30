@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./component/Header";
 import UserModal from "./component/UserModal";
 import css from "styled-jsx/css";
@@ -87,7 +87,7 @@ const style = css`
     }
 `;
 
-const cookies = new Cookies();
+const cookies = new Cookies();   
 
 function visitorManagement(){
 
@@ -95,8 +95,8 @@ function visitorManagement(){
         getDoorInfo();
         getCookieFunc();
       }, [])
-
-      const [isSuper, setIsSuper] = useState(false);
+     //쿠키값에 저장된 값이 1이 맞다면 최고관리자 0이라면 일반 관리자로 분류하는 코드
+    const [isSuper, setIsSuper] = useState(false); 
 
     const getCookieFunc = () => {
             if(cookies.get("isSuper") === "1"){
@@ -105,22 +105,17 @@ function visitorManagement(){
                 setIsSuper(false);
             }
         }
-
+     //
     
-    const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"]
+    const header = ["No.", "건물명", "출입문명", "ID(비콘)", "경보날짜", "경보시간", "담당관리자"];
 
-    useEffect(() => {
-        getDoorInfo();
-      }, [])
+    const [Data, setData] = useState([]);       //서버에서 받아온 데이터를 저장하는 useState
 
-    const [Data, setData] = useState([]);
-
-    const getDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/alert';
+    const getDoorInfo = async () =>{        //서버에서 데이터를 받아오는 코드
+        const URL = 'http://localhost:5000/alert';
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
-            // console.log(res);
             if(res.status === 200){
                 setData(res.data);           
             }else{
