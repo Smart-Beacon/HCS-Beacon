@@ -14,6 +14,7 @@ const style = css`
     }
     `;
 
+/**테이블에 있는 내용들을 엑셀로 다운받게 하는 코드**/
 const ExportExcel = ({excelData, fileName}) => {
 
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';

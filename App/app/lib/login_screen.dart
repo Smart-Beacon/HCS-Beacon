@@ -6,6 +6,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 
+/*
+  < 메인 뷰로 이동하기 위한 로그인 뷰 >
+  - 사용자의 아이디 및 비밀번호를 입력하는 필드 존재
+  - 사용자의 계정을 찾는 것을 도와주는 페이지로 이동하는 버튼 존재
+*/
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -18,30 +24,43 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userPw = TextEditingController();
   String? _deviceId = '';
 
-  Future<void> _getDeviceId() async{
-    try{
+  /*
+    < 디바이스 고유 ID를 가져오는 메소드 >
+    - 안드로이드 및 ios 운영체제에 따라 나눠 다른 디바이스 ID를 가져온다.
+    - 해당 디바이스 Id를 변수에 저장한다.
+  */
+  Future<void> _getDeviceId() async {
+    try {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       if (Platform.isAndroid) {
-      AndroidDeviceInfo info = await deviceInfo.androidInfo;
-      setState(() {
-        _deviceId = info.id;
-      });
-    } else if (Platform.isIOS) {
-      IosDeviceInfo info = await deviceInfo.iosInfo;
-      setState(() {
-        _deviceId = info.identifierForVendor!;
-      });
-    }
-    }catch(err){
+        AndroidDeviceInfo info = await deviceInfo.androidInfo;
+        setState(() {
+          _deviceId = info.id;
+        });
+      } else if (Platform.isIOS) {
+        IosDeviceInfo info = await deviceInfo.iosInfo;
+        setState(() {
+          _deviceId = info.identifierForVendor!;
+        });
+      }
+    } catch (err) {
       return;
-    } 
+    }
   }
 
+  /*
+    < 로그인 하는 메소드 >
+    - 사용자가 입력한 로그인 Id와 패스워드, 해당 디바이스 Id를 API서버로 전송한다.
+    - 사용자의 정보가 일치 하며, 최초 로그인 시 최초 로그인한 디바이스Id 를 DB에 저장 후, 서버로부터 토큰을 받는다.
+    - 해당 토큰을 기기에 저장한 다음 main 뷰로 이동.
+    - 사용자의 정보가 일치 하며, 최초 로그인이 아닐 경우, 저장된 디바이스Id와 전송한 디바이스 ID의 일치 여부를 체크
+    - 만일 일치 할 경우, 서버로부터 토큰을 받고 기기에 저장한 다음 main 뷰로 이동.
+    - 만일 일치 하지 않을 경우, 다른 사람이 로그인한 것으로 간주하여 오류 메시지를 띄운다.
+  */
   Future<void> callAPI(BuildContext context) async {
     try {
       //await _getDeviceId();
       var dio = Dio();
-      //String url = "http://10.0.2.2:5000/auth/user/login";
       String url = "${dotenv.env['SERVER_URL']!}/auth/user/login";
       var res = await dio.post(url, data: {
         'userId': userId.text,
@@ -68,11 +87,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  /*
+    < 서버로부터 받은 토큰을 저장하는 메소드 >
+    - flutterSecureStorage 플러그인을 사용하여 안전하게 기기에 토큰을 저장
+    - 해당 토큰을 key-value 형태로 저장
+  */
   void saveToken(jwt) async {
     const storage = FlutterSecureStorage();
     String token = jwt;
     await storage.write(key: "BeaconToken", value: token);
   }
+
+  /*
+    < 아이디 및 패스워드가 빈칸인지 체크하는 메소드 >
+    - 아이디 및 패스워드가 하나라도 빈칸일 경우 오류메시지를 띄우며, False를 반환
+  */
 
   dynamic isEnterInfo() {
     if (userId.text.isEmpty) {
@@ -86,6 +115,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return true;
   }
 
+  /*
+    < 해당 뷰가 시작될 때 처음 실행되는 메소드 >
+    - 현재 기기의 디바이스ID를 가져와 저장하는 메소드를 실행한다.
+  */
   @override
   void initState() {
     super.initState();
@@ -99,6 +132,12 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  /*
+    < 메인 뷰로 이동하기 위한 로그인 뷰 >
+    - 사용자의 아이디 및 비밀번호를 입력하는 필드 존재
+    - 사용자가 기입한 정보를 API서버로 보내주는 버튼 존재(로그인 버튼)
+    - 사용자의 계정을 찾는 것을 도와주는 페이지로 이동하는 버튼 존재
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,9 +191,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
                   //padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Text("※ 고정 출입자는 아이디를 입력해주세요",textAlign: TextAlign.center,style: TextStyle(
-                    fontSize: 13.0, color: Colors.grey, fontWeight:  FontWeight.bold,
-                  ),),
+                  child: Text(
+                    "※ 고정 출입자는 아이디를 입력해주세요",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 15.0),

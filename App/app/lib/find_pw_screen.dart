@@ -4,6 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:app/snackbar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/* 
+  < 잊어버린 패스워드를 찾기 위해 정보 및 인증번호를 입력하는 뷰 >
+  - 패스워드를 찾기 위해 사용자의 전화번호, 사용자의 이름, 사용자의 로그인ID를 기입한 후, API서버로 정보를 전송
+  - 서버로부터 응답이 제대로 될 경우, 해당 사용자의 전화번호로 인증번호 전송
+  - 서버로부터 응답이 제대로 안될 경우, 오류 메시지를 띄운다.
+  - 인증번호 통과 후, 임시 발급된 패스워드가 기입된 뷰로 바뀐다.
+  - 추후에 패스워드를 사용자가 정보 변경 뷰에서 바꿔줘야한다.
+*/
+
 class FindPwScreen extends StatefulWidget {
   const FindPwScreen({Key? key}) : super(key: key);
 
@@ -20,6 +29,12 @@ class _FindPwScreenState extends State<FindPwScreen> {
   String? userId;
   String? userRealName;
   String? userLoginPw;
+
+  /*
+    < 사용자 정보를 기입했는지 체크하는 메소드 >
+    - 사용자의 이름 칸과 사용자의 전화번호 칸, 아이디 칸이 비워져있는 경우를 체크한다.
+    - 셋 중 하나라도 비워져있는 경우 False를 반환
+  */
 
   dynamic isEnterInfo() {
     if (userName.text.isEmpty) {
@@ -43,10 +58,16 @@ class _FindPwScreenState extends State<FindPwScreen> {
     super.dispose();
   }
 
+  /*
+    < API서버에 정보를 전송하여 사용자가 존재하는지 체크하는 메소드 >
+    - API서버에 사용자 이름, 사용자 전화번호, 사용자의 아이디를 전송하여 해당 사용자가 존재 할 경우
+      사용자의 고유ID(userId)를 받고 해당 정보를 저장한다.
+    - 해당 사용자가 존재하지 않을 경우 오류 메시지를 띄운다.
+  */
+
   Future<int?> isUserExist(BuildContext context) async {
     try {
       var dio = Dio();
-      //String url = "http://10.0.2.2:5000/user/check/pw";
       String url = "${dotenv.env['SERVER_URL']!}/user/check/pw";
       var res = await dio.post(url, data: {
         'name': userName.text,
@@ -70,6 +91,13 @@ class _FindPwScreenState extends State<FindPwScreen> {
     return null;
   }
 
+  /*
+    < 메시지를 띄워주는 메소드 >
+    - API서버의 응답 코드에 따라 다른 메시지를 띄워준다.
+    - 사용자의 정보가 존재하여 올바른 응답을 받을 경우 인증번호가 발송되었다는 메시지를 띄운다.
+    - 사용자의 정보가 존재하지 않는다는 응답을 받을 경우, 해당 유저는 존재하지 않는다는 메시지를 띄운다.
+  */
+
   void checkUser(result) {
     if (result == 200) {
       showSnackBar(context, '인증번호가 발송되었습니다.');
@@ -78,10 +106,16 @@ class _FindPwScreenState extends State<FindPwScreen> {
     }
   }
 
+  /*
+    < 사용자가 입력한 인증번호가 맞는지 체크하는 메소드 >
+    - 사용자가 입력한 인증번호와 API서버로 받은 userId를 서버로 전송하여 올바른 인증번호를 입력했는지 체크한다.
+    - 올바른 인증번호를 기입했을 경우, 서버로부터 유저의 이름과 임시 패스워드를 받는다.
+    - 올바른 인증번호를 기입하지 않을 경우, 서버로부터 오류 메시지를 받는다.
+  */
+
   Future<int?> verifyUser() async {
     try {
       var dio = Dio();
-      //String url = "http://10.0.2.2:5000/user/find/pw";
       String url = "${dotenv.env['SERVER_URL']!}/user/find/pw";
       final res =
           await dio.post(url, data: {'userId': userId, 'token': token.text});
@@ -104,6 +138,13 @@ class _FindPwScreenState extends State<FindPwScreen> {
     return null;
   }
 
+  /*
+    < API서버로부터 받은 결과를 메시지로 출력하는 메소드 >
+    - 인증번호가 제대로 기입되었을 경우, 임시 패스워드를 알려주는 페이지로 이동
+    - 입력한 인증번호 시간이 초과 될 경우, "시간 초과" 메시지를 띄운다.
+    - 입력한 인증번호가 틀렸을 시, "인증번호가 일치하지 않는다"는 메시지를 띄운다.
+    - 그 외의 서버로 오류가 발생 했을 시, "에러" 메시지를 띄운다
+  */
   dynamic isPageMove(context, result) {
     if (result == 200) {
       Navigator.pushNamed(context, '/findPwResult',
@@ -117,6 +158,12 @@ class _FindPwScreenState extends State<FindPwScreen> {
     }
   }
 
+  /*
+    < 임시 패스워드를 받기 위해 기입해야되는 정보를 보여주는 뷰 >
+    - 사용자의 이름, 사용자의 전화번호 및 사용자의 아이디를 기입하는 부분 존재
+    - 올바른 정보 기입 한 후 API서버로 정보를 전송, 응답을 받을 경우 인증번호 입력 칸 및 전송 버튼이 생긴다.
+    - 올바른 인증번호 입력 시, 임시 패스워드를 보여주는 페이지로 이동한다.
+  */
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -272,6 +319,11 @@ class _FindPwScreenState extends State<FindPwScreen> {
   }
 }
 
+/*
+  < 올바른 정보 및 인증번호 기입 시 임시 패스워드를 보여주는 뷰 >
+  - 유저의 이름 및 임시 패스워드를 보여주는 뷰이다.
+  - 뷰를 변경하는 과정에서 매개변수로 넘겨받은 유저의 이름과 임시 패스워드를 가져와 보여준다.
+*/
 class FindPwResultScreen extends StatelessWidget {
   const FindPwResultScreen({super.key});
 
@@ -321,6 +373,11 @@ class FindPwResultScreen extends StatelessWidget {
     );
   }
 }
+
+/* 
+  < 다른 뷰로 변수들을 넘겨주기 위해 사용하는 클래스 >
+  - 유저의 이름과 유저의 임시 패스워드를 넘겨주기 위한 클래스
+*/
 
 class ScreenArguments {
   final String userName;

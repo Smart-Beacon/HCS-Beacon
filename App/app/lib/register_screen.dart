@@ -7,6 +7,15 @@ import 'package:app/snackbar.dart';
 import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/*
+  < 방문 신청을 위해 사용자 정보를 기입해야되는 뷰 >
+  - 사용자 방문 신청을 위해 여러 정보를 기입해야 된다.
+  - 사용자 이름, 전화번호, 소속, 직책, 패스워드, 방문 사유를 기입해야한다.
+  - 방문시간, 방문 일자, 출입할 건물 및 출입문을 선택해야한다.
+  - 전부 올바르게 선택하였을 경우 방문 신청 버튼을 클릭 시, API서버로 해당 데이터를 전송
+  - 서버로부터 응답을 받게 되었을 경우, 등록이 되었다는 메시지를 띄워준 후, 3초 뒤에 middle 뷰로 이동
+*/
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -32,6 +41,12 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
   List<Statement>? statement;
   List<DoorInfo>? doorInfo;
 
+  /*
+    < 방문 날짜를 보여주는 메소드 >
+    - 만약 아직 방문 날짜를 선택하지 않았을 경우, "방문 일시" 문자열을 보여준다.
+    - 만약 방문 날짜를 선택하였다면, 해당 방문 날짜를 "yyyy-MM-DD" 형식으로 보여준다.
+  */
+
   String getText() {
     if (selectedDate == null) {
       return '방문 일시';
@@ -39,6 +54,12 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
       return DateFormat('yyyy-MM-dd').format(selectedDate!);
     }
   }
+
+  /*
+    < 입출 시간를 보여주는 메소드 >
+    - 만약 아직 입출 시간을 선택하지 않았을 경우, "입출 시간" 문자열을 보여준다.
+    - 만약 입출 시간을 선택하였다면, 해당 입출 시간을 "HH-MM" 형식으로 보여준다.
+  */
 
   String getTime(time) {
     if (time == null) {
@@ -48,6 +69,11 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     }
   }
 
+  /*
+    < 방문 날짜를 선택하는 메소드 >
+    - 현재 날짜를 기준부터 5년 까지 달력 형식으로 날짜를 보여준다.
+    - 들어갈 날짜를 선택하면 해당 날짜를 저장한다.
+  */
   Future pickDate(BuildContext context) async {
     final initialDate = DateTime.now();
     final newDate = await showDatePicker(
@@ -61,6 +87,11 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     setState(() => selectedDate = newDate);
   }
 
+  /*
+    < 입출 시간을 선택하는 메소드 >
+    - 00:00 ~ 23:45의 시간 중에서 자신이 입장할 시간을 선택한다.
+    - 들어갈 시간을 선택하면 해당 시간를 저장한다.
+  */
   Future pickStartTime(BuildContext context) async {
     final newStartTime = await TimePicker.show(
         context: context,
@@ -74,6 +105,11 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     setState(() => selectedStartTime = newStartTime);
   }
 
+  /*
+    < 입출 시간을 선택하는 메소드 >
+    - 00:00 ~ 23:45의 시간 중에서 자신이 퇴장할 시간을 선택한다.
+    - 나갈 시간을 선택하면 해당 시간를 저장한다.
+  */
   Future pickEndTime(BuildContext context) async {
     final newEndTime = await TimePicker.show(
         context: context,
@@ -87,9 +123,13 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     setState(() => selectedEndTime = newEndTime);
   }
 
+  /*
+    < 건물 정보 및 출입문 정보를 가져오는 메소드 >
+    - 사용자가 들어갈 수 있는 모든 건물 이름 및 출입문 이름을 받아온다.
+    - 서버로부터 받은 정보들을 리스트화하여 저장한다.
+  */
   Future<void> getDoorInfo() async {
     var dio = Dio();
-    //String url = 'http://10.0.2.2:5000/statement/regist';
     String url = "${dotenv.env['SERVER_URL']!}/statement/regist";
     var res = await dio.post(url);
     switch (res.statusCode) {
@@ -113,6 +153,10 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     }
   }
 
+  /* 
+    < 해당 뷰에 들어왔을 때 실행되는 메소드 >
+    - 건물 정보 및 출입문 정보를 가져오는 메소드를 실행한다.
+  */
   @override
   void initState() {
     super.initState();
@@ -129,6 +173,11 @@ class _RegisterDemoScreentate extends State<RegisterScreen> {
     super.dispose();
   }
 
+  /*
+    < 정보 기입 메뉴를 보여주는 뷰 >
+    - 사용자 이름, 전화번호, 소속, 직책, 패스워드, 방문 사유 입력 칸을 보여준다.
+    - 방문시간, 방문 일자, 출입할 건물 및 출입문을 선택할 수 있게 칸을 보여준다.
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -437,9 +486,16 @@ class RegisterButton extends StatefulWidget {
 }
 
 class _RegisterButtonState extends State<RegisterButton> {
+  /*
+    < API서버로 정보를 전송하는 메소드 >
+    - 사용자가 모든 정보를 제대로 기입하였을 경우 실행된다.
+    - 사용자가 기입한 정보들을 json 형식으로 API서버로 전송한다.
+    - 서버로부터 제대로 응답을 받았을 경우, "등록이 완료되었다"는 메시지를 띄워준다.
+    - 3초 후에 middle 뷰로 이동한다.
+    - 서버로부터 제대로 응답을 받지 못하면 오류 메시지를 띄워준다.
+  */
   Future callAPI(BuildContext context) async {
     try {
-      //String url = "http://10.0.2.2:5000/user/register"; 
       String url = "${dotenv.env['SERVER_URL']!}/user/register";
       var dio = Dio();
       var date = DateFormat('yyyy-MM-dd').format(widget.selectedDate!);
@@ -454,7 +510,7 @@ class _RegisterButtonState extends State<RegisterButton> {
           'phoneNum': widget.phoneNum,
           'company': widget.company,
           'position': widget.position,
-          'loginPw':widget.loginPw,
+          'loginPw': widget.loginPw,
           'reason': widget.reason,
           'enterTime': enterTime,
           'exitTime': exitTime,
@@ -481,10 +537,21 @@ class _RegisterButtonState extends State<RegisterButton> {
     }
   }
 
+  /*
+    < 시간 포멧 메소드 >
+    - 매개변수로 받은 시간을 HH:MM:SS 시간으로 변환하여 리턴해주는 메소드이다.
+  */
   Future getStringTime(DateTime time) async {
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}';
   }
 
+  /*
+    < 사용자 정보를 기입했는지 체크하는 메소드 >
+    - 사용자의 이름, 전화번호, 소속, 직책, 패스워드, 방문사유 칸이 비워져있는 경우를 체크한다.
+    - 출입할 날짜, 시간, 출입할 문을 선택하지 않았는지 체크한다.
+    - 위의 정보 중 하나라도 비워져있는 경우 False를 반환
+    - 전화번호의 경우 형식 또한 체크한다. xxx-xxxx-xxxx => 이 형식을 체크
+  */
   dynamic isEnterInfo() {
     String patttern = r'\d{3}-\d{4}-\d{4}';
     RegExp regExp = RegExp(patttern);
@@ -504,7 +571,7 @@ class _RegisterButtonState extends State<RegisterButton> {
     } else if (widget.position == "") {
       showSnackBar(context, '직책을 기입해주세요.');
       return false;
-    }else if (widget.loginPw == "") {
+    } else if (widget.loginPw == "") {
       showSnackBar(context, '비밀번호를 입력해주세요.');
       return false;
     } else if (widget.reason == "") {
@@ -526,6 +593,12 @@ class _RegisterButtonState extends State<RegisterButton> {
     return true;
   }
 
+  /*
+    < 출입 시간 비교 메소드 >
+    - 들어갈 시간과 나갈 시간을 비교하는 메소드이다.
+    - 들어갈 시간이 나갈 시간보다 클 경우(늦을 경우) 오류 메시지를 띄운후, False를 반환한다.
+    - 들어갈 시간이 나갈 시간보다 작을 경우(빠를 경우) True를 반환한다.
+  */
   dynamic compareTime() {
     final isCorrectTime =
         widget.selectedStartTime?.isBefore(widget.selectedEndTime!);
@@ -537,6 +610,12 @@ class _RegisterButtonState extends State<RegisterButton> {
     }
   }
 
+  /*
+    < 방문 신청 버튼 뷰 >
+    - 방문 신청을 누르는 버튼이 존재
+    - 해당 버튼 클릭 시, 기입한 정보들을 API서버로 전송한다.
+    - 기입한 정보가 부족한 경우는 전송하지 않는다.
+  */
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -563,6 +642,12 @@ class _RegisterButtonState extends State<RegisterButton> {
   }
 }
 
+/*
+  < 건물 정보를 전달하기 위한 클래스 >
+  - 건물 ID, 건물 이름을 넘겨주기 위한 클래스
+  - 또한, String형식으로 된 데이터를 Json형식으로 변경해서 리턴해준다.
+*/
+
 class Statement {
   final String? staId;
   final String? staName;
@@ -573,6 +658,12 @@ class Statement {
     return Statement(staId: json['staId'], staName: json['staName']);
   }
 }
+
+/*
+  < 출입문 정보를 전달하기 위한 클래스 >
+  - 소속된 건물 ID, 출입문 ID, 출입문 이름을 넘겨주기 위한 클래스.
+  - 또한, String형식으로 된 데이터를 Json형식으로 변경해서 리턴해준다.
+*/
 
 class DoorInfo {
   final String? staId;

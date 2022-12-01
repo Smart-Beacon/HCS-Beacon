@@ -1,3 +1,7 @@
+/*
+    ▼ 날짜 포멧 함수
+    - 날짜를 YYYY.MM.DD 형식으로 바꿔 리턴하는 함수
+*/
 const getDate = (date) => {
     if(date != null){
         var alertYear = date.getFullYear();
@@ -10,6 +14,10 @@ const getDate = (date) => {
     }
 }
 
+/*
+    ▼ 날짜 포멧 함수
+    - 날짜를 YYYY-MM-DD 형식으로 바꿔 리턴하는 함수
+*/
 const getDateHipon = (date) =>{
     if(date != null){
         let alertYear = date.getFullYear();
@@ -22,6 +30,11 @@ const getDateHipon = (date) =>{
     }
 }
 
+
+/*
+    ▼ 시간 포멧 함수
+    - 시간을 HH:MM 형식으로 바꿔 리턴하는 함수
+*/
 const getTime = (date) => {
     if(date != null){
         var hours = ('0' + date.getUTCHours()).slice(-2); 
@@ -33,6 +46,10 @@ const getTime = (date) => {
     
 }
 
+/*
+    ▼ 시간 포멧 함수
+    - 시간을 HH:MM:SS 형식으로 바꿔 리턴하는 함수
+*/
 const getTimeSecond = (date) =>{
     if(date != null){
         var hours = ('0' + date.getUTCHours()).slice(-2); 
@@ -44,6 +61,8 @@ const getTimeSecond = (date) =>{
     }
 }
 
+
+//외부에서 사용할 수 있게 내보내기
 module.exports = {
     getDate,
     getTime,

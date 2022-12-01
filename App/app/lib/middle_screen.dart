@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/*
+  < 로그인 버튼과 방문 신청 버튼이 있는 뷰 >
+  - 로그인 뷰로 이동할지, 아니면 방문 신청 뷰로 이동할지 선택하는 중간 뷰
+*/
+
 class MiddleScreen extends StatefulWidget {
   const MiddleScreen({super.key});
 
@@ -31,6 +36,10 @@ class _MiddleScreenState extends State<MiddleScreen> {
   }
 }
 
+/*
+  < 로그인 뷰로 이동하는 버튼 >
+  - 해당 버튼 클릭 시, 로그인 뷰( /login )로 이동한다.
+*/
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 
@@ -58,6 +67,12 @@ class LoginButton extends StatelessWidget {
   }
 }
 
+/*
+  < 방문 신청 뷰로 이동하는 버튼 >
+  - 해당 버튼 클릭 시, 방문 신청 뷰( /regist )로 이동한다.
+  - 즉, 방문자가 건물에 출입하기 위해 정보를 입력하여 등록하는 뷰이다.
+*/
+
 class RegisterButton extends StatelessWidget {
   const RegisterButton({super.key});
 
@@ -84,4 +99,3 @@ class RegisterButton extends StatelessWidget {
     );
   }
 }
-

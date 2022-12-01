@@ -28,9 +28,6 @@ import {
     ModalCloseButton,
     useDisclosure,
     Divider,
-    Stack,
-    Radio, 
-    RadioGroup
   } from '@chakra-ui/react'
 
 const style = css`
@@ -115,7 +112,7 @@ const style = css`
 
 const cookies = new Cookies();
 
-function visitorManagement(){
+function useVisitorManagement(){
 
      useEffect(() => {
         getInfo();
@@ -149,16 +146,12 @@ function visitorManagement(){
     const [guestName, setGuestName] = useState("");
     const [staDoorData, setStaDoorData] = useState([]);
 
-    const [isUserFlag, setIsUserFlag] = useState(2);
-
     const handleUserName = (e) => setUserName(e.target.value);
     const handleCompany = (e) => setCompany(e.target.value);
     const handlePosition = (e) => setPosition(e.target.value);
     const handleUserLoginId = (e) => setUserLoginId(e.target.value);
     const handleUserLoginPw = (e) => setUserLoginPw(e.target.value);
     const handleGuestName = (e) => setGuestName(e.target.value);
-
-    const handleisFlag = (e) => setIsUserFlag(Number(e.target.value));  
 
     const SearchName = () => {
         if(guestName !== ""){
@@ -176,7 +169,6 @@ function visitorManagement(){
     const addInfo = () => {
 
         const doorListLen = checkedList.length;
-        // console.log(doorListLen);
 
         const info = {
             "userName": userName,
@@ -185,13 +177,11 @@ function visitorManagement(){
             "phoneNum": num,
             "userLoginId" : userLoginId,
             "userLoginPw": userLoginPw,
-            "userFlag": isUserFlag,
             "doorList": checkedList
         }
         if(info.company !== "" && info.position !== "" && info.adminName !== ""
-        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0 && isUserFlag !== 2){
+        && info.num !== "" && info.userLoginId !== "" && info.userLoginPw !== "" && doorListLen !== 0){
             postInfo(info);
-            setIsUserFlag(2);
             setCheckedLists([]);
             onClose();
         }else{
@@ -252,11 +242,11 @@ function visitorManagement(){
       };
 
     const getInfo = async () =>{
-        const URL = 'http://localhost:8080/user/enterant';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/enterant`;
+
         axios.defaults.withCredentials = true;
         axios.get(URL)
         .then(res => {
-            // console.log(res);
             if(res.status === 200){
                 setData(res.data);
                 setDataClone(res.data);            
@@ -267,28 +257,33 @@ function visitorManagement(){
     }
 
     const getStaDoorInfo = async () =>{
-        const URL = 'http://localhost:8080/statement';
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/statement`;
+
         axios.defaults.withCredentials = true;
         axios.post(URL)
         .then(res => {
-            // console.log(res);
             if(res.status === 200){
+                console.log("데이터를 불러오는데 성공했습니다");
                 setDoorInfoData([]);
                 setStaDoorData(res.data.staData);
                 setDoorInfoDataClone(res.data.doorData);           
             }else{
+                console.log("데이터를 불러오지 못했습니다");
             }
      });
      onOpen();
     }
 
     const postInfo = async (item) =>{
-        const URL = "http://localhost:8080/user/enterant"
+        const URL = `${process.env.NEXT_PUBLIC_HOST_ADDR}/user/enterant`;
+
         axios.defaults.withCredentials = true;
             await axios.post(URL, item)
             .then(res => {
                 if(res.status === 201){
+                    console.log("======================", "데이터 전송 성공");
                 }else{
+                    console.log("false");
                 }
             });
     }
@@ -307,6 +302,7 @@ function visitorManagement(){
       >
         <ModalOverlay />
         <ModalContent style = {{height: "80%"}}>
+          <ModalCloseButton />
           <ModalBody pb={6} style = {{width: "80%", margin: "auto", marginTop: "8%"}}>
             <div style={{display: "flex", justifyContent: "center", marginBottom: "2%"}}>
                     <FormControl mt={4} style={{width: '40%', marginRight: "5%"}}>
@@ -358,21 +354,6 @@ function visitorManagement(){
                 </div>
                 </FormControl>
             </div>
-            <FormControl mt={4} style = {{width: '85%', margin: "auto", marginBottom: "3%"}}>
-              <div style={{display: "flex"}}>
-                <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦출입자</FormLabel>
-                <RadioGroup defaultValue='2'>
-                    <Stack spacing={5} direction='row'>
-                        <Radio colorScheme='green' value = "0" onChange = {handleisFlag}>
-                        상시 출입자
-                        </Radio>
-                        <Radio colorScheme='red' value = "1" onChange = {handleisFlag}>
-                        자주 출입자
-                        </Radio>
-                    </Stack>
-                    </RadioGroup>
-              </div>
-            </FormControl>
             <FormControl mt={4} style = {{width: '85%', margin: "auto"}}>
               <FormLabel style = {{fontSize: "20px", fontWeight: "bold"}}>🟦건물명</FormLabel>
               <Select placeholder='-------- 선택하세요 --------' width="100%" onChange = {(e) => {handleDoorList(e)}} style = {{textAlign:"center"
@@ -443,9 +424,9 @@ function visitorManagement(){
                                     if(item.userFlag === 0){
                                         Flag = "상시";
                                     } else if(item.userFlag === 1){
-                                        Flag = "자주";
-                                    } else{
                                         Flag = "방문";
+                                    } else{
+                                        Flag = "자주";
                                     }
                                     let DoorInfo = item.doorInfo;
                                             return(
@@ -466,9 +447,9 @@ function visitorManagement(){
                                                         <AccordionPanel pb={4}>
                                                             {DoorInfo.map((e, index) => {
                                                                 return(
-                                                                <table>
+                                                                <table key = {index}>
                                                                     <tbody>
-                                                                        <tr key = {index}>
+                                                                        <tr>
                                                                             <td>건물명 : {e.staName}</td>
                                                                             <td>도어명 : {e.doorNameList.toString()}</td> 
                                                                         </tr>
@@ -495,4 +476,4 @@ function visitorManagement(){
     )
 }
 
-export default visitorManagement;
+export default useVisitorManagement;
