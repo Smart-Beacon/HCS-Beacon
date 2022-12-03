@@ -25,12 +25,13 @@
     </a>
 </div>
 
+<!---
 
 ## 📑 Docs
 
 **[👉 Project Docs! (Don't link Not yet) ]()**
 
-<!---
+
 <a href="">
   <img src="https://img.shields.io/badge/Docs-F7DF1E.svg?&style=for-the-badge&logo=Notion&logoColor=000000"/>
 </a>
