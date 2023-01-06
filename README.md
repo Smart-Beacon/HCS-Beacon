@@ -70,10 +70,10 @@
    - Input **$ npm i** command line in terminal 
 
 5. client.js 파일 앞부분 주석을 확인하여 .env 파일을 생성하여 작성합니다.
-  - Check comment Client.js file 앞부분을 and Make .env file edit
+    - Check comment Client.js file 앞부분을 and Make .env file edit
 
 6. 서버가 작동되어있는 상태에서 다운로드한 폴더 경로(/'다운로드한 경로'/HW)에서 **sudo node client.js** 명령어를 입력하면 프로그램이 실행됩니다.
-  - When the server is executing, type the commend **sudo node client.js** into the terminal.
+    - When the server is executing, type the commend **sudo node client.js** into the terminal.
 ---  
 
 ### BE
@@ -88,7 +88,7 @@
 5. **$ npm run start** (서버 실행)
 
 ### <span style="color:red">**Please Check**</span>
-- <span style="color:red"> Please Turn on mariaDB before server start!</span>
+- <span style="color:red">Please Turn on mariaDB before server start!</span>
 ---  
 
 
